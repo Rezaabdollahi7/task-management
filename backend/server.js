@@ -11,7 +11,7 @@ dotenv.config();
 // Import routes
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
-
+const taskRoutes = require("./routes/taskRoutes");
 // Import database connection
 const db = require("./config/db");
 
@@ -49,6 +49,7 @@ app.get("/health", (req, res) => {
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);  
+app.use("/api/tasks", taskRoutes);
 
 // 404 handler
 app.use((req, res) => {
