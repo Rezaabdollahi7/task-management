@@ -93,12 +93,12 @@ export const tasksAPI = {
 
 // Dashboard API endpoints (for future use)
 export const dashboardAPI = {
-  getStats: (params) => api.get("/dashboard/stats", { params }),
-  getEmployeeStats: (params) =>
-    api.get("/dashboard/employees-stats", { params }),
-  getCharts: (params) => api.get("/dashboard/charts", { params }),
-  getMyStats: (params) => api.get("/dashboard/my-stats", { params }),
+  getStats: () => api.get("/dashboard/stats"),
+  getMyStats: () => api.get("/dashboard/my-stats"),
+  getEmployeeStats: () => api.get("/dashboard/employee-stats"),
+  getRecentTasks: (params) => api.get("/dashboard/recent-tasks", { params }),
 };
+
 
 // Notifications API endpoints (for future use)
 export const notificationsAPI = {
