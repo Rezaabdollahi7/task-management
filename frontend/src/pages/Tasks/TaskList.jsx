@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { tasksAPI, usersAPI } from "../../services/api";
+import TaskModal from "../../components/TaskModal";
 
 const TaskList = () => {
   const { user, logout, isManager } = useAuth();
@@ -22,6 +23,11 @@ const TaskList = () => {
     totalPages: 1,
     totalItems: 0,
   });
+
+  // Modal states
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
+  const [viewOnlyMode, setViewOnlyMode] = useState(false);
 
   // Fetch employees for filter (managers only)
   useEffect(() => {
@@ -326,7 +332,11 @@ const TaskList = () => {
             {/* Create Button (Manager only) */}
             {isManager() && (
               <button
-                onClick={() => alert("Create Task Modal - Coming soon!")}
+                onClick={() => {
+                  setEditingTask(null);
+                  setViewOnlyMode(false);
+                  setIsModalOpen(true);
+                }}
                 className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition whitespace-nowrap"
               >
                 + Create Task
@@ -447,9 +457,11 @@ const TaskList = () => {
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
                           <button
-                            onClick={() =>
-                              alert("View/Edit Task - Coming soon!")
-                            }
+                            onClick={() => {
+                              setEditingTask(task);
+                              setViewOnlyMode(!isManager());
+                              setIsModalOpen(true);
+                            }}
                             className="text-blue-600 hover:text-blue-900 mr-3"
                           >
                             View
@@ -507,6 +519,20 @@ const TaskList = () => {
           )}
         </div>
       </main>
+      {/* Task Modal */}
+      <TaskModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingTask(null);
+          setViewOnlyMode(false);
+        }}
+        onSuccess={() => {
+          fetchTasks();
+        }}
+        editTask={editingTask}
+        viewOnly={viewOnlyMode}
+      />
     </div>
   );
 };
