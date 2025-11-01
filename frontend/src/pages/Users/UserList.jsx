@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { usersAPI } from "../../services/api";
+import UserModal from "../../components/UserModal";
 
 const UserList = () => {
   const { user, logout } = useAuth();
@@ -17,6 +18,8 @@ const UserList = () => {
     totalPages: 1,
     totalItems: 0,
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
 
   // Fetch users from API
   const fetchUsers = async () => {
@@ -165,7 +168,10 @@ const UserList = () => {
 
             {/* Create Button */}
             <button
-              onClick={() => alert("Create User Modal - Coming soon!")}
+              onClick={() => {
+                setEditingUser(null);
+                setIsModalOpen(true);
+              }}
               className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition"
             >
               + Create User
@@ -248,7 +254,10 @@ const UserList = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button
-                          onClick={() => alert("Edit User - Coming soon!")}
+                          onClick={() => {
+                            setEditingUser(u);
+                            setIsModalOpen(true);
+                          }}
                           className="text-blue-600 hover:text-blue-900 mr-4"
                         >
                           Edit
@@ -308,6 +317,18 @@ const UserList = () => {
           )}
         </div>
       </main>
+      {/* User Modal */}
+      <UserModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingUser(null);
+        }}
+        onSuccess={() => {
+          fetchUsers();
+        }}
+        editUser={editingUser}
+      />
     </div>
   );
 };
