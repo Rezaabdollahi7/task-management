@@ -26,6 +26,20 @@ const Dashboard = () => {
               </p>
             </div>
             <button
+              onClick={() => (window.location.href = "/tasks")}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200"
+            >
+              Tasks
+            </button>
+            {user?.role === "manager" && (
+              <button
+                onClick={() => (window.location.href = "/users")}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition duration-200"
+              >
+                Users
+              </button>
+            )}
+            <button
               onClick={handleLogout}
               className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-200"
             >

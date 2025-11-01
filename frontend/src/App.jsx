@@ -12,6 +12,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import UserList from "./pages/Users/UserList";
+import TaskList from "./pages/Tasks/TaskList";
 
 function App() {
   return (
@@ -39,7 +40,16 @@ function App() {
               </ProtectedRoute>
             }
           />
-          
+
+          <Route
+            path="/tasks"
+            element={
+              <ProtectedRoute>
+                <TaskList />
+              </ProtectedRoute>
+            }
+          />
+
           {/* Default redirect to dashboard */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
