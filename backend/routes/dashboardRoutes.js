@@ -8,6 +8,8 @@ const {
   getMyStats,
   getEmployeeStats,
   getRecentTasks,
+  getChartData,
+  getMyChartData,
 } = require("../controllers/dashboardController");
 const { auth, isManager, isEmployee } = require("../middleware/auth");
 
@@ -33,5 +35,15 @@ router.get("/employee-stats", isManager, getEmployeeStats);
 // @desc    Get recent tasks
 // @access  Private
 router.get("/recent-tasks", getRecentTasks);
+
+// @route   GET /api/dashboard/charts
+// @desc    Get chart data (Manager)
+// @access  Private (Manager only)
+router.get("/charts", isManager, getChartData);
+
+// @route   GET /api/dashboard/my-charts
+// @desc    Get employee's chart data
+// @access  Private (Employee only)
+router.get("/my-charts", isEmployee, getMyChartData);
 
 module.exports = router;

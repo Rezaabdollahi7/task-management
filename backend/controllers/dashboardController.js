@@ -259,9 +259,240 @@ const getRecentTasks = async (req, res) => {
   }
 };
 
+// @route   GET /api/dashboard/charts
+// @desc    Get chart data for dashboard
+// @access  Private (Manager only)
+// @route   GET /api/dashboard/charts
+// @desc    Get chart data for dashboard
+// @access  Private (Manager only)
+const getChartData = async (req, res) => {
+  try {
+    // Tasks by status (for pie chart)
+    const statusData = await db.query(`
+      SELECT 
+        status,
+        COUNT(*)::int as count
+      FROM tasks
+      GROUP BY status
+      ORDER BY count DESC
+    `);
+
+    // Tasks by priority (for bar chart)
+    const priorityData = await db.query(`
+      SELECT 
+        priority,
+        COUNT(*)::int as count
+      FROM tasks
+      WHERE status NOT IN ('completed', 'cancelled')
+      GROUP BY priority
+      ORDER BY 
+        CASE priority
+          WHEN 'urgent' THEN 1
+          WHEN 'high' THEN 2
+          WHEN 'medium' THEN 3
+          WHEN 'low' THEN 4
+        END
+    `);
+
+    // Tasks created per day (last 7 days) - for line chart
+    const dailyTasks = await db.query(`
+      SELECT 
+        DATE(created_at) as date,
+        COUNT(*)::int as count
+      FROM tasks
+      WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'
+      GROUP BY DATE(created_at)
+      ORDER BY date ASC
+    `);
+
+    // Tasks this week by status
+    const weeklyTasks = await db.query(`
+      SELECT 
+        status,
+        COUNT(*)::int as count
+      FROM tasks
+      WHERE created_at >= date_trunc('week', CURRENT_DATE)
+      GROUP BY status
+    `);
+
+    // Today's tasks
+    const todayTasks = await db.query(`
+      SELECT 
+        COUNT(*)::int as total,
+        COUNT(*) FILTER (WHERE status = 'open')::int as open,
+        COUNT(*) FILTER (WHERE status = 'in_progress')::int as in_progress,
+        COUNT(*) FILTER (WHERE status = 'completed')::int as completed
+      FROM tasks
+      WHERE DATE(created_at) = CURRENT_DATE
+    `);
+
+    // Employee performance
+    const employeePerformance = await db.query(`
+  SELECT                                                                                                                                                                                                                                                        
+    u.id,
+    u.full_name,
+    COUNT(t.id)::int as total_tasks,
+    COUNT(t.id) FILTER (WHERE t.status = 'completed')::int as completed_tasks,
+    COUNT(t.id) FILTER (WHERE t.status = 'in_progress')::int as in_progress_tasks,
+    COUNT(t.id) FILTER (WHERE t.status = 'open')::int as open_tasks,
+    COUNT(t.id) FILTER (WHERE t.created_at >= date_trunc('week', CURRENT_DATE))::int as this_week_tasks,
+    COUNT(t.id) FILTER (WHERE DATE(t.created_at) = CURRENT_DATE)::int as today_tasks,
+    CASE 
+      WHEN COUNT(t.id) > 0 THEN 
+        ROUND((COUNT(t.id) FILTER (WHERE t.status = 'completed')::numeric / COUNT(t.id)::numeric * 100), 1)
+      ELSE 0 
+    END as completion_rate
+  FROM users u
+  LEFT JOIN tasks t ON u.id = t.employee_id
+  WHERE u.role = 'employee'
+  GROUP BY u.id, u.full_name
+  ORDER BY completed_tasks DESC
+`);
+
+    res.json({
+      success: true,
+      data: {
+        statusChart: statusData.rows,
+        priorityChart: priorityData.rows,
+        dailyChart: dailyTasks.rows,
+        weeklyTasks: weeklyTasks.rows,
+        todayTasks: todayTasks.rows[0] || {
+          total: 0,
+          open: 0,
+          in_progress: 0,
+          completed: 0,
+        },
+        employeePerformance: employeePerformance.rows,
+      },
+    });
+  } catch (error) {
+    console.error("Get chart data error:", error);
+    console.error("Error details:", error.message);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching chart data",
+      error: error.message,
+    });
+  }
+};
+
+// @route   GET /api/dashboard/my-charts
+// @desc    Get chart data for employee
+// @access  Private (Employee only)
+// @route   GET /api/dashboard/my-charts
+// @desc    Get chart data for employee
+// @access  Private (Employee only)
+const getMyChartData = async (req, res) => {
+  try {
+    const employeeId = req.user.id;
+
+    // My tasks by status (for pie chart)
+    const statusData = await db.query(
+      `
+      SELECT 
+        status,
+        COUNT(*)::int as count
+      FROM tasks
+      WHERE employee_id = $1
+      GROUP BY status
+      ORDER BY count DESC
+    `,
+      [employeeId]
+    );
+
+    // My tasks by priority
+    const priorityData = await db.query(
+      `
+      SELECT 
+        priority,
+        COUNT(*)::int as count
+      FROM tasks
+      WHERE employee_id = $1 AND status NOT IN ('completed', 'cancelled')
+      GROUP BY priority
+      ORDER BY 
+        CASE priority
+          WHEN 'urgent' THEN 1
+          WHEN 'high' THEN 2
+          WHEN 'medium' THEN 3
+          WHEN 'low' THEN 4
+        END
+    `,
+      [employeeId]
+    );
+
+    // My tasks created per day (last 7 days)
+    const dailyTasks = await db.query(
+      `
+      SELECT 
+        DATE(created_at) as date,
+        COUNT(*)::int as count
+      FROM tasks
+      WHERE employee_id = $1 AND created_at >= CURRENT_DATE - INTERVAL '7 days'
+      GROUP BY DATE(created_at)
+      ORDER BY date ASC
+    `,
+      [employeeId]
+    );
+
+    // This week tasks
+    const weeklyTasks = await db.query(
+      `
+      SELECT 
+        status,
+        COUNT(*)::int as count
+      FROM tasks
+      WHERE employee_id = $1 AND created_at >= date_trunc('week', CURRENT_DATE)
+      GROUP BY status
+    `,
+      [employeeId]
+    );
+
+    // Today's tasks
+    const todayTasks = await db.query(
+      `
+      SELECT 
+        COUNT(*)::int as total,
+        COUNT(*) FILTER (WHERE status = 'open')::int as open,
+        COUNT(*) FILTER (WHERE status = 'in_progress')::int as in_progress,
+        COUNT(*) FILTER (WHERE status = 'completed')::int as completed
+      FROM tasks
+      WHERE employee_id = $1 AND DATE(created_at) = CURRENT_DATE
+    `,
+      [employeeId]
+    );
+
+    res.json({
+      success: true,
+      data: {
+        statusChart: statusData.rows,
+        priorityChart: priorityData.rows,
+        dailyChart: dailyTasks.rows,
+        weeklyTasks: weeklyTasks.rows,
+        todayTasks: todayTasks.rows[0] || {
+          total: 0,
+          open: 0,
+          in_progress: 0,
+          completed: 0,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Get my chart data error:", error);
+    console.error("Error details:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching chart data",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getStats,
   getMyStats,
   getEmployeeStats,
   getRecentTasks,
+  getChartData,
+  getMyChartData,
 };

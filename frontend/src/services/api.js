@@ -91,14 +91,15 @@ export const tasksAPI = {
     api.patch(`/tasks/${id}/reassign`, { employeeId }),
 };
 
-// Dashboard API endpoints (for future use)
+// Dashboard API endpoints
 export const dashboardAPI = {
   getStats: () => api.get("/dashboard/stats"),
   getMyStats: () => api.get("/dashboard/my-stats"),
   getEmployeeStats: () => api.get("/dashboard/employee-stats"),
   getRecentTasks: (params) => api.get("/dashboard/recent-tasks", { params }),
+  getChartData: () => api.get("/dashboard/charts"),
+  getMyChartData: () => api.get("/dashboard/my-charts"),
 };
-
 
 // Notifications API endpoints (for future use)
 export const notificationsAPI = {

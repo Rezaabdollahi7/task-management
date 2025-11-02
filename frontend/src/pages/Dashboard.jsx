@@ -1,15 +1,20 @@
 // src/pages/Dashboard.jsx
 // Enhanced dashboard with statistics and charts
 
-import { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { dashboardAPI } from "../services/api";
+import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { dashboardAPI } from '../services/api';
+import StatusPieChart from '../components/charts/StatusPieChart';
+import PriorityBarChart from '../components/charts/PriorityBarChart';
+import DailyLineChart from '../components/charts/DailyLineChart';
+import EmployeePerformanceTable from '../components/EmployeePerformanceTable';
 
 const Dashboard = () => {
   const { user, logout, isManager } = useAuth();
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
+  const [chartData, setChartData] = useState(null);
   const [recentTasks, setRecentTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -19,21 +24,27 @@ const Dashboard = () => {
       try {
         setLoading(true);
 
-        // Fetch stats based on role
+        // Fetch stats and charts based on role
         const statsEndpoint = isManager()
           ? dashboardAPI.getStats()
           : dashboardAPI.getMyStats();
 
-        const [statsResponse, tasksResponse] = await Promise.all([
+        const chartsEndpoint = isManager()
+          ? dashboardAPI.getChartData()
+          : dashboardAPI.getMyChartData();
+
+        const [statsResponse, chartsResponse, tasksResponse] = await Promise.all([
           statsEndpoint,
+          chartsEndpoint,
           dashboardAPI.getRecentTasks({ limit: 5 }),
         ]);
 
         setStats(statsResponse.data);
+        setChartData(chartsResponse.data);
         setRecentTasks(tasksResponse.data);
         setLoading(false);
       } catch (err) {
-        console.error("Failed to fetch dashboard data:", err);
+        console.error('Failed to fetch dashboard data:', err);
         setLoading(false);
       }
     };
@@ -43,29 +54,29 @@ const Dashboard = () => {
 
   const handleLogout = async () => {
     await logout();
-    navigate("/login");
+    navigate('/login');
   };
 
   // Get status badge color
   const getStatusColor = (status) => {
     const colors = {
-      open: "bg-gray-100 text-gray-800",
-      in_progress: "bg-blue-100 text-blue-800",
-      completed: "bg-green-100 text-green-800",
-      cancelled: "bg-red-100 text-red-800",
+      open: 'bg-gray-100 text-gray-800',
+      in_progress: 'bg-blue-100 text-blue-800',
+      completed: 'bg-green-100 text-green-800',
+      cancelled: 'bg-red-100 text-red-800',
     };
-    return colors[status] || "bg-gray-100 text-gray-800";
+    return colors[status] || 'bg-gray-100 text-gray-800';
   };
 
   // Get priority badge color
   const getPriorityColor = (priority) => {
     const colors = {
-      urgent: "bg-red-100 text-red-800",
-      high: "bg-orange-100 text-orange-800",
-      medium: "bg-yellow-100 text-yellow-800",
-      low: "bg-green-100 text-green-800",
+      urgent: 'bg-red-100 text-red-800',
+      high: 'bg-orange-100 text-orange-800',
+      medium: 'bg-yellow-100 text-yellow-800',
+      low: 'bg-green-100 text-green-800',
     };
-    return colors[priority] || "bg-gray-100 text-gray-800";
+    return colors[priority] || 'bg-gray-100 text-gray-800';
   };
 
   if (loading) {
@@ -90,14 +101,14 @@ const Dashboard = () => {
             </div>
             <div className="flex gap-3">
               <button
-                onClick={() => navigate("/tasks")}
+                onClick={() => navigate('/tasks')}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
               >
                 Tasks
               </button>
               {isManager() && (
                 <button
-                  onClick={() => navigate("/users")}
+                  onClick={() => navigate('/users')}
                   className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition"
                 >
                   Users
@@ -145,8 +156,7 @@ const Dashboard = () => {
             </div>
             <div className="mt-4 flex items-center text-sm">
               <span className="text-gray-600">
-                {stats?.tasks?.open || 0} open, {stats?.tasks?.inProgress || 0}{" "}
-                in progress
+                {stats?.tasks?.open || 0} open, {stats?.tasks?.inProgress || 0} in progress
               </span>
             </div>
           </div>
@@ -183,18 +193,18 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* In Progress Tasks */}
+          {/* Today's Tasks */}
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">In Progress</p>
-                <p className="text-3xl font-bold text-blue-600 mt-2">
-                  {stats?.tasks?.inProgress || 0}
+                <p className="text-sm font-medium text-gray-600">Today's Tasks</p>
+                <p className="text-3xl font-bold text-purple-600 mt-2">
+                  {chartData?.todayTasks?.total || 0}
                 </p>
               </div>
-              <div className="bg-blue-100 p-3 rounded-full">
+              <div className="bg-purple-100 p-3 rounded-full">
                 <svg
-                  className="w-8 h-8 text-blue-600"
+                  className="w-8 h-8 text-purple-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -203,13 +213,15 @@ const Dashboard = () => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                   />
                 </svg>
               </div>
             </div>
             <div className="mt-4 flex items-center text-sm">
-              <span className="text-gray-600">Active work in progress</span>
+              <span className="text-gray-600">
+                {chartData?.todayTasks?.completed || 0} completed today
+              </span>
             </div>
           </div>
 
@@ -244,47 +256,91 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Priority Distribution */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Tasks by Priority (Active)
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-red-50 rounded-lg">
-              <p className="text-2xl font-bold text-red-600">
-                {stats?.priority?.urgent || 0}
-              </p>
-              <p className="text-sm text-gray-600 mt-1">Urgent</p>
-            </div>
-            <div className="text-center p-4 bg-orange-50 rounded-lg">
-              <p className="text-2xl font-bold text-orange-600">
-                {stats?.priority?.high || 0}
-              </p>
-              <p className="text-sm text-gray-600 mt-1">High</p>
-            </div>
-            <div className="text-center p-4 bg-yellow-50 rounded-lg">
-              <p className="text-2xl font-bold text-yellow-600">
-                {stats?.priority?.medium || 0}
-              </p>
-              <p className="text-sm text-gray-600 mt-1">Medium</p>
-            </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <p className="text-2xl font-bold text-green-600">
-                {stats?.priority?.low || 0}
-              </p>
-              <p className="text-sm text-gray-600 mt-1">Low</p>
-            </div>
+        {/* Charts Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Status Distribution */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              Status Distribution
+            </h2>
+            <StatusPieChart data={chartData?.statusChart} />
+          </div>
+
+          {/* Priority Distribution */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              Active Tasks by Priority
+            </h2>
+            <PriorityBarChart data={chartData?.priorityChart} />
+          </div>
+
+          {/* Daily Tasks (Last 7 Days) */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              Tasks Created (Last 7 Days)
+            </h2>
+            <DailyLineChart data={chartData?.dailyChart} />
           </div>
         </div>
+
+        {/* This Week Tasks */}
+        <div className="bg-white rounded-lg shadow p-6 mb-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            This Week's Tasks Breakdown
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {chartData?.weeklyTasks?.map((item) => (
+              <div
+                key={item.status}
+                className={`text-center p-4 rounded-lg ${
+                  item.status === 'completed'
+                    ? 'bg-green-50'
+                    : item.status === 'in_progress'
+                    ? 'bg-blue-50'
+                    : item.status === 'open'
+                    ? 'bg-gray-50'
+                    : 'bg-red-50'
+                }`}
+              >
+                <p
+                  className={`text-2xl font-bold ${
+                    item.status === 'completed'
+                      ? 'text-green-600'
+                      : item.status === 'in_progress'
+                      ? 'text-blue-600'
+                      : item.status === 'open'
+                      ? 'text-gray-600'
+                      : 'text-red-600'
+                  }`}
+                >
+                  {item.count}
+                </p>
+                <p className="text-sm text-gray-600 mt-1 capitalize">
+                  {item.status.replace('_', ' ')}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Employee Performance Table (Manager Only) */}
+        {isManager() && chartData?.employeePerformance && (
+          <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Employee Performance
+              </h2>
+            </div>
+            <EmployeePerformanceTable data={chartData.employeePerformance} />
+          </div>
+        )}
 
         {/* Recent Tasks */}
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Recent Tasks
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-900">Recent Tasks</h2>
             <button
-              onClick={() => navigate("/tasks")}
+              onClick={() => navigate('/tasks')}
               className="text-blue-600 hover:text-blue-800 text-sm font-medium"
             >
               View All →
@@ -300,13 +356,11 @@ const Dashboard = () => {
                 <div
                   key={task.id}
                   className="p-4 hover:bg-gray-50 cursor-pointer"
-                  onClick={() => navigate("/tasks")}
+                  onClick={() => navigate('/tasks')}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <h3 className="text-sm font-medium text-gray-900">
-                        {task.title}
-                      </h3>
+                      <h3 className="text-sm font-medium text-gray-900">{task.title}</h3>
                       <p className="text-xs text-gray-500 mt-1">
                         Assigned to: {task.employee_name}
                       </p>
@@ -333,35 +387,6 @@ const Dashboard = () => {
             </div>
           )}
         </div>
-
-        {/* Manager Only: User Statistics */}
-        {isManager() && stats?.users && (
-          <div className="bg-white rounded-lg shadow p-6 mt-8">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              System Users
-            </h2>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-purple-50 rounded-lg">
-                <p className="text-2xl font-bold text-purple-600">
-                  {stats.users.total}
-                </p>
-                <p className="text-sm text-gray-600 mt-1">Total Users</p>
-              </div>
-              <div className="text-center p-4 bg-blue-50 rounded-lg">
-                <p className="text-2xl font-bold text-blue-600">
-                  {stats.users.managers}
-                </p>
-                <p className="text-sm text-gray-600 mt-1">Managers</p>
-              </div>
-              <div className="text-center p-4 bg-green-50 rounded-lg">
-                <p className="text-2xl font-bold text-green-600">
-                  {stats.users.employees}
-                </p>
-                <p className="text-sm text-gray-600 mt-1">Employees</p>
-              </div>
-            </div>
-          </div>
-        )}
       </main>
     </div>
   );
