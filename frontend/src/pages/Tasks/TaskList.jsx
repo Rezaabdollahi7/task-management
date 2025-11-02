@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { tasksAPI, usersAPI } from "../../services/api";
 import TaskModal from "../../components/TaskModal";
+import WorkReportModal from "../../components/WorkReportModal";
 
 const TaskList = () => {
   const { user, logout, isManager } = useAuth();
@@ -28,6 +29,10 @@ const TaskList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [viewOnlyMode, setViewOnlyMode] = useState(false);
+
+  // Work Report Modal states
+  const [isWorkReportModalOpen, setIsWorkReportModalOpen] = useState(false);
+  const [reportTask, setReportTask] = useState(null);
 
   // Fetch employees for filter (managers only)
   useEffect(() => {
@@ -464,8 +469,24 @@ const TaskList = () => {
                             }}
                             className="text-blue-600 hover:text-blue-900 mr-3"
                           >
-                            View
+                            {isManager() ? "Edit" : "View"}
                           </button>
+
+                          {/* Add Report Button */}
+                          {(isManager() || task.employee_id === user?.id) &&
+                            task.status !== "cancelled" && (
+                              <button
+                                onClick={() => {
+                                  setReportTask(task);
+                                  setIsWorkReportModalOpen(true);
+                                }}
+                                className="text-green-600 hover:text-green-900 mr-3"
+                                title="Add Work Report"
+                              >
+                                {task.work_report ? "📋" : "📝"}
+                              </button>
+                            )}
+
                           {isManager() && (
                             <button
                               onClick={() => handleDelete(task.id, task.title)}
@@ -532,6 +553,32 @@ const TaskList = () => {
         }}
         editTask={editingTask}
         viewOnly={viewOnlyMode}
+      />
+      <TaskModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingTask(null);
+          setViewOnlyMode(false);
+        }}
+        onSuccess={() => {
+          fetchTasks();
+        }}
+        editTask={editingTask}
+        viewOnly={viewOnlyMode}
+      />
+
+      {/* Work Report Modal */}
+      <WorkReportModal
+        isOpen={isWorkReportModalOpen}
+        onClose={() => {
+          setIsWorkReportModalOpen(false);
+          setReportTask(null);
+        }}
+        onSuccess={() => {
+          fetchTasks();
+        }}
+        task={reportTask}
       />
     </div>
   );
