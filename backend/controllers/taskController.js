@@ -2,6 +2,7 @@
 // Task management controller for CRUD operations
 
 const Task = require("../models/Task");
+const Notification = require("../models/Notification");
 
 // @route   GET /api/tasks
 // @desc    Get all tasks (with filters)
@@ -124,6 +125,18 @@ const createTask = async (req, res) => {
       employeeId,
       creatorId: req.user.id,
     });
+
+    // Create notification for assigned employee
+    try {
+      await Notification.createTaskAssigned(
+        newTask.id,
+        newTask.employee_id,
+        newTask.title,
+        req.user.full_name
+      );
+    } catch (notifError) {
+      console.error("Failed to create notification:", notifError);
+    }
 
     res.status(201).json({
       success: true,
@@ -273,6 +286,23 @@ const updateTaskStatus = async (req, res) => {
     // Update status
     const updatedTask = await Task.updateStatus(id, status, req.user.id);
 
+    // If task completed, notify manager
+    if (status === "completed") {
+      try {
+        const task = await Task.findById(id);
+        if (task && task.creator_id) {
+          await Notification.createTaskCompleted(
+            task.id,
+            task.creator_id,
+            task.title,
+            req.user.full_name
+          );
+        }
+      } catch (notifError) {
+        console.error("Failed to create completion notification:", notifError);
+      }
+    }
+
     res.json({
       success: true,
       message: "Task status updated successfully",
@@ -382,6 +412,9 @@ const addWorkReport = async (req, res) => {
 // @route   PATCH /api/tasks/:id/reassign
 // @desc    Reassign task to another employee
 // @access  Private (Manager only)
+// @route   PATCH /api/tasks/:id/reassign
+// @desc    Reassign task to another employee
+// @access  Private (Manager only)
 const reassignTask = async (req, res) => {
   try {
     const { id } = req.params;
@@ -406,6 +439,18 @@ const reassignTask = async (req, res) => {
 
     // Reassign task
     const reassignedTask = await Task.reassign(id, employeeId);
+
+    // Notify new employee
+    try {
+      await Notification.createTaskAssigned(
+        reassignedTask.id,
+        employeeId,
+        reassignedTask.title,
+        req.user.full_name
+      );
+    } catch (notifError) {
+      console.error("Failed to create reassignment notification:", notifError);
+    }
 
     res.json({
       success: true,
