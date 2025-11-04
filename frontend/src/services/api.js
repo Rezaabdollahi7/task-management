@@ -101,7 +101,7 @@ export const dashboardAPI = {
   getMyChartData: () => api.get("/dashboard/my-charts"),
 };
 
-// Notifications API endpoints (for future use)
+// Notifications API endpoints
 export const notificationsAPI = {
   getAll: (params) => api.get("/notifications", { params }),
   getUnreadCount: () => api.get("/notifications/unread-count"),

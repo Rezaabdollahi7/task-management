@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { tasksAPI, usersAPI } from "../../services/api";
 import TaskModal from "../../components/TaskModal";
 import WorkReportModal from "../../components/WorkReportModal";
+import NotificationBell from "../../components/NotificationBell";
 
 const TaskList = () => {
   const { user, logout, isManager } = useAuth();
@@ -170,7 +171,9 @@ const TaskList = () => {
                 Logged in as: <strong>{user?.fullName}</strong> ({user?.role})
               </p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex items-center gap-3">
+              <NotificationBell />
+
               {isManager() && (
                 <button
                   onClick={() => (window.location.href = "/users")}

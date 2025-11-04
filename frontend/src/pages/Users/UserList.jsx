@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { usersAPI } from "../../services/api";
 import UserModal from "../../components/UserModal";
+import NotificationBell from "../../components/NotificationBell";
 
 const UserList = () => {
   const { user, logout } = useAuth();
@@ -99,6 +100,7 @@ const UserList = () => {
               </p>
             </div>
             <div className="flex gap-3">
+              <NotificationBell />
               <button
                 onClick={() => (window.location.href = "/dashboard")}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition"
