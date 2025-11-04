@@ -54,29 +54,20 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="max-w-md w-full mx-4">
+    <div className="min-h-screen flex items-center justify-center gap-16 ">
+      {/* left side */}
+      <div className="max-w-md w-full px-4">
         {/* Login Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="">
           {/* Logo and Title */}
           <div className="text-center mb-8">
-            <div className="bg-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-10 h-10 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                />
-              </svg>
-            </div>
-            <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-            <p className="text-gray-600 mt-2">Task Management System</p>
+            <h1 className="text-3xl font-semibold text-gray-900 text-start">
+              Welcome Back 👋
+            </h1>
+            <p className="text-slate-500 mt-4 text-start">
+              It's not about having time, it's about making time. Plan your work
+              for every day, then work your plan.
+            </p>
           </div>
 
           {/* Error Message */}
@@ -92,7 +83,7 @@ const Login = () => {
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm  text-gray-700 mb-1"
               >
                 Username
               </label>
@@ -102,7 +93,7 @@ const Login = () => {
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                className="w-full px-4 py-3 border bg-[#F7FBFF] border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
                 placeholder="Enter your username"
                 disabled={loading}
                 autoComplete="username"
@@ -113,7 +104,7 @@ const Login = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm  text-gray-700 mb-1"
               >
                 Password
               </label>
@@ -123,7 +114,7 @@ const Login = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                className="w-full px-4 py-3 border bg-[#F7FBFF] border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
                 placeholder="Enter your password"
                 disabled={loading}
                 autoComplete="current-password"
@@ -134,7 +125,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-full bg-[#162D3A] hover:bg-[#1c3950] text-white  py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {loading ? (
                 <>
@@ -176,8 +167,13 @@ const Login = () => {
 
         {/* Footer */}
         <p className="text-center text-gray-600 text-sm mt-6">
-          © 2025 Task Management System. All rights reserved.
+          © 2025 Zero Task System. All rights reserved.
         </p>
+      </div>
+
+      {/* right side */}
+      <div className="right max-w-xl hidden md:block">
+        <img src="../../public/images/login9.jpg" alt="" />
       </div>
     </div>
   );
