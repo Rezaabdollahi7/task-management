@@ -159,6 +159,84 @@ class Notification {
       priority: "urgent",
     });
   }
+
+  // Create notification for status change
+  static async createStatusChanged(
+    taskId,
+    managerId,
+    taskTitle,
+    oldStatus,
+    newStatus,
+    changedBy
+  ) {
+    const statusLabels = {
+      open: "باز",
+      in_progress: "در حال انجام",
+      completed: "تکمیل شده",
+      cancelled: "لغو شده",
+    };
+
+    return await this.create({
+      userId: managerId,
+      type: "status_changed",
+      title: "تغییر وضعیت تسک",
+      message: `وضعیت تسک "${taskTitle}" از ${statusLabels[oldStatus]} به ${statusLabels[newStatus]} توسط ${changedBy} تغییر کرد`,
+      taskId: taskId,
+      priority: "normal",
+    });
+  }
+
+  // Create notification for work report
+  static async createWorkReportAdded(
+    taskId,
+    managerId,
+    taskTitle,
+    employeeName
+  ) {
+    return await this.create({
+      userId: managerId,
+      type: "work_report_added",
+      title: "گزارش کار جدید",
+      message: `${employeeName} گزارش کار برای تسک "${taskTitle}" را ثبت کرد`,
+      taskId: taskId,
+      priority: "normal",
+    });
+  }
+
+  // Create notification for task reassignment (to old employee)
+  static async createTaskReassignedFrom(
+    taskId,
+    oldEmployeeId,
+    taskTitle,
+    newEmployeeName,
+    reassignedBy
+  ) {
+    return await this.create({
+      userId: oldEmployeeId,
+      type: "task_reassigned",
+      title: "تسک از شما منتقل شد",
+      message: `تسک "${taskTitle}" از شما به ${newEmployeeName} توسط ${reassignedBy} منتقل شد`,
+      taskId: taskId,
+      priority: "normal",
+    });
+  }
+
+  // Create notification for task reassignment (to new employee)
+  static async createTaskReassignedTo(
+    taskId,
+    newEmployeeId,
+    taskTitle,
+    reassignedBy
+  ) {
+    return await this.create({
+      userId: newEmployeeId,
+      type: "task_reassigned",
+      title: "تسک جدید به شما منتقل شد",
+      message: `تسک "${taskTitle}" توسط ${reassignedBy} به شما منتقل شد`,
+      taskId: taskId,
+      priority: "normal",
+    });
+  }
 }
 
 module.exports = Notification;

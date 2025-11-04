@@ -283,24 +283,43 @@ const updateTaskStatus = async (req, res) => {
       });
     }
 
+    // Store old status for notification
+    const oldStatus = task.status;
+
     // Update status
     const updatedTask = await Task.updateStatus(id, status, req.user.id);
 
-    // If task completed, notify manager
-    if (status === "completed") {
-      try {
-        const task = await Task.findById(id);
-        if (task && task.creator_id) {
-          await Notification.createTaskCompleted(
-            task.id,
-            task.creator_id,
-            task.title,
-            req.user.full_name
-          );
-        }
-      } catch (notifError) {
-        console.error("Failed to create completion notification:", notifError);
+    // Send notifications based on status change
+    try {
+      // If task completed, notify manager
+      if (status === "completed" && task.creator_id) {
+        await Notification.createTaskCompleted(
+          task.id,
+          task.creator_id,
+          task.title,
+          req.user.full_name
+        );
       }
+
+      // If status changed and manager exists, notify about status change
+      // (Don't send duplicate if it's completion notification)
+      if (
+        status !== "completed" &&
+        oldStatus !== status &&
+        task.creator_id &&
+        req.user.id !== task.creator_id
+      ) {
+        await Notification.createStatusChanged(
+          task.id,
+          task.creator_id,
+          task.title,
+          oldStatus,
+          status,
+          req.user.full_name
+        );
+      }
+    } catch (notifError) {
+      console.error("Failed to create notification:", notifError);
     }
 
     res.json({
@@ -395,6 +414,20 @@ const addWorkReport = async (req, res) => {
     // Add work report
     const updatedTask = await Task.addWorkReport(id, workReport);
 
+    // Notify manager about work report
+    try {
+      if (task.creator_id && req.user.id !== task.creator_id) {
+        await Notification.createWorkReportAdded(
+          task.id,
+          task.creator_id,
+          task.title,
+          req.user.full_name
+        );
+      }
+    } catch (notifError) {
+      console.error("Failed to create work report notification:", notifError);
+    }
+
     res.json({
       success: true,
       message: "Work report added successfully",
@@ -409,9 +442,6 @@ const addWorkReport = async (req, res) => {
   }
 };
 
-// @route   PATCH /api/tasks/:id/reassign
-// @desc    Reassign task to another employee
-// @access  Private (Manager only)
 // @route   PATCH /api/tasks/:id/reassign
 // @desc    Reassign task to another employee
 // @access  Private (Manager only)
@@ -437,12 +467,32 @@ const reassignTask = async (req, res) => {
       });
     }
 
+    // Store old employee info
+    const oldEmployeeId = task.employee_id;
+    const oldEmployeeName = task.employee_name;
+
     // Reassign task
     const reassignedTask = await Task.reassign(id, employeeId);
 
-    // Notify new employee
+    // Send notifications
     try {
-      await Notification.createTaskAssigned(
+      // Get new employee name
+      const User = require("../models/User");
+      const newEmployee = await User.findById(employeeId);
+
+      // Notify old employee that task was taken from them
+      if (oldEmployeeId && oldEmployeeId !== employeeId) {
+        await Notification.createTaskReassignedFrom(
+          task.id,
+          oldEmployeeId,
+          task.title,
+          newEmployee ? newEmployee.full_name : "کاربر جدید",
+          req.user.full_name
+        );
+      }
+
+      // Notify new employee
+      await Notification.createTaskReassignedTo(
         reassignedTask.id,
         employeeId,
         reassignedTask.title,
@@ -465,7 +515,6 @@ const reassignTask = async (req, res) => {
     });
   }
 };
-
 module.exports = {
   getAllTasks,
   getTaskById,
