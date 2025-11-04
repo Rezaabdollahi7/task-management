@@ -14,6 +14,7 @@ const userRoutes = require("./routes/userRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const { initCronJobs } = require("./services/notificationCron");
 
 // Import database connection
 const db = require("./config/db");
@@ -82,6 +83,8 @@ app.listen(PORT, () => {
   console.log(`📝 Environment: ${process.env.NODE_ENV || "development"}`);
   console.log(`🔗 API URL: http://localhost:${PORT}`);
   console.log("=".repeat(50));
+  // Initialize cron jobs
+  initCronJobs();
 });
 
 // Handle unhandled promise rejections
