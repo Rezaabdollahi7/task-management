@@ -8,6 +8,7 @@ import TaskModal from "../../components/TaskModal";
 import WorkReportModal from "../../components/WorkReportModal";
 import NotificationBell from "../../components/NotificationBell";
 import { showSuccess, showError, showWarning } from "../../utils/toast";
+import SkeletonTaskCard from "../../components/skeletons/SkeletonTaskCard";
 
 const TaskList = () => {
   const { user, logout, isManager } = useAuth();
@@ -364,8 +365,29 @@ const TaskList = () => {
         {/* Tasks Table */}
         <div className="bg-white rounded-lg shadow overflow-hidden">
           {loading ? (
-            <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="min-h-screen bg-gray-50">
+              {/* Header (همون که هست) */}
+              <header className="bg-white shadow-sm">
+                {/* ... header content ... */}
+              </header>
+
+              {/* Skeleton Content */}
+              <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {/* Skeleton Filters */}
+                <div className="mb-6 flex flex-col md:flex-row gap-4">
+                  <div className="flex-1 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
+                  <div className="w-full md:w-48 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
+                  <div className="w-full md:w-48 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
+                  <div className="w-full md:w-48 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
+                </div>
+
+                {/* Skeleton Task Cards */}
+                <div className="grid grid-cols-1 gap-6">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <SkeletonTaskCard key={i} />
+                  ))}
+                </div>
+              </main>
             </div>
           ) : tasks.length === 0 ? (
             <div className="text-center py-12 text-gray-500">

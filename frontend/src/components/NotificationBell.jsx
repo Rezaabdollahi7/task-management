@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef } from "react";
 import { notificationsAPI } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import SkeletonNotification from "./skeletons/SkeletonNotification";
 
 const NotificationBell = () => {
   const [notifications, setNotifications] = useState([]);
@@ -165,8 +166,10 @@ const NotificationBell = () => {
           {/* Notifications List */}
           <div className="overflow-y-auto flex-1">
             {loading ? (
-              <div className="flex justify-center items-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <div>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <SkeletonNotification key={i} />
+                ))}
               </div>
             ) : notifications.length === 0 ? (
               <div className="text-center py-12 text-gray-500">

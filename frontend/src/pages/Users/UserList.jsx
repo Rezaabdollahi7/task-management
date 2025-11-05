@@ -7,6 +7,7 @@ import { usersAPI } from "../../services/api";
 import UserModal from "../../components/UserModal";
 import NotificationBell from "../../components/NotificationBell";
 import { showSuccess, showError } from "../../utils/toast";
+import SkeletonTable from "../../components/skeletons/SkeletonTable";
 
 const UserList = () => {
   const { user, logout } = useAuth();
@@ -193,8 +194,38 @@ const UserList = () => {
         {/* Users Table */}
         <div className="bg-white rounded-lg shadow overflow-hidden">
           {loading ? (
-            <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="min-h-screen bg-gray-50">
+              {/* Header (همون که هست) */}
+              <header className="bg-white shadow-sm">
+                {/* ... header content ... */}
+              </header>
+
+              {/* Skeleton Content */}
+              <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {/* Skeleton Header */}
+                <div className="mb-6 flex justify-between items-center">
+                  <div className="h-8 bg-gray-200 rounded w-48 animate-pulse"></div>
+                  <div className="h-10 bg-gray-200 rounded w-32 animate-pulse"></div>
+                </div>
+
+                {/* Skeleton Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="bg-white rounded-lg shadow p-6 animate-pulse"
+                    >
+                      <div className="h-4 bg-gray-200 rounded w-24 mb-3"></div>
+                      <div className="h-8 bg-gray-200 rounded w-16"></div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Skeleton Table */}
+                <div className="bg-white rounded-lg shadow overflow-hidden">
+                  <SkeletonTable rows={8} columns={5} />
+                </div>
+              </main>
             </div>
           ) : users.length === 0 ? (
             <div className="text-center py-12 text-gray-500">

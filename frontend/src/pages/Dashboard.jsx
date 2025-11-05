@@ -19,6 +19,8 @@ import {
 } from "react-icons/fa";
 import { MdSpaceDashboard } from "react-icons/md";
 import { SiGoogletasks } from "react-icons/si";
+import SkeletonCard from "../components/skeletons/SkeletonCard";
+import SkeletonChart from "../components/skeletons/SkeletonChart";
 
 const Dashboard = () => {
   const { user, logout, isManager } = useAuth();
@@ -72,10 +74,10 @@ const Dashboard = () => {
   // Get status badge color
   const getStatusColor = (status) => {
     const colors = {
-      open: "bg-gray-100 text-gray-800",
-      in_progress: "bg-blue-100 text-blue-800",
-      completed: "bg-green-100 text-green-800",
-      cancelled: "bg-red-100 text-red-800",
+      open: "bg-[#5B93FF] text-white",
+      in_progress: "bg-[#FF8F6B] text-blue-800",
+      completed: "bg-green-400 text-green-900",
+      cancelled: "bg-[#5B93FF] text-red-800",
     };
     return colors[status] || "bg-gray-100 text-gray-800";
   };
@@ -83,9 +85,9 @@ const Dashboard = () => {
   // Get priority badge color
   const getPriorityColor = (priority) => {
     const colors = {
-      urgent: "bg-red-100 text-red-800",
+      urgent: "bg-red-100 text-[#D11A2A]",
       high: "bg-orange-100 text-orange-800",
-      medium: "bg-yellow-100 text-yellow-800",
+      medium: "bg-yellow-100 text-yellow-600",
       low: "bg-green-100 text-green-800",
     };
     return colors[priority] || "bg-gray-100 text-gray-800";
@@ -93,8 +95,93 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-gray-50 flex">
+        {/* Main content */}
+        <div className="flex-1 ">
+          {/* Header */}
+          <header className="bg-white shadow-sm sticky top-0 z-30">
+            <div className="px-4 sm:px-6 lg:px-8 py-4">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setSidebarOpen(true)}
+                    className="lg:hidden text-gray-600 hover:text-gray-900 p-2"
+                  >
+                    <FaBars className="w-6 h-6" />
+                  </button>
+                  <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+                    Dashboard
+                  </h1>
+                </div>
+                <div className="flex items-center gap-3">
+                  <NotificationBell />
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {/* Skeleton Content */}
+          <main className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 bg-[#FAFAFB] min-h-[calc(100vh-73px)]">
+            {/* Skeleton Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
+            </div>
+
+            {/* Skeleton Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+              <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+                <SkeletonChart type="pie" />
+              </div>
+              <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+                <SkeletonChart type="bar" />
+              </div>
+              <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+                <SkeletonChart type="line" />
+              </div>
+            </div>
+
+            {/* Skeleton Week Tasks */}
+            <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
+              <div className="h-6 bg-gray-200 rounded w-64 mx-auto mb-6 animate-pulse"></div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="text-center p-3 sm:p-4 rounded-lg bg-gray-50 animate-pulse"
+                  >
+                    <div className="h-8 bg-gray-200 rounded w-12 mx-auto mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-20 mx-auto"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Skeleton Recent Tasks */}
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <div className="p-4 sm:p-6 border-b border-gray-200">
+                <div className="h-6 bg-gray-200 rounded w-32 animate-pulse"></div>
+              </div>
+              <div className="divide-y divide-gray-200">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="p-4 animate-pulse">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                      <div className="flex-1">
+                        <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                      </div>
+                      <div className="flex gap-2">
+                        <div className="h-6 w-16 bg-gray-200 rounded-full"></div>
+                        <div className="h-6 w-16 bg-gray-200 rounded-full"></div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
     );
   }
@@ -425,7 +512,7 @@ const Dashboard = () => {
               </h2>
               <button
                 onClick={() => navigate("/tasks")}
-                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                className="text-white px-5 py-2 rounded-md bg-[#605BFF] hover:text-blue-800 text-sm font-medium"
               >
                 View All →
               </button>
@@ -453,14 +540,14 @@ const Dashboard = () => {
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <span
-                          className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getPriorityColor(
+                          className={`px-4 py-2 inline-flex text-xs leading-5 font-medium rounded-full ${getPriorityColor(
                             task.priority
                           )}`}
                         >
                           {task.priority}
                         </span>
                         <span
-                          className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
+                          className={`px-4 py-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
                             task.status
                           )}`}
                         >
