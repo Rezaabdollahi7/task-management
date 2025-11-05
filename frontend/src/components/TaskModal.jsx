@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { tasksAPI, usersAPI } from "../services/api";
+import { showSuccess } from "../utils/toast";
 
 const TaskModal = ({
   isOpen,
@@ -91,6 +92,7 @@ const TaskModal = ({
     setLoading(true);
 
     try {
+      showSuccess("Task created successfully ✓");
       // Validation
       if (!formData.title || !formData.employeeId) {
         setError("Title and employee are required");
@@ -124,6 +126,7 @@ const TaskModal = ({
       onClose();
     } catch (err) {
       setError(err.message || "An error occurred");
+      showError(err.response?.data?.message || "Failed to create task");
       setLoading(false);
     }
   };

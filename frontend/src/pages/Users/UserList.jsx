@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { usersAPI } from "../../services/api";
 import UserModal from "../../components/UserModal";
 import NotificationBell from "../../components/NotificationBell";
+import { showSuccess, showError } from "../../utils/toast";
 
 const UserList = () => {
   const { user, logout } = useAuth();
@@ -74,9 +75,10 @@ const UserList = () => {
 
     try {
       await usersAPI.delete(userId);
+      showSuccess("User deleted successfully");
       fetchUsers();
     } catch (err) {
-      alert(err.message || "Failed to delete user");
+      showSuccess("User deleted successfully");
     }
   };
 

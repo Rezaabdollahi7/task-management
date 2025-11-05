@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { usersAPI } from "../services/api";
+import { showSuccess } from "../utils/toast";
 
 const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
   const [formData, setFormData] = useState({
@@ -77,6 +78,7 @@ const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
           role: formData.role,
         };
         await usersAPI.update(editUser.id, updateData);
+        showSuccess("User updated successfully ✓");
 
         // Update password if provided
         if (formData.password) {
@@ -85,6 +87,7 @@ const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
       } else {
         // Create new user
         await usersAPI.create(formData);
+        showSuccess("User created successfully ✓");
       }
 
       setLoading(false);

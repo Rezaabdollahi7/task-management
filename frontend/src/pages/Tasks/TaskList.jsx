@@ -7,6 +7,7 @@ import { tasksAPI, usersAPI } from "../../services/api";
 import TaskModal from "../../components/TaskModal";
 import WorkReportModal from "../../components/WorkReportModal";
 import NotificationBell from "../../components/NotificationBell";
+import { showSuccess, showError, showWarning } from "../../utils/toast";
 
 const TaskList = () => {
   const { user, logout, isManager } = useAuth();
@@ -103,9 +104,10 @@ const TaskList = () => {
 
     try {
       await tasksAPI.delete(taskId);
+      showSuccess("Task deleted successfully");
       fetchTasks();
     } catch (err) {
-      alert(err.message || "Failed to delete task");
+      showError("Failed to delete task");
     }
   };
 
@@ -113,9 +115,10 @@ const TaskList = () => {
   const handleStatusChange = async (taskId, newStatus) => {
     try {
       await tasksAPI.updateStatus(taskId, newStatus);
+      showSuccess(`Task status updated to ${newStatus.replace("_", " ")}`);
       fetchTasks();
     } catch (err) {
-      alert(err.message || "Failed to update status");
+      showError("Failed to update task status");
     }
   };
 

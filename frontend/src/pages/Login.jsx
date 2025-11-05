@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { showError, showSuccess } from "../utils/toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ const Login = () => {
       if (result.success) {
         // Redirect to dashboard
         navigate("/dashboard");
+        showSuccess("Login successfully :))");
       } else {
         setError(result.error || "Login failed");
       }
