@@ -8,6 +8,7 @@ import { dashboardAPI } from "../services/api";
 import StatusPieChart from "../components/charts/StatusPieChart";
 import PriorityBarChart from "../components/charts/PriorityBarChart";
 import DailyLineChart from "../components/charts/DailyLineChart";
+import UserPerformanceChart from "../components/charts/UserPerformanceChart";
 import EmployeePerformanceTable from "../components/EmployeePerformanceTable";
 import NotificationBell from "../components/NotificationBell";
 import { FaBell, FaUsers, FaSignOutAlt, FaBars, FaTimes } from "react-icons/fa";
@@ -452,6 +453,10 @@ const Dashboard = () => {
             {/* Daily Tasks (Last 7 Days) */}
             <div className="bg-white rounded-lg shadow p-2">
               <DailyLineChart data={chartData?.dailyChart} />
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6 mb-6 sm:mb-8 col-span-2">
+              <UserPerformanceChart data={chartData?.userPerformanceChart} />
             </div>
           </div>
 

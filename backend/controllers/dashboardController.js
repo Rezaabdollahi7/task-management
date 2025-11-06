@@ -349,6 +349,21 @@ const getChartData = async (req, res) => {
   ORDER BY completed_tasks DESC
 `);
 
+    //User performance (completed vs incomplete)
+    const userPerformance = await db.query(`
+      SELECT 
+        u.full_name as name,
+        COUNT(CASE WHEN t.status = 'completed' THEN 1 END)::int as completed,
+        COUNT(CASE WHEN t.status NOT IN ('completed', 'cancelled') THEN 1 END)::int as incomplete
+      FROM users u
+      LEFT JOIN tasks t ON u.id = t.employee_id
+      WHERE u.role = 'employee'
+      GROUP BY u.id, u.full_name
+      HAVING COUNT(t.id) > 0
+      ORDER BY completed DESC
+      LIMIT 10
+    `);
+
     res.json({
       success: true,
       data: {
@@ -363,6 +378,7 @@ const getChartData = async (req, res) => {
           completed: 0,
         },
         employeePerformance: employeePerformance.rows,
+        userPerformanceChart: userPerformance.rows,
       },
     });
   } catch (error) {
