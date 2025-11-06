@@ -440,26 +440,17 @@ const Dashboard = () => {
           {/* Charts Row */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
             {/* Status Distribution */}
-            <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
-              <h2 className="text-base sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6 text-center">
-                Status Distribution
-              </h2>
+            <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-2">
               <StatusPieChart data={chartData?.statusChart} />
             </div>
 
             {/* Priority Distribution */}
-            <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
-              <h2 className="text-base sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6 text-center">
-                Active Tasks by Priority
-              </h2>
+            <div className="bg-white rounded-lg shadow p-2">
               <PriorityBarChart data={chartData?.priorityChart} />
             </div>
 
             {/* Daily Tasks (Last 7 Days) */}
-            <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
-              <h2 className="text-base sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6 text-center">
-                Tasks Created (Last 7 Days)
-              </h2>
+            <div className="bg-white rounded-lg shadow p-2">
               <DailyLineChart data={chartData?.dailyChart} />
             </div>
           </div>
