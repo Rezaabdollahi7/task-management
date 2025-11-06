@@ -237,6 +237,18 @@ class Notification {
       priority: "normal",
     });
   }
+
+  // Delete all notifications for a user
+  static async deleteAll(userId) {
+    const query = `
+      DELETE FROM notifications
+      WHERE user_id = $1
+      RETURNING *
+    `;
+
+    const result = await db.query(query, [userId]);
+    return result.rows;
+  }
 }
 
 module.exports = Notification;

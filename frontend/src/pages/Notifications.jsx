@@ -26,9 +26,9 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all"); // all, unread, read
+  const [typeFilter, setTypeFilter] = useState("all");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Fetch notifications
   const fetchNotifications = async () => {
     try {
       setLoading(true);
@@ -44,6 +44,11 @@ const Notifications = () => {
         data = data.filter((n) => n.is_read);
       }
 
+      // Filter by type
+      if (typeFilter !== "all") {
+        data = data.filter((n) => n.type === typeFilter);
+      }
+
       setNotifications(data);
       setLoading(false);
     } catch (error) {
@@ -55,7 +60,7 @@ const Notifications = () => {
 
   useEffect(() => {
     fetchNotifications();
-  }, [filter]);
+  }, [filter, typeFilter]);
 
   // Mark as read
   const handleMarkAsRead = async (notificationId) => {
@@ -96,6 +101,25 @@ const Notifications = () => {
     }
   };
 
+  // Delete all notifications
+  const handleDeleteAll = async () => {
+    if (
+      !window.confirm(
+        "Are you sure you want to delete ALL notifications? This action cannot be undone."
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const response = await notificationsAPI.deleteAll();
+      showSuccess(response.message || "All notifications deleted");
+      fetchNotifications();
+    } catch (error) {
+      console.error("Failed to delete all notifications:", error);
+      showError("Failed to delete all notifications");
+    }
+  };
   // Get time ago
   const getTimeAgo = (date) => {
     const seconds = Math.floor((new Date() - new Date(date)) / 1000);
@@ -369,6 +393,22 @@ const Notifications = () => {
                 >
                   Read ({readCount})
                 </button>
+                <select
+                  value={typeFilter}
+                  onChange={(e) => setTypeFilter(e.target.value)}
+                  className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                >
+                  <option value="all">All Types</option>
+                  <option value="task_assigned">Task Assigned</option>
+                  <option value="task_completed">Task Completed</option>
+                  {/* <option value="task_reassigned">Task Reassigned</option> */}
+                  <option value="deadline_approaching">
+                    Deadline Approaching
+                  </option>
+                  <option value="task_overdue">Task Overdue</option>
+                  {/* <option value="status_changed">Status Changed</option> */}
+                  <option value="work_report_added">Work Report Added</option>
+                </select>
               </div>
 
               {/* Actions */}
@@ -380,6 +420,15 @@ const Notifications = () => {
                   >
                     <FaCheckDouble className="w-4 h-4" />
                     <span className="hidden sm:inline">Mark All Read</span>
+                  </button>
+                )}
+                {notifications.length > 0 && (
+                  <button
+                    onClick={handleDeleteAll}
+                    className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                  >
+                    <FaTrash className="w-4 h-4" />
+                    <span className="hidden sm:inline">Delete All</span>
                   </button>
                 )}
               </div>

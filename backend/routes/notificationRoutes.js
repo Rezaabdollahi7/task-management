@@ -9,6 +9,7 @@ const {
   markAsRead,
   markAllAsRead,
   deleteNotification,
+  deleteAllNotifications,
 } = require("../controllers/notificationController");
 const { auth } = require("../middleware/auth");
 
@@ -34,6 +35,11 @@ router.patch("/mark-all-read", markAllAsRead);
 // @desc    Mark notification as read
 // @access  Private
 router.patch("/:id/read", markAsRead);
+
+// @route   DELETE /api/notifications
+// @desc    Delete all notifications
+// @access  Private
+router.delete("/", deleteAllNotifications);
 
 // @route   DELETE /api/notifications/:id
 // @desc    Delete a notification

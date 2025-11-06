@@ -135,10 +135,34 @@ const deleteNotification = async (req, res) => {
   }
 };
 
+// @route   DELETE /api/notifications
+// @desc    Delete all notifications for current user
+// @access  Private
+const deleteAllNotifications = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const notifications = await Notification.deleteAll(userId);
+
+    res.json({
+      success: true,
+      message: `${notifications.length} notification(s) deleted`,
+      data: { count: notifications.length },
+    });
+  } catch (error) {
+    console.error("Delete all notifications error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while deleting all notifications",
+    });
+  }
+};
+
 module.exports = {
   getNotifications,
   getUnreadCount,
   markAsRead,
   markAllAsRead,
   deleteNotification,
+  deleteAllNotifications,
 };
