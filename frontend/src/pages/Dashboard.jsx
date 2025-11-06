@@ -131,19 +131,19 @@ const Dashboard = () => {
 
             {/* Skeleton Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-              <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+              <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
                 <SkeletonChart type="pie" />
               </div>
-              <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+              <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
                 <SkeletonChart type="bar" />
               </div>
-              <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+              <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
                 <SkeletonChart type="line" />
               </div>
             </div>
 
             {/* Skeleton Week Tasks */}
-            <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
+            <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6 mb-6 sm:mb-8">
               <div className="h-6 bg-gray-200 rounded w-64 mx-auto mb-6 animate-pulse"></div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                 {Array.from({ length: 4 }).map((_, i) => (
@@ -424,24 +424,24 @@ const Dashboard = () => {
           {/* Charts Row */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
             {/* Status Distribution */}
-            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
-              <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6 text-center">
+            <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+              <h2 className="text-base sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6 text-center">
                 Status Distribution
               </h2>
               <StatusPieChart data={chartData?.statusChart} />
             </div>
 
             {/* Priority Distribution */}
-            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
-              <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6 text-center">
+            <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+              <h2 className="text-base sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6 text-center">
                 Active Tasks by Priority
               </h2>
               <PriorityBarChart data={chartData?.priorityChart} />
             </div>
 
             {/* Daily Tasks (Last 7 Days) */}
-            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
-              <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6 text-center">
+            <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+              <h2 className="text-base sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6 text-center">
                 Tasks Created (Last 7 Days)
               </h2>
               <DailyLineChart data={chartData?.dailyChart} />
@@ -449,15 +449,15 @@ const Dashboard = () => {
           </div>
 
           {/* This Week Tasks */}
-          <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
-            <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6 text-center">
+          <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6 mb-6 sm:mb-8">
+            <h2 className="text-base sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6 text-center">
               This Week's Tasks Breakdown
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
               {chartData?.weeklyTasks?.map((item) => (
                 <div
                   key={item.status}
-                  className={`text-center p-3 sm:p-4 rounded-lg ${
+                  className={`text-center p-3 sm:p-4 rounded-lg border border-gray-200 ${
                     item.status === "completed"
                       ? "bg-green-50"
                       : item.status === "in_progress"
@@ -490,7 +490,7 @@ const Dashboard = () => {
 
           {/* Employee Performance Table (Manager Only) */}
           {isManager() && chartData?.employeePerformance && (
-            <div className="bg-white rounded-lg shadow overflow-hidden mb-6 sm:mb-8">
+            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-6 sm:mb-8">
               <div className="p-4 sm:p-6 border-b border-gray-200">
                 <h2 className="text-base sm:text-lg font-semibold text-gray-900">
                   Employee Performance
@@ -505,7 +505,7 @@ const Dashboard = () => {
           )}
 
           {/* Recent Tasks */}
-          <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <div className="p-4 sm:p-6 border-b border-gray-200 flex justify-between items-center">
               <h2 className="text-base sm:text-lg font-semibold text-gray-900">
                 Recent Tasks

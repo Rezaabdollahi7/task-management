@@ -11,7 +11,7 @@ const StatusPieChart = ({ data }) => {
       fontFamily: "Inter, sans-serif",
     },
     labels: [],
-    colors: ["#9CA3AF", "#3B82F6", "#10B981", "#EF4444"],
+    colors: ["#3C7341", "#5B93FF", "#FFD66B", "#EF4444"],
     legend: {
       position: "bottom",
     },
