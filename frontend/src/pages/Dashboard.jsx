@@ -10,13 +10,7 @@ import PriorityBarChart from "../components/charts/PriorityBarChart";
 import DailyLineChart from "../components/charts/DailyLineChart";
 import EmployeePerformanceTable from "../components/EmployeePerformanceTable";
 import NotificationBell from "../components/NotificationBell";
-import {
-  FaTasks,
-  FaUsers,
-  FaSignOutAlt,
-  FaBars,
-  FaTimes,
-} from "react-icons/fa";
+import { FaBell, FaUsers, FaSignOutAlt, FaBars, FaTimes } from "react-icons/fa";
 import { MdSpaceDashboard } from "react-icons/md";
 import { SiGoogletasks } from "react-icons/si";
 import SkeletonCard from "../components/skeletons/SkeletonCard";
@@ -256,6 +250,16 @@ const Dashboard = () => {
                 <span className="font-medium">Users</span>
               </button>
             )}
+            <button
+              onClick={() => {
+                navigate("/notifications");
+                setSidebarOpen(false);
+              }}
+              className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+            >
+              <FaBell className="w-5 h-5 flex-shrink-0" />
+              <span className="font-medium">Notifications</span>
+            </button>
           </div>
         </nav>
 

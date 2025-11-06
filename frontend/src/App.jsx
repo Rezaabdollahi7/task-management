@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import UserList from "./pages/Users/UserList";
 import TaskList from "./pages/Tasks/TaskList";
+import Notifications from "./pages/Notifications";
 
 function App() {
   return (
@@ -46,6 +47,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <TaskList />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <Notifications />
               </ProtectedRoute>
             }
           />

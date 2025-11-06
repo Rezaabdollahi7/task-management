@@ -9,6 +9,7 @@ import WorkReportModal from "../../components/WorkReportModal";
 import NotificationBell from "../../components/NotificationBell";
 import { showSuccess, showError, showWarning } from "../../utils/toast";
 import SkeletonTaskCard from "../../components/skeletons/SkeletonTaskCard";
+import { FaBell } from "react-icons/fa";
 
 const TaskList = () => {
   const { user, logout, isManager } = useAuth();
@@ -175,7 +176,13 @@ const TaskList = () => {
             </div>
             <div className="flex items-center gap-3">
               <NotificationBell />
-
+              <button
+                onClick={() => navigate("/notifications")}
+                className="hidden sm:flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-blue-600 transition"
+              >
+                <FaBell className="w-5 h-5" />
+                <span>All Notifications</span>
+              </button>
               {isManager() && (
                 <button
                   onClick={() => (window.location.href = "/users")}
