@@ -11,10 +11,13 @@ import DailyLineChart from "../components/charts/DailyLineChart";
 import EmployeePerformanceTable from "../components/EmployeePerformanceTable";
 import NotificationBell from "../components/NotificationBell";
 import { FaBell, FaUsers, FaSignOutAlt, FaBars, FaTimes } from "react-icons/fa";
-import { MdSpaceDashboard } from "react-icons/md";
-import { SiGoogletasks } from "react-icons/si";
 import SkeletonCard from "../components/skeletons/SkeletonCard";
 import SkeletonChart from "../components/skeletons/SkeletonChart";
+import { MdOutlineTaskAlt } from "react-icons/md";
+import { RiNotification3Line } from "react-icons/ri";
+import { RxDashboard } from "react-icons/rx";
+import { TbLogout } from "react-icons/tb";
+import { HiOutlineUsers } from "react-icons/hi2";
 
 const Dashboard = () => {
   const { user, logout, isManager } = useAuth();
@@ -184,46 +187,48 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50 flex ">
       {/* Sidebar - Fixed on desktop, slide-in on mobile */}
       <aside
-        className={`fixed top-0 left-0 h-full bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out w-64 flex flex-col ${
+        className={`fixed top-0 left-0 h-full bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out w-full lg:w-[20%] flex flex-col ${
           sidebarOpen ? "translate-x-0" : "translate-x-full"
         } lg:translate-x-0`}
       >
         {/* Close button for mobile */}
-        <div className="lg:hidden flex justify-end p-4">
+        <div className="lg:hidden flex justify-end items-center p-6 relative">
+          <div className="flex container absolute lg:hidden right-[50%] translate-x-1/2  items-center justify-center  py-1 -z-10 ">
+            <img
+              src="../../public/icons/full_rounded.png"
+              alt=""
+              className="size-16 mr-[30%]"
+            />
+            <span className="text-xl absolute italic">ero Task</span>
+          </div>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 z-10"
           >
             <FaTimes className="w-6 h-6" />
           </button>
         </div>
 
-        {/* User info */}
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
-              {user?.fullName?.charAt(0).toUpperCase()}
-            </div>
-            <div className="min-w-0">
-              <p className="font-semibold text-gray-900 truncate">
-                {user?.fullName}
-              </p>
-              <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
-            </div>
-          </div>
+        {/* header & logo */}
+        <div className="hidden container lg:flex  items-center justify-center relative py-1 border border-b mb-8">
+          <img
+            src="../../public/icons/full_rounded.png"
+            alt=""
+            className="size-24 mr-[30%]"
+          />
+          <span className="text-xl absolute italic">ero Task</span>
         </div>
-
         {/* Navigation */}
-        <nav className="flex-1 p-4 overflow-y-auto">
+        <nav className="flex-1  overflow-y-auto">
           <div className="space-y-2">
             <button
               onClick={() => {
                 navigate("/dashboard");
                 setSidebarOpen(false);
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-3 text-[#605BFF] bg-gradient-to-r from-[#aca9ff8c] from-10% via-[#aca9ff21] via-50% to-white "
             >
-              <MdSpaceDashboard className="w-5 h-5 flex-shrink-0" />
+              <RxDashboard className="size-6 flex-shrink-0" />
               <span className="font-medium">Dashboard</span>
             </button>
 
@@ -232,9 +237,9 @@ const Dashboard = () => {
                 navigate("/tasks");
                 setSidebarOpen(false);
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 text-lg hover:bg-myYellow-50/10 hover:text-yellow-600 rounded-lg transition-colors"
             >
-              <SiGoogletasks className="w-5 h-5 flex-shrink-0" />
+              <MdOutlineTaskAlt className="size-6 flex-shrink-0" />
               <span className="font-medium">Tasks</span>
             </button>
 
@@ -244,9 +249,9 @@ const Dashboard = () => {
                   navigate("/users");
                   setSidebarOpen(false);
                 }}
-                className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600 rounded-lg transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 text-lg hover:bg-purple-50 hover:text-purple-600 rounded-lg transition-colors"
               >
-                <FaUsers className="w-5 h-5 flex-shrink-0" />
+                <HiOutlineUsers className="size-6 flex-shrink-0" />
                 <span className="font-medium">Users</span>
               </button>
             )}
@@ -255,36 +260,43 @@ const Dashboard = () => {
                 navigate("/notifications");
                 setSidebarOpen(false);
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 text-lg hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
             >
-              <FaBell className="w-5 h-5 flex-shrink-0" />
+              <RiNotification3Line className="size-6 flex-shrink-0" />
               <span className="font-medium">Notifications</span>
             </button>
           </div>
         </nav>
 
-        {/* Logout button at bottom */}
-        <div className="p-4 border-t border-gray-200">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
-          >
-            <FaSignOutAlt className="w-5 h-5 flex-shrink-0" />
-            <span className="font-medium">Logout</span>
-          </button>
+        <div className="user-info flex flex-row-reverse items-center justify-between px-4 border border-t-gray-200">
+          {/* Logout button at bottom */}
+          <div className="">
+            <button
+              onClick={handleLogout}
+              className=" text-gray-700 hover:bg-red-50 hover:text-red-600 p-4 rounded-lg transition-colors"
+            >
+              <TbLogout className="size-6 flex-shrink-0" />
+            </button>
+          </div>
+          {/* User info */}
+          <div className="p-4 ">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                {user?.fullName?.charAt(0).toUpperCase()}
+              </div>
+              <div className="min-w-0">
+                <p className="font-semibold text-gray-900 truncate">
+                  {user?.fullName}
+                </p>
+                <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </aside>
 
-      {/* Overlay for mobile */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        ></div>
-      )}
-
       {/* Main content - with margin for fixed sidebar on desktop */}
-      <div className="flex-1 lg:ml-64">
+      <div className="flex-1 lg:ml-[20%]">
         {/* Header - Sticky */}
         <header className="bg-white shadow-sm sticky top-0 z-30">
           <div className="px-4 sm:px-6 lg:px-8 py-4">
