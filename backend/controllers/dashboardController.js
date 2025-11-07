@@ -364,12 +364,35 @@ const getChartData = async (req, res) => {
       LIMIT 10
     `);
 
+    //  Tasks timeline (last 6 months)
+    const timelineResult = await db.query(`
+      WITH months AS (
+        SELECT 
+          generate_series(
+            date_trunc('month', CURRENT_DATE - INTERVAL '2 months'),
+            date_trunc('month', CURRENT_DATE),
+            '1 month'::interval
+          ) AS month
+      )
+      SELECT 
+        TO_CHAR(m.month, 'Mon') as month,
+        COALESCE(SUM(CASE WHEN t.status = 'open' THEN 1 ELSE 0 END), 0) as open,
+        COALESCE(SUM(CASE WHEN t.status = 'in_progress' THEN 1 ELSE 0 END), 0) as in_progress,
+        COALESCE(SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END), 0) as completed,
+        COALESCE(SUM(CASE WHEN t.status = 'cancelled' THEN 1 ELSE 0 END), 0) as cancelled
+      FROM months m
+      LEFT JOIN tasks t ON date_trunc('month', t.created_at) = m.month
+      GROUP BY m.month
+      ORDER BY m.month ASC
+    `);
+
     res.json({
       success: true,
       data: {
         statusChart: statusData.rows,
         priorityChart: priorityData.rows,
         dailyChart: dailyTasks.rows,
+        timelineChart: timelineResult.rows,
         weeklyTasks: weeklyTasks.rows,
         todayTasks: todayTasks.rows[0] || {
           total: 0,

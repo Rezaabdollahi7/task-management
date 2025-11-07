@@ -8,6 +8,7 @@ import { dashboardAPI } from "../services/api";
 import StatusPieChart from "../components/charts/StatusPieChart";
 import PriorityBarChart from "../components/charts/PriorityBarChart";
 import DailyLineChart from "../components/charts/DailyLineChart";
+import TasksTimelineChart from "../components/charts/TasksTimelineChart";
 import UserPerformanceChart from "../components/charts/UserPerformanceChart";
 import EmployeePerformanceTable from "../components/EmployeePerformanceTable";
 import NotificationBell from "../components/NotificationBell";
@@ -439,24 +440,29 @@ const Dashboard = () => {
           </div>
 
           {/* Charts Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 sm:gap-6 mb-6 sm:mb-8">
             {/* Status Distribution */}
-            <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-2">
+            <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-2 col-span-2">
               <StatusPieChart data={chartData?.statusChart} />
             </div>
 
             {/* Priority Distribution */}
-            <div className="bg-white rounded-lg shadow p-2">
+            <div className="bg-white rounded-lg shadow p-2 col-span-2">
               <PriorityBarChart data={chartData?.priorityChart} />
             </div>
 
             {/* Daily Tasks (Last 7 Days) */}
-            <div className="bg-white rounded-lg shadow p-2">
+            <div className="bg-white rounded-lg shadow p-2 col-span-2">
               <DailyLineChart data={chartData?.dailyChart} />
             </div>
 
-            <div className="bg-white rounded-lg shadow p-6 mb-6 sm:mb-8 col-span-2">
+            <div className="bg-white rounded-lg shadow p-2 mb-6 sm:mb-8 col-span-3">
               <UserPerformanceChart data={chartData?.userPerformanceChart} />
+            </div>
+
+            {/* Tasks Timeline Chart (Full Width) */}
+            <div className="bg-white rounded-lg shadow p-2 mb-6 sm:mb-8 col-span-3">
+              <TasksTimelineChart data={chartData?.timelineChart} />
             </div>
           </div>
 
