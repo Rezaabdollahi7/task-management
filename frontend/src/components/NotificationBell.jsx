@@ -6,12 +6,15 @@ import { notificationsAPI } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import SkeletonNotification from "./skeletons/SkeletonNotification";
 import { useTranslation } from "react-i18next";
+import { useSocket } from "../context/SocketContext";
+
 const NotificationBell = () => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const dropdownRef = useRef(null);
+  const { socket } = useSocket();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "fa";
@@ -37,6 +40,31 @@ const NotificationBell = () => {
       setLoading(false);
     }
   };
+
+  // Listen to real-time notifications
+  useEffect(() => {
+    if (!socket) return;
+
+    console.log("📡 Listening for real-time notifications...");
+
+    socket.on("notification", (data) => {
+      console.log("🔔 New notification received:", data);
+
+      // Add to notifications list
+      setNotifications((prev) => [data, ...prev]);
+
+      // Increment unread count
+      setUnreadCount((prev) => prev + 1);
+
+      // Show toast
+      showSuccess(data.title);
+    });
+
+    // Cleanup
+    return () => {
+      socket.off("notification");
+    };
+  }, [socket]);
 
   // Poll for new notifications every 30 seconds
   useEffect(() => {

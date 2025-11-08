@@ -3,6 +3,7 @@
 
 const Task = require("../models/Task");
 const Notification = require("../models/Notification");
+const { emitToUser } = require("../utils/socketHelper");
 
 // @route   GET /api/tasks
 // @desc    Get all tasks (with filters)
@@ -134,6 +135,17 @@ const createTask = async (req, res) => {
         newTask.title,
         req.user.full_name
       );
+
+      // Emit real-time notification
+      emitToUser(employeeId, "notification", {
+        type: "task_assigned",
+        title: "New Task Assigned",
+        message: `You have been assigned a new task: "${title}"`,
+        task_id: newTask.id,
+        priority: priority || "medium",
+        task_title: title,
+        created_at: new Date(),
+      });
     } catch (notifError) {
       console.error("Failed to create notification:", notifError);
     }
@@ -299,10 +311,20 @@ const updateTaskStatus = async (req, res) => {
           task.title,
           req.user.full_name
         );
+
+        // Emit real-time notification
+        emitToUser(task.creator_id, "notification", {
+          type: "task_completed",
+          title: "Task Completed",
+          message: `Task "${task.title}" has been completed by ${req.user.full_name}`,
+          task_id: task.id,
+          priority: "normal",
+          task_title: task.title,
+          created_at: new Date(),
+        });
       }
 
       // If status changed and manager exists, notify about status change
-      // (Don't send duplicate if it's completion notification)
       if (
         status !== "completed" &&
         oldStatus !== status &&
@@ -317,6 +339,17 @@ const updateTaskStatus = async (req, res) => {
           status,
           req.user.full_name
         );
+
+        // Emit real-time notification
+        emitToUser(task.creator_id, "notification", {
+          type: "status_changed",
+          title: "Task Status Changed",
+          message: `Task "${task.title}" status changed from ${oldStatus} to ${status} by ${req.user.full_name}`,
+          task_id: task.id,
+          priority: "normal",
+          task_title: task.title,
+          created_at: new Date(),
+        });
       }
     } catch (notifError) {
       console.error("Failed to create notification:", notifError);
@@ -423,6 +456,17 @@ const addWorkReport = async (req, res) => {
           task.title,
           req.user.full_name
         );
+
+        // Emit real-time notification
+        emitToUser(task.creator_id, "notification", {
+          type: "work_report_added",
+          title: "Work Report Added",
+          message: `${req.user.full_name} added a work report to task "${task.title}"`,
+          task_id: task.id,
+          priority: "normal",
+          task_title: task.title,
+          created_at: new Date(),
+        });
       }
     } catch (notifError) {
       console.error("Failed to create work report notification:", notifError);
@@ -469,7 +513,6 @@ const reassignTask = async (req, res) => {
 
     // Store old employee info
     const oldEmployeeId = task.employee_id;
-    const oldEmployeeName = task.employee_name;
 
     // Reassign task
     const reassignedTask = await Task.reassign(id, employeeId);
@@ -489,6 +532,17 @@ const reassignTask = async (req, res) => {
           newEmployee ? newEmployee.full_name : "کاربر جدید",
           req.user.full_name
         );
+
+        // Emit to old employee
+        emitToUser(oldEmployeeId, "notification", {
+          type: "task_reassigned",
+          title: "Task Reassigned",
+          message: `Task "${task.title}" has been reassigned to another employee`,
+          task_id: task.id,
+          priority: task.priority || "medium",
+          task_title: task.title,
+          created_at: new Date(),
+        });
       }
 
       // Notify new employee
@@ -498,6 +552,17 @@ const reassignTask = async (req, res) => {
         reassignedTask.title,
         req.user.full_name
       );
+
+      // Emit to new employee
+      emitToUser(employeeId, "notification", {
+        type: "task_reassigned",
+        title: "Task Reassigned to You",
+        message: `Task "${task.title}" has been reassigned to you`,
+        task_id: task.id,
+        priority: task.priority || "medium",
+        task_title: task.title,
+        created_at: new Date(),
+      });
     } catch (notifError) {
       console.error("Failed to create reassignment notification:", notifError);
     }
@@ -515,6 +580,7 @@ const reassignTask = async (req, res) => {
     });
   }
 };
+
 module.exports = {
   getAllTasks,
   getTaskById,
