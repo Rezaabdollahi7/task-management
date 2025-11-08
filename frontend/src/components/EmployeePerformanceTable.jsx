@@ -1,7 +1,9 @@
 // src/components/EmployeePerformanceTable.jsx
 // Table showing employee performance metrics
+import { useTranslation } from "react-i18next";
 
 const EmployeePerformanceTable = ({ data }) => {
+  const { t } = useTranslation();
   if (!data || data.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
@@ -15,29 +17,29 @@ const EmployeePerformanceTable = ({ data }) => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Employee
+            <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider ">
+              {t("users.roles.employee")}
             </th>
             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Total Tasks
+              {t("dashboard.charts.totalTasks")}
             </th>
             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Completed
+              {t("dashboard.charts.completed")}
             </th>
             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-              In Progress
+              {t("tasks.statuses.in_progress")}
             </th>
             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Open
+              {t("tasks.statuses.open")}
             </th>
             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-              This Week
+              {t("time.thisWeek")}
             </th>
             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Today
+              {t("time.today")}
             </th>
             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Completion Rate
+              {t("tasks.completedRate")}
             </th>
           </tr>
         </thead>

@@ -3,9 +3,11 @@
 
 import { useState, useEffect } from "react";
 import { usersAPI } from "../services/api";
-import { showSuccess } from "../utils/toast";
+import { showSuccess, showError } from "../utils/toast";
+import { useTranslation } from "react-i18next";
 
 const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     fullName: "",
     username: "",
@@ -51,21 +53,20 @@ const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
     setLoading(true);
 
     try {
-      // Validation
       if (!formData.fullName || !formData.username) {
-        setError("Full name and username are required");
+        setError(t("users.messages.requiredFields"));
         setLoading(false);
         return;
       }
 
       if (!editUser && !formData.password) {
-        setError("Password is required for new users");
+        setError(t("users.messages.passwordRequired"));
         setLoading(false);
         return;
       }
 
       if (formData.password && formData.password.length < 6) {
-        setError("Password must be at least 6 characters");
+        setError(t("users.messages.passwordMinLength"));
         setLoading(false);
         return;
       }
@@ -73,12 +74,12 @@ const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
       if (editUser) {
         // Update existing user
         const updateData = {
-          fullName: formData.fullName,
+          full_name: formData.fullName,
           username: formData.username,
           role: formData.role,
         };
         await usersAPI.update(editUser.id, updateData);
-        showSuccess("User updated successfully ✓");
+        showSuccess(t("users.messages.updateSuccess"));
 
         // Update password if provided
         if (formData.password) {
@@ -87,14 +88,14 @@ const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
       } else {
         // Create new user
         await usersAPI.create(formData);
-        showSuccess("User created successfully ✓");
+        showSuccess(t("users.messages.createSuccess"));
       }
 
       setLoading(false);
       onSuccess();
       onClose();
     } catch (err) {
-      setError(err.message || "An error occurred");
+      setError(err.message || t("common.error"));
       setLoading(false);
     }
   };
@@ -108,7 +109,7 @@ const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <h2 className="text-xl font-bold text-gray-900">
-            {editUser ? "Edit User" : "Create New User"}
+            {editUser ? t("users.editUser") : t("users.createUser")}
           </h2>
           <button
             onClick={onClose}
@@ -142,7 +143,7 @@ const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
           {/* Full Name */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Full Name *
+              {t("users.fullName")} *
             </label>
             <input
               type="text"
@@ -150,7 +151,7 @@ const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
               value={formData.fullName}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter full name"
+              placeholder={t("users.placeholders.fullName")}
               disabled={loading}
             />
           </div>
@@ -158,7 +159,7 @@ const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
           {/* Username */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Username *
+              {t("users.username")} *
             </label>
             <input
               type="text"
@@ -166,7 +167,7 @@ const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
               value={formData.username}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter username"
+              placeholder={t("users.placeholders.username")}
               disabled={loading}
             />
           </div>
@@ -174,7 +175,8 @@ const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
           {/* Password */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Password {editUser ? "(leave empty to keep current)" : "*"}
+              {t("users.password")}{" "}
+              {editUser ? t("users.placeholders.passwordEdit") : " *"}
             </label>
             <input
               type="password"
@@ -182,12 +184,16 @@ const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
               value={formData.password}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder={editUser ? "Enter new password" : "Enter password"}
+              placeholder={
+                editUser
+                  ? t("users.placeholders.newPassword")
+                  : t("users.placeholders.enterPassword")
+              }
               disabled={loading}
             />
             {!editUser && (
               <p className="mt-1 text-xs text-gray-500">
-                Must be at least 6 characters
+                {t("users.messages.passwordMinLengthInfo")}
               </p>
             )}
           </div>
@@ -195,7 +201,7 @@ const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
           {/* Role */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Role *
+              {t("users.role")} *
             </label>
             <select
               name="role"
@@ -204,8 +210,8 @@ const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               disabled={loading}
             >
-              <option value="employee">Employee</option>
-              <option value="manager">Manager</option>
+              <option value="employee">{t("users.roles.employee")}</option>
+              <option value="manager">{t("users.roles.manager")}</option>
             </select>
           </div>
 
@@ -217,7 +223,7 @@ const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
               disabled={loading}
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition disabled:opacity-50"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
             <button
               type="submit"
@@ -246,12 +252,12 @@ const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Saving...
+                  {t("common.loading")}
                 </>
               ) : editUser ? (
-                "Update User"
+                t("users.editUser")
               ) : (
-                "Create User"
+                t("users.createUser")
               )}
             </button>
           </div>

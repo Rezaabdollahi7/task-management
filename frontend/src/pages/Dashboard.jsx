@@ -20,6 +20,8 @@ import { RiNotification3Line } from "react-icons/ri";
 import { RxDashboard } from "react-icons/rx";
 import { TbLogout } from "react-icons/tb";
 import { HiOutlineUsers } from "react-icons/hi2";
+import LanguageSwitcher from "../components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const Dashboard = () => {
   const { user, logout, isManager } = useAuth();
@@ -29,6 +31,8 @@ const Dashboard = () => {
   const [recentTasks, setRecentTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "fa";
 
   // Fetch dashboard data
   useEffect(() => {
@@ -73,9 +77,9 @@ const Dashboard = () => {
   // Get status badge color
   const getStatusColor = (status) => {
     const colors = {
-      open: "bg-[#5B93FF] text-white",
+      open: "bg-[#eaf9fd] text-[#26C0E2]",
       in_progress: "bg-[#FF8F6B] text-blue-800",
-      completed: "bg-green-400 text-green-900",
+      completed: "bg-green-100 text-green-900",
       cancelled: "bg-[#5B93FF] text-red-800",
     };
     return colors[status] || "bg-gray-100 text-gray-800";
@@ -109,7 +113,7 @@ const Dashboard = () => {
                     <FaBars className="w-6 h-6" />
                   </button>
                   <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
-                    Dashboard
+                    {t("navigation.dashboard")}
                   </h1>
                 </div>
                 <div className="flex items-center gap-3">
@@ -189,13 +193,25 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50 flex ">
       {/* Sidebar - Fixed on desktop, slide-in on mobile */}
       <aside
-        className={`fixed top-0 left-0 h-full bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out w-full lg:w-[20%] flex flex-col ${
-          sidebarOpen ? "translate-x-0" : "translate-x-full"
+        className={`fixed top-0 ${
+          isRTL ? "right-0" : "left-0"
+        } h-full bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out w-full lg:w-[20%] flex flex-col ${
+          sidebarOpen
+            ? "translate-x-0"
+            : isRTL
+            ? "translate-x-full"
+            : "-translate-x-full"
         } lg:translate-x-0`}
       >
         {/* Close button for mobile */}
         <div className="lg:hidden flex justify-end items-center p-6 relative">
-          <div className="flex container absolute lg:hidden right-[50%] translate-x-1/2  items-center justify-center  py-1 -z-10 ">
+          <div
+            className={`flex container absolute lg:hidden ${
+              isRTL
+                ? "left-[50%] -translate-x-1/2"
+                : "right-[50%] translate-x-1/2"
+            } items-center justify-center py-1 -z-10`}
+          >
             <img
               src="../../public/icons/full_rounded.png"
               alt=""
@@ -228,10 +244,10 @@ const Dashboard = () => {
                 navigate("/dashboard");
                 setSidebarOpen(false);
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 text-[#605BFF] bg-gradient-to-r from-[#aca9ff8c] from-10% via-[#aca9ff21] via-50% to-white "
+              className="w-full flex items-center gap-3 px-4 py-3 text-[#2b7fff] font-bold text-xl "
             >
               <RxDashboard className="size-6 flex-shrink-0" />
-              <span className="font-medium">Dashboard</span>
+              <span className="font-medium">{t("navigation.dashboard")}</span>
             </button>
 
             <button
@@ -242,7 +258,7 @@ const Dashboard = () => {
               className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 text-lg hover:bg-myYellow-50/10 hover:text-yellow-600 rounded-lg transition-colors"
             >
               <MdOutlineTaskAlt className="size-6 flex-shrink-0" />
-              <span className="font-medium">Tasks</span>
+              <span className="font-medium">{t("navigation.tasks")}</span>
             </button>
 
             {isManager() && (
@@ -254,7 +270,7 @@ const Dashboard = () => {
                 className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 text-lg hover:bg-purple-50 hover:text-purple-600 rounded-lg transition-colors"
               >
                 <HiOutlineUsers className="size-6 flex-shrink-0" />
-                <span className="font-medium">Users</span>
+                <span className="font-medium">{t("navigation.users")}</span>
               </button>
             )}
             <button
@@ -265,7 +281,9 @@ const Dashboard = () => {
               className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 text-lg hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
             >
               <RiNotification3Line className="size-6 flex-shrink-0" />
-              <span className="font-medium">Notifications</span>
+              <span className="font-medium">
+                {t("navigation.notifications")}
+              </span>
             </button>
           </div>
         </nav>
@@ -290,7 +308,9 @@ const Dashboard = () => {
                 <p className="font-semibold text-gray-900 truncate">
                   {user?.fullName}
                 </p>
-                <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
+                <p className="text-xs text-gray-500 capitalize">
+                  {t(`users.roles.${user?.role}`)}
+                </p>
               </div>
             </div>
           </div>
@@ -298,7 +318,7 @@ const Dashboard = () => {
       </aside>
 
       {/* Main content - with margin for fixed sidebar on desktop */}
-      <div className="flex-1 lg:ml-[20%]">
+      <div className={`flex-1 ${isRTL ? "lg:mr-[20%]" : "lg:ml-[20%]"}`}>
         {/* Header - Sticky */}
         <header className="bg-white shadow-sm sticky top-0 z-30">
           <div className="px-4 sm:px-6 lg:px-8 py-4">
@@ -312,10 +332,11 @@ const Dashboard = () => {
                   <FaBars className="w-6 h-6" />
                 </button>
                 <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
-                  Dashboard
+                  {t("navigation.dashboard")}
                 </h1>
               </div>
               <div className="flex items-center gap-3">
+                <LanguageSwitcher />
                 <NotificationBell />
               </div>
             </div>
@@ -331,7 +352,7 @@ const Dashboard = () => {
               <div className="flex flex-row-reverse items-start justify-between gap-3">
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-600">
-                    Total Tasks
+                    {t("dashboard.totalTasks")}
                   </p>
                   <p className="text-2xl sm:text-3xl font-bold text-gray-900">
                     {stats?.tasks?.total || 0}
@@ -359,7 +380,9 @@ const Dashboard = () => {
             <div className="bg-white rounded-xl border border-gray-200 px-4 py-5">
               <div className="flex flex-row-reverse items-start justify-between gap-3">
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-600">Completed</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    {t("dashboard.charts.completed")}
+                  </p>
                   <p className="text-2xl sm:text-3xl font-bold text-green-600">
                     {stats?.tasks?.completed || 0}
                   </p>
@@ -387,7 +410,7 @@ const Dashboard = () => {
               <div className="flex flex-row-reverse items-start justify-between gap-3">
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-600">
-                    Today's Tasks
+                    {t("dashboard.charts.todayTasks")}
                   </p>
                   <p className="text-2xl sm:text-3xl font-bold text-purple-600">
                     {chartData?.todayTasks?.total || 0}
@@ -415,7 +438,9 @@ const Dashboard = () => {
             <div className="bg-white rounded-xl border border-gray-200 px-4 py-5">
               <div className="flex flex-row-reverse items-start justify-between gap-3">
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-600">Overdue</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    {t("dashboard.overdueTasks")}
+                  </p>
                   <p className="text-2xl sm:text-3xl font-bold text-red-600">
                     {stats?.tasks?.overdue || 0}
                   </p>
@@ -466,52 +491,12 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* This Week Tasks */}
-          <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6 mb-6 sm:mb-8">
-            <h2 className="text-base sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6 text-center">
-              This Week's Tasks Breakdown
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-              {chartData?.weeklyTasks?.map((item) => (
-                <div
-                  key={item.status}
-                  className={`text-center p-3 sm:p-4 rounded-lg border border-gray-200 ${
-                    item.status === "completed"
-                      ? "bg-green-50"
-                      : item.status === "in_progress"
-                      ? "bg-blue-50"
-                      : item.status === "open"
-                      ? "bg-gray-50"
-                      : "bg-red-50"
-                  }`}
-                >
-                  <p
-                    className={`text-xl sm:text-2xl font-bold ${
-                      item.status === "completed"
-                        ? "text-green-600"
-                        : item.status === "in_progress"
-                        ? "text-blue-600"
-                        : item.status === "open"
-                        ? "text-gray-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {item.count}
-                  </p>
-                  <p className="text-xs sm:text-sm text-gray-600 mt-1 capitalize">
-                    {item.status.replace("_", " ")}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Employee Performance Table (Manager Only) */}
           {isManager() && chartData?.employeePerformance && (
             <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-6 sm:mb-8">
               <div className="p-4 sm:p-6 border-b border-gray-200">
-                <h2 className="text-base sm:text-lg font-semibold text-gray-900">
-                  Employee Performance
+                <h2 className="text-base sm:text-lg font-semibold text-gray-900 text-center">
+                  {t("dashboard.charts.userPerformance")}
                 </h2>
               </div>
               <div className="overflow-x-auto">
@@ -526,13 +511,13 @@ const Dashboard = () => {
           <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <div className="p-4 sm:p-6 border-b border-gray-200 flex justify-between items-center">
               <h2 className="text-base sm:text-lg font-semibold text-gray-900">
-                Recent Tasks
+                {t("tasks.recentTasks")}
               </h2>
               <button
                 onClick={() => navigate("/tasks")}
                 className="text-white px-5 py-2 rounded-md bg-[#605BFF] hover:text-blue-800 text-sm font-medium"
               >
-                View All →
+                {t("tasks.viewAll")}
               </button>
             </div>
             {recentTasks.length === 0 ? (
@@ -553,7 +538,7 @@ const Dashboard = () => {
                           {task.title}
                         </h3>
                         <p className="text-xs text-gray-500 mt-1">
-                          Assigned to: {task.employee_name}
+                          {t("tasks.assignedTo")} : {task.employee_name}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">

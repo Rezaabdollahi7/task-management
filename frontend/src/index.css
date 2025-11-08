@@ -77,3 +77,9 @@ code {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+thead,
+tr,
+th {
+  text-align: center;
+}

@@ -1,5 +1,5 @@
 // src/pages/Notifications.jsx
-// Notification history page
+// Notification history page - Enhanced with Dashboard styling
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,10 @@ import { useAuth } from "../context/AuthContext";
 import { notificationsAPI } from "../services/api";
 import { showSuccess, showError } from "../utils/toast";
 import SkeletonNotification from "../components/skeletons/SkeletonNotification";
+import { useTranslation } from "react-i18next";
+import NotificationBell from "../components/NotificationBell"; // Assuming you have this component
+import LanguageSwitcher from "../components/LanguageSwitcher"; // Assuming you have this component
+
 import {
   FaBars,
   FaTimes,
@@ -14,13 +18,16 @@ import {
   FaSignOutAlt,
   FaTrash,
   FaCheckDouble,
-  FaBell,
   FaBellSlash,
 } from "react-icons/fa";
-import { MdSpaceDashboard } from "react-icons/md";
-import { SiGoogletasks } from "react-icons/si";
+import { MdOutlineTaskAlt } from "react-icons/md";
+import { RiNotification3Line } from "react-icons/ri";
+import { RxDashboard } from "react-icons/rx";
+import { TbLogout } from "react-icons/tb";
+import { HiOutlineUsers } from "react-icons/hi2";
 
 const Notifications = () => {
+  const { t, i18n } = useTranslation(); // Use i18n for language check
   const { user, logout, isManager } = useAuth();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
@@ -28,6 +35,9 @@ const Notifications = () => {
   const [filter, setFilter] = useState("all"); // all, unread, read
   const [typeFilter, setTypeFilter] = useState("all");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Check RTL direction based on current language
+  const isRTL = i18n.language === "fa";
 
   const fetchNotifications = async () => {
     try {
@@ -39,12 +49,10 @@ const Notifications = () => {
       const response = await notificationsAPI.getAll(params);
       let data = response.data;
 
-      // Filter read notifications if needed
       if (filter === "read") {
         data = data.filter((n) => n.is_read);
       }
 
-      // Filter by type
       if (typeFilter !== "all") {
         data = data.filter((n) => n.type === typeFilter);
       }
@@ -53,14 +61,14 @@ const Notifications = () => {
       setLoading(false);
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
-      showError("Failed to load notifications");
+      showError(t("common.error"));
       setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchNotifications();
-  }, [filter, typeFilter]);
+  }, [filter, typeFilter, t]);
 
   // Mark as read
   const handleMarkAsRead = async (notificationId) => {
@@ -69,7 +77,7 @@ const Notifications = () => {
       fetchNotifications();
     } catch (error) {
       console.error("Failed to mark as read:", error);
-      showError("Failed to mark as read");
+      showError(t("notifications.messages.markReadFailed"));
     }
   };
 
@@ -77,77 +85,74 @@ const Notifications = () => {
   const handleMarkAllAsRead = async () => {
     try {
       await notificationsAPI.markAllAsRead();
-      showSuccess("All notifications marked as read");
+      showSuccess(t("notifications.messages.markAllSuccess"));
       fetchNotifications();
     } catch (error) {
       console.error("Failed to mark all as read:", error);
-      showError("Failed to mark all as read");
+      showError(t("notifications.messages.markAllFailed"));
     }
   };
 
   // Delete notification
   const handleDelete = async (notificationId) => {
-    if (!window.confirm("Are you sure you want to delete this notification?")) {
+    if (!window.confirm(t("notifications.messages.deleteConfirm"))) {
       return;
     }
 
     try {
       await notificationsAPI.delete(notificationId);
-      showSuccess("Notification deleted");
+      showSuccess(t("notifications.messages.deleteSuccess"));
       fetchNotifications();
     } catch (error) {
       console.error("Failed to delete notification:", error);
-      showError("Failed to delete notification");
+      showError(t("notifications.messages.deleteFailed"));
     }
   };
 
   // Delete all notifications
   const handleDeleteAll = async () => {
-    if (
-      !window.confirm(
-        "Are you sure you want to delete ALL notifications? This action cannot be undone."
-      )
-    ) {
+    if (!window.confirm(t("notifications.messages.deleteAllConfirm"))) {
       return;
     }
 
     try {
-      const response = await notificationsAPI.deleteAll();
-      showSuccess(response.message || "All notifications deleted");
+      await notificationsAPI.deleteAll();
+      showSuccess(t("notifications.messages.deleteAllSuccess"));
       fetchNotifications();
     } catch (error) {
       console.error("Failed to delete all notifications:", error);
-      showError("Failed to delete all notifications");
+      showError(t("notifications.messages.deleteAllFailed"));
     }
   };
-  // Get time ago
+
+  // Get time ago (Using translation keys)
   const getTimeAgo = (date) => {
     const seconds = Math.floor((new Date() - new Date(date)) / 1000);
 
-    if (seconds < 60) return "همین الان";
+    if (seconds < 60) return t("time.justNow");
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes} دقیقه پیش`;
+    if (minutes < 60) return t("time.minutesAgo", { count: minutes });
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours} ساعت پیش`;
+    if (hours < 24) return t("time.hoursAgo", { count: hours });
     const days = Math.floor(hours / 24);
-    if (days < 7) return `${days} روز پیش`;
+    if (days < 7) return t("time.daysAgo", { count: days });
     const weeks = Math.floor(days / 7);
-    if (weeks < 4) return `${weeks} هفته پیش`;
-    return new Date(date).toLocaleDateString("fa-IR");
+    if (weeks < 4) return t("time.weeksAgo", { count: weeks });
+    return new Date(date).toLocaleDateString(t("locale"));
   };
 
-  // Get priority color
+  // Get priority color (not translatable, kept as is)
   const getPriorityColor = (priority) => {
     const colors = {
       urgent: "text-red-600",
       high: "text-orange-600",
-      normal: "text-blue-600",
+      medium: "text-blue-600",
       low: "text-gray-600",
     };
     return colors[priority] || "text-gray-600";
   };
 
-  // Get notification icon
+  // Get notification icon (not translatable, kept as is)
   const getNotificationIcon = (type) => {
     switch (type) {
       case "task_assigned":
@@ -232,49 +237,64 @@ const Notifications = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
+      {/* Sidebar - Fixed on desktop, slide-in on mobile */}
       <aside
-        className={`fixed top-0 right-0 h-full bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out w-64 flex flex-col ${
-          sidebarOpen ? "translate-x-0" : "translate-x-full"
+        className={`fixed top-0 ${
+          isRTL ? "right-0" : "left-0"
+        } h-full bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out w-full lg:w-[20%] flex flex-col ${
+          sidebarOpen
+            ? "translate-x-0"
+            : isRTL
+            ? "translate-x-full"
+            : "-translate-x-full"
         } lg:translate-x-0`}
       >
         {/* Close button for mobile */}
-        <div className="lg:hidden flex justify-end p-4">
+        <div className="lg:hidden flex justify-end items-center p-6 relative">
+          <div
+            className={`flex container absolute lg:hidden ${
+              isRTL
+                ? "left-[50%] -translate-x-1/2"
+                : "right-[50%] translate-x-1/2"
+            } items-center justify-center py-1 -z-10`}
+          >
+            <img
+              src="../../public/icons/full_rounded.png"
+              alt=""
+              className="size-16 mr-[30%]"
+            />
+            <span className="text-xl absolute italic">ero Task</span>
+          </div>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 z-10"
           >
             <FaTimes className="w-6 h-6" />
           </button>
         </div>
 
-        {/* User info */}
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
-              {user?.fullName?.charAt(0).toUpperCase()}
-            </div>
-            <div className="min-w-0">
-              <p className="font-semibold text-gray-900 truncate">
-                {user?.fullName}
-              </p>
-              <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
-            </div>
-          </div>
+        {/* header & logo */}
+        <div className="hidden container lg:flex items-center justify-center relative py-1 border border-b mb-8">
+          <img
+            src="../../public/icons/full_rounded.png"
+            alt=""
+            className="size-24 mr-[30%]"
+          />
+          <span className="text-xl absolute italic">ero Task</span>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 overflow-y-auto">
+        <nav className="flex-1 overflow-y-auto">
           <div className="space-y-2">
             <button
               onClick={() => {
                 navigate("/dashboard");
                 setSidebarOpen(false);
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-lg transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 text-lg hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
             >
-              <MdSpaceDashboard className="w-5 h-5 flex-shrink-0" />
-              <span className="font-medium">Dashboard</span>
+              <RxDashboard className="size-6 flex-shrink-0" />
+              <span className="font-medium">{t("navigation.dashboard")}</span>
             </button>
 
             <button
@@ -282,10 +302,10 @@ const Notifications = () => {
                 navigate("/tasks");
                 setSidebarOpen(false);
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 text-lg hover:bg-myYellow-50/10 hover:text-yellow-600 rounded-lg transition-colors"
             >
-              <SiGoogletasks className="w-5 h-5 flex-shrink-0" />
-              <span className="font-medium">Tasks</span>
+              <MdOutlineTaskAlt className="size-6 flex-shrink-0" />
+              <span className="font-medium">{t("navigation.tasks")}</span>
             </button>
 
             {isManager() && (
@@ -294,10 +314,10 @@ const Notifications = () => {
                   navigate("/users");
                   setSidebarOpen(false);
                 }}
-                className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600 rounded-lg transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 text-lg hover:bg-purple-50 hover:text-purple-600 rounded-lg transition-colors"
               >
-                <FaUsers className="w-5 h-5 flex-shrink-0" />
-                <span className="font-medium">Users</span>
+                <HiOutlineUsers className="size-6 flex-shrink-0" />
+                <span className="font-medium">{t("navigation.users")}</span>
               </button>
             )}
 
@@ -306,37 +326,49 @@ const Notifications = () => {
                 navigate("/notifications");
                 setSidebarOpen(false);
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+              // Highlight the current page button
+              className="w-full flex items-center gap-3 px-4 py-3 text-[#2b7fff] font-bold text-xl"
             >
-              <FaBell className="w-5 h-5 flex-shrink-0" />
-              <span className="font-medium">Notifications</span>
+              <RiNotification3Line className="size-6 flex-shrink-0" />
+              <span className="font-medium">
+                {t("navigation.notifications")}
+              </span>
             </button>
           </div>
         </nav>
 
-        {/* Logout button at bottom */}
-        <div className="p-4 border-t border-gray-200">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
-          >
-            <FaSignOutAlt className="w-5 h-5 flex-shrink-0" />
-            <span className="font-medium">Logout</span>
-          </button>
+        <div className="user-info flex flex-row-reverse items-center justify-between px-4 border border-t-gray-200">
+          {/* Logout button at bottom */}
+          <div className="">
+            <button
+              onClick={handleLogout}
+              className="text-gray-700 hover:bg-red-50 hover:text-red-600 p-4 rounded-lg transition-colors"
+            >
+              <TbLogout className="size-6 flex-shrink-0" />
+            </button>
+          </div>
+          {/* User info */}
+          <div className="p-4 ">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                {user?.fullName?.charAt(0).toUpperCase()}
+              </div>
+              <div className="min-w-0">
+                <p className="font-semibold text-gray-900 truncate">
+                  {user?.fullName}
+                </p>
+                <p className="text-xs text-gray-500 capitalize">
+                  {t(`users.roles.${user?.role}`)}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </aside>
 
-      {/* Overlay for mobile */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        ></div>
-      )}
-
-      {/* Main content */}
-      <div className="flex-1 lg:mr-64">
-        {/* Header */}
+      {/* Main content - with margin for fixed sidebar on desktop */}
+      <div className={`flex-1 ${isRTL ? "lg:mr-[20%]" : "lg:ml-[20%]"}`}>
+        {/* Header - Sticky */}
         <header className="bg-white shadow-sm sticky top-0 z-30">
           <div className="px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex justify-between items-center">
@@ -349,8 +381,13 @@ const Notifications = () => {
                   <FaBars className="w-6 h-6" />
                 </button>
                 <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
-                  Notifications
+                  {t("notifications.title")}
                 </h1>
+              </div>
+              {/* Language Switcher and Notification Bell */}
+              <div className="flex items-center gap-3">
+                <LanguageSwitcher />
+                <NotificationBell />
               </div>
             </div>
           </div>
@@ -371,7 +408,7 @@ const Notifications = () => {
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
-                  All ({notifications.length})
+                  {t("notifications.filters.all")} ({notifications.length})
                 </button>
                 <button
                   onClick={() => setFilter("unread")}
@@ -381,7 +418,7 @@ const Notifications = () => {
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
-                  Unread ({unreadCount})
+                  {t("notifications.filters.unread")} ({unreadCount})
                 </button>
                 <button
                   onClick={() => setFilter("read")}
@@ -391,23 +428,37 @@ const Notifications = () => {
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
-                  Read ({readCount})
+                  {t("notifications.filters.read")} ({readCount})
                 </button>
                 <select
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value)}
                   className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                 >
-                  <option value="all">All Types</option>
-                  <option value="task_assigned">Task Assigned</option>
-                  <option value="task_completed">Task Completed</option>
-                  {/* <option value="task_reassigned">Task Reassigned</option> */}
-                  <option value="deadline_approaching">
-                    Deadline Approaching
+                  <option value="all">
+                    {t("notifications.filters.allTypes")}
                   </option>
-                  <option value="task_overdue">Task Overdue</option>
-                  {/* <option value="status_changed">Status Changed</option> */}
-                  <option value="work_report_added">Work Report Added</option>
+                  <option value="task_assigned">
+                    {t("notifications.types.task_assigned")}
+                  </option>
+                  <option value="task_completed">
+                    {t("notifications.types.task_completed")}
+                  </option>
+                  <option value="task_reassigned">
+                    {t("notifications.types.task_reassigned")}
+                  </option>
+                  <option value="deadline_approaching">
+                    {t("notifications.types.deadline_approaching")}
+                  </option>
+                  <option value="task_overdue">
+                    {t("notifications.types.task_overdue")}
+                  </option>
+                  <option value="status_changed">
+                    {t("notifications.types.status_changed")}
+                  </option>
+                  <option value="work_report_added">
+                    {t("notifications.types.work_report_added")}
+                  </option>
                 </select>
               </div>
 
@@ -419,7 +470,9 @@ const Notifications = () => {
                     className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
                   >
                     <FaCheckDouble className="w-4 h-4" />
-                    <span className="hidden sm:inline">Mark All Read</span>
+                    <span className="hidden sm:inline">
+                      {t("notifications.markAllAsRead")}
+                    </span>
                   </button>
                 )}
                 {notifications.length > 0 && (
@@ -428,7 +481,9 @@ const Notifications = () => {
                     className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
                   >
                     <FaTrash className="w-4 h-4" />
-                    <span className="hidden sm:inline">Delete All</span>
+                    <span className="hidden sm:inline">
+                      {t("notifications.deleteAll")}
+                    </span>
                   </button>
                 )}
               </div>
@@ -447,27 +502,31 @@ const Notifications = () => {
                   {filter === "all" ? (
                     <>
                       <FaBellSlash className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-                      <p className="text-lg font-medium">No notifications</p>
+                      <p className="text-lg font-medium">
+                        {t("notifications.empty.noNotificationsTitle")}
+                      </p>
                       <p className="text-sm mt-2">
-                        You don't have any notifications yet
+                        {t("notifications.empty.noNotificationsMessage")}
                       </p>
                     </>
                   ) : filter === "unread" ? (
                     <>
                       <FaCheckDouble className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-                      <p className="text-lg font-medium">All caught up!</p>
+                      <p className="text-lg font-medium">
+                        {t("notifications.empty.allCaughtUpTitle")}
+                      </p>
                       <p className="text-sm mt-2">
-                        You have no unread notifications
+                        {t("notifications.empty.allCaughtUpMessage")}
                       </p>
                     </>
                   ) : (
                     <>
                       <FaBellSlash className="mx-auto h-16 w-16 text-gray-400 mb-4" />
                       <p className="text-lg font-medium">
-                        No read notifications
+                        {t("notifications.empty.noReadTitle")}
                       </p>
                       <p className="text-sm mt-2">
-                        You haven't read any notifications yet
+                        {t("notifications.empty.noReadMessage")}
                       </p>
                     </>
                   )}
@@ -506,7 +565,8 @@ const Notifications = () => {
                         </p>
                         {notification.task_title && (
                           <p className="text-xs text-gray-500 mb-2">
-                            Task: {notification.task_title}
+                            {t("notifications.taskPrefix")}:{" "}
+                            {notification.task_title}
                           </p>
                         )}
                         <div className="flex items-center justify-between">
@@ -521,7 +581,7 @@ const Notifications = () => {
                                 }
                                 className="text-xs text-blue-600 hover:text-blue-800 font-medium"
                               >
-                                Mark as read
+                                {t("notifications.markAsRead")}
                               </button>
                             )}
                             {notification.task_id && (
@@ -534,14 +594,14 @@ const Notifications = () => {
                                 }}
                                 className="text-xs text-blue-600 hover:text-blue-800 font-medium"
                               >
-                                View task
+                                {t("notifications.viewTask")}
                               </button>
                             )}
                             <button
                               onClick={() => handleDelete(notification.id)}
                               className="text-xs text-red-600 hover:text-red-800 font-medium"
                             >
-                              Delete
+                              {t("common.delete")}
                             </button>
                           </div>
                         </div>

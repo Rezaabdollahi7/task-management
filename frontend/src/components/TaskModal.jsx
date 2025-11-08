@@ -3,7 +3,8 @@
 
 import { useState, useEffect } from "react";
 import { tasksAPI, usersAPI } from "../services/api";
-import { showSuccess } from "../utils/toast";
+import { showSuccess, showError } from "../utils/toast"; // showError was missing in original imports
+import { useTranslation } from "react-i18next";
 
 const TaskModal = ({
   isOpen,
@@ -26,6 +27,7 @@ const TaskModal = ({
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { t } = useTranslation();
 
   // Fetch employees
   useEffect(() => {
@@ -92,10 +94,12 @@ const TaskModal = ({
     setLoading(true);
 
     try {
-      showSuccess("Task created successfully ✓");
       // Validation
       if (!formData.title || !formData.employeeId) {
-        setError("Title and employee are required");
+        setError(
+          t("tasks.messages.titleEmployeeRequired") ||
+            "Title and employee are required"
+        );
         setLoading(false);
         return;
       }
@@ -116,17 +120,23 @@ const TaskModal = ({
       if (editTask) {
         // Update existing task
         await tasksAPI.update(editTask.id, taskData);
+
+        showSuccess(t("tasks.messages.updateSuccess"));
       } else {
         // Create new task
         await tasksAPI.create(taskData);
+
+        showSuccess(t("tasks.messages.createSuccess"));
       }
 
       setLoading(false);
       onSuccess();
       onClose();
     } catch (err) {
-      setError(err.message || "An error occurred");
-      showError(err.response?.data?.message || "Failed to create task");
+      setError(err.message || t("common.error"));
+      showError(
+        err.response?.data?.message || t("tasks.messages.createFailed")
+      ); // 👈 ترجمه شد
       setLoading(false);
     }
   };
@@ -141,10 +151,10 @@ const TaskModal = ({
         <div className="sticky top-0 bg-white flex justify-between items-center p-6 border-b border-gray-200">
           <h2 className="text-xl font-bold text-gray-900">
             {viewOnly
-              ? "Task Details"
+              ? t("tasks.taskDetails")
               : editTask
-              ? "Edit Task"
-              : "Create New Task"}
+              ? t("tasks.editTask")
+              : t("tasks.createTask")}
           </h2>
           <button
             onClick={onClose}
@@ -180,21 +190,27 @@ const TaskModal = ({
             <div className="mb-6 p-4 bg-blue-50 rounded-lg space-y-2">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs text-gray-600">Status</p>
+                  <p className="text-xs text-gray-600">{t("tasks.status")}</p>
                   <p className="text-sm font-medium">{editTask.status}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-600">Created</p>
+                  <p className="text-xs text-gray-600">
+                    {t("common.created") || "Created"}
+                  </p>
                   <p className="text-sm font-medium">
                     {new Date(editTask.created_at).toLocaleDateString()}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-600">Creator</p>
+                  <p className="text-xs text-gray-600">
+                    {t("tasks.createdBy") || "Creator"}
+                  </p>
                   <p className="text-sm font-medium">{editTask.creator_name}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-600">Employee</p>
+                  <p className="text-xs text-gray-600">
+                    {t("tasks.assignedTo")}
+                  </p>
                   <p className="text-sm font-medium">
                     {editTask.employee_name}
                   </p>
@@ -207,7 +223,7 @@ const TaskModal = ({
             {/* Title */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Title *
+                *{t("common.title")}
               </label>
               <input
                 type="text"
@@ -215,7 +231,7 @@ const TaskModal = ({
                 value={formData.title}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter task title"
+                placeholder={t("tasks.placeholders.title")}
                 disabled={loading || viewOnly}
                 required
               />
@@ -224,7 +240,7 @@ const TaskModal = ({
             {/* Description */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description
+                {t("tasks.description")}
               </label>
               <textarea
                 name="description"
@@ -232,7 +248,7 @@ const TaskModal = ({
                 onChange={handleChange}
                 rows="3"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter task description"
+                placeholder={t("tasks.placeholders.description")}
                 disabled={loading || viewOnly}
               />
             </div>
@@ -240,7 +256,7 @@ const TaskModal = ({
             {/* Priority */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Priority *
+                *{t("tasks.priority")}
               </label>
               <select
                 name="priority"
@@ -250,17 +266,17 @@ const TaskModal = ({
                 disabled={loading || viewOnly}
                 required
               >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-                <option value="urgent">Urgent</option>
+                <option value="low">{t("tasks.priorities.low")}</option>
+                <option value="medium">{t("tasks.priorities.medium")}</option>
+                <option value="high">{t("tasks.priorities.high")}</option>
+                <option value="urgent">{t("tasks.priorities.urgent")}</option>
               </select>
             </div>
 
             {/* Employee */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Assign to Employee *
+                *{t("tasks.assignedTo")}
               </label>
               <select
                 name="employeeId"
@@ -270,7 +286,9 @@ const TaskModal = ({
                 disabled={loading || viewOnly}
                 required
               >
-                <option value="">Select employee</option>
+                <option value="">
+                  {t("tasks.placeholders.selectEmployee")}
+                </option>
                 {employees.map((emp) => (
                   <option key={emp.id} value={emp.id}>
                     {emp.full_name}
@@ -282,7 +300,7 @@ const TaskModal = ({
             {/* Task Date */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Task Date
+                {t("tasks.taskDate") || "Task Date"}
               </label>
               <input
                 type="date"
@@ -297,7 +315,7 @@ const TaskModal = ({
             {/* Deadline */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Deadline
+                {t("tasks.deadline")}
               </label>
               <input
                 type="date"
@@ -312,7 +330,7 @@ const TaskModal = ({
             {/* Device Model */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Device Model
+                {t("tasks.deviceModel")}
               </label>
               <input
                 type="text"
@@ -320,7 +338,7 @@ const TaskModal = ({
                 value={formData.deviceModel}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="e.g., Siemens S7-1200"
+                placeholder={t("tasks.placeholders.deviceModel")}
                 disabled={loading || viewOnly}
               />
             </div>
@@ -328,7 +346,7 @@ const TaskModal = ({
             {/* Serial Number */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Serial Number
+                {t("tasks.serialNumber")}
               </label>
               <input
                 type="text"
@@ -336,7 +354,7 @@ const TaskModal = ({
                 value={formData.serialNumber}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="e.g., 6ES7214-1AG40-0XB0"
+                placeholder={t("tasks.placeholders.serialNumber")}
                 disabled={loading || viewOnly}
               />
             </div>
@@ -344,7 +362,7 @@ const TaskModal = ({
             {/* Reported Issue */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Reported Issue
+                {t("tasks.reportedIssue")}
               </label>
               <textarea
                 name="reportedIssue"
@@ -352,7 +370,7 @@ const TaskModal = ({
                 onChange={handleChange}
                 rows="2"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Describe the issue"
+                placeholder={t("tasks.placeholders.reportedIssue")}
                 disabled={loading || viewOnly}
               />
             </div>
@@ -361,7 +379,7 @@ const TaskModal = ({
             {viewOnly && editTask && editTask.work_report && (
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Work Report
+                  {t("tasks.workReport") || "Work Report"}
                 </label>
                 <div className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50">
                   {editTask.work_report}
@@ -379,7 +397,7 @@ const TaskModal = ({
                 disabled={loading}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition disabled:opacity-50"
               >
-                Cancel
+                {t("common.cancel")}
               </button>
               <button
                 type="submit"
@@ -408,12 +426,13 @@ const TaskModal = ({
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    Saving...
+
+                    {t("common.loading")}
                   </>
                 ) : editTask ? (
-                  "Update Task"
+                  t("tasks.editTask")
                 ) : (
-                  "Create Task"
+                  t("tasks.createTask")
                 )}
               </button>
             </div>
@@ -426,7 +445,7 @@ const TaskModal = ({
                 onClick={onClose}
                 className="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition"
               >
-                Close
+                {t("common.close")}
               </button>
             </div>
           )}

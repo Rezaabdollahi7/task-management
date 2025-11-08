@@ -1,0 +1,252 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "reset": "Reset",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "all": "All",
+    "actions": "Actions",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "title": "title",
+    "created": "Created"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "username": "Username",
+    "password": "Password",
+    "welcomeBack": "Welcome Back",
+    "welcomeSubText": "It's not about having time, it's about making time. Plan your work for every day, then work your plan.",
+    "loginToAccount": "Login to your account",
+    "invalidCredentials": "Invalid username or password",
+    "loginSuccess": "Login successful"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "tasks": "Tasks",
+    "users": "Users",
+    "notifications": "Notifications",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcomeMessage": "Welcome, {{name}}!",
+    "overview": "Overview",
+    "statistics": "Statistics",
+    "totalTasks": "Total Tasks",
+    "activeTasks": "Active Tasks",
+    "completedTasks": "Completed Tasks",
+    "overdueTasks": "Overdue Tasks",
+    "charts": {
+      "statusDistribution": "Status Distribution",
+      "priorityDistribution": "Active Tasks by Priority",
+      "dailyTasks": "Tasks Created (Last 7 Days)",
+      "userPerformance": "Employee Performance",
+      "timeline": "Tasks Timeline (Last 3 Months)",
+      "totalTasks": "Total Tasks",
+      "completed": "Completed",
+      "incomplete": "Incomplete",
+      "tasksCreated": "tasks created this week",
+      "tasksInLastSixMonths": "tasks created in the last 3 months",
+      "todayTasks": "todayTasks",
+      "tasksStatus": "Current task status breakdown"
+    }
+  },
+  "tasks": {
+    "title": "Tasks",
+    "myTasks": "My Tasks",
+    "device": "device",
+    "employee": "Employee",
+    "actions": "actions",
+    "createTask": "Create Task",
+    "editTask": "Edit Task",
+    "deleteTask": "Delete Task",
+    "taskDetails": "Task Details",
+    "taskTitle": "Task Title",
+    "description": "Description",
+    "status": "Status",
+    "priority": "Priority",
+    "assignedTo": "Assigned To",
+    "createdBy": "Created By",
+    "deadline": "Deadline",
+    "deviceModel": "Device Model",
+    "serialNumber": "Serial Number",
+    "reportedIssue": "Reported Issue",
+    "noTasks": "No tasks found",
+    "completedRate": "completed rate",
+    "recentTasks": "recent Tasks",
+    "viewAll": "view All",
+    "searchBy": "Search by title, description, device model, or serial number...",
+    "addReport": "Add Report",
+    "viewReport": "View Report",
+    "statuses": {
+      "open": "Open",
+      "in_progress": "In Progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "priorities": {
+      "urgent": "Urgent",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "filters": {
+      "all": "All Tasks",
+      "status": "Filter by Status",
+      "priority": "Filter by Priority",
+      "employee": "Filter by Employee",
+      "dateRange": "Date Range",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "activeFilters": "Active Filters",
+      "from": "From",
+      "to": "To"
+    },
+    "taskDate": "Task Date",
+    "workReport": "Work Report",
+
+    "messages": {
+      "createSuccess": "Task created successfully",
+      "updateSuccess": "Task updated successfully",
+      "deleteSuccess": "Task deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this task?",
+      "statusUpdateSuccess": "Task status updated successfully",
+      "titleEmployeeRequired": "Title and employee are required",
+      "createFailed": "Failed to create task"
+    },
+    "placeholders": {
+      "title": "Enter task title",
+      "description": "Enter task description",
+      "selectEmployee": "Select employee",
+      "deviceModel": "e.g., Siemens S7-1200",
+      "serialNumber": "e.g., 6ES7214-1AG40-0XB0",
+      "reportedIssue": "Describe the issue"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "createUser": "Create User",
+    "editUser": "Edit User",
+    "deleteUser": "Delete User",
+    "fullName": "Full Name",
+    "username": "Username",
+    "password": "Password",
+    "role": "Role",
+    "totalUsers": "Total Users",
+    "managers": "Managers",
+    "employees": "Employees",
+    "noUsers": "No users found",
+    "roles": {
+      "manager": "Manager",
+      "employee": "Employee"
+    },
+    "table": {
+      "fullName": "Full Name",
+      "username": "Username",
+      "role": "Role",
+      "createdAt": "Created At",
+      "actions": "Actions"
+    },
+    "searchPlaceholder": "Search by name or username...",
+    "filters": {
+      "all": "All Users",
+      "managers": "Managers",
+      "employees": "Employees"
+    },
+    "noUsersFound": "No users found",
+    "adjustFiltersMessage": "Try adjusting your search or filters",
+    "messages": {
+      "createSuccess": "User created successfully",
+      "updateSuccess": "User updated successfully",
+      "deleteSuccess": "User deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this user?",
+      "requiredFields": "Full name and username are required",
+      "passwordRequired": "Password is required for new users",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "passwordMinLengthInfo": "Must be at least 6 characters"
+    },
+    "placeholders": {
+      "fullName": "Enter full name",
+      "username": "Enter username",
+      "passwordEdit": "(leave empty to keep current)",
+      "newPassword": "Enter new password",
+      "enterPassword": "Enter password"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "noNotifications": "No notifications",
+    "markAsRead": "Mark as read",
+    "markAllAsRead": "Mark All Read",
+    "deleteAll": "Delete All",
+    "viewAll": "View All Notifications",
+    "taskPrefix": "Task",
+    "viewTask": "View task",
+    "filters": {
+      "all": "All",
+      "unread": "Unread",
+      "read": "Read",
+      "allTypes": "All Types"
+    },
+    "types": {
+      "task_assigned": "Task Assigned",
+      "task_completed": "Task Completed",
+      "task_reassigned": "Task Reassigned",
+      "deadline_approaching": "Deadline Approaching",
+      "task_overdue": "Task Overdue",
+      "status_changed": "Status Changed",
+      "work_report_added": "Work Report Added"
+    },
+    "messages": {
+      "deleteConfirm": "Are you sure you want to delete this notification?",
+      "deleteAllConfirm": "Are you sure you want to delete ALL notifications? This action cannot be undone.",
+      "deleteSuccess": "Notification deleted",
+      "deleteAllSuccess": "All notifications deleted",
+      "markAllSuccess": "All notifications marked as read",
+      "markReadFailed": "Failed to mark as read",
+      "markAllFailed": "Failed to mark all as read",
+      "deleteFailed": "Failed to delete notification",
+      "deleteAllFailed": "Failed to delete all notifications"
+    },
+    "empty": {
+      "noNotificationsTitle": "No notifications",
+      "noNotificationsMessage": "You don't have any notifications yet",
+      "allCaughtUpTitle": "All caught up!",
+      "allCaughtUpMessage": "You have no unread notifications",
+      "noReadTitle": "No read notifications",
+      "noReadMessage": "You haven't read any notifications yet"
+    }
+  },
+  "pagination": {
+    "showing": "Showing page",
+    "of": "of",
+    "totalUsers": "total users",
+    "totalTasks": "total tasks"
+  },
+  "time": {
+    "justNow": "Just now",
+    "minutesAgo": "{{count}} minutes ago",
+    "hoursAgo": "{{count}} hours ago",
+    "daysAgo": "{{count}} days ago",
+    "weeksAgo": "{{count}} weeks ago",
+    "today": "today",
+    "thisWeek": "this Week"
+  },
+  "locale": "en-US"
+}

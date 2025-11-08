@@ -15,8 +15,11 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useTranslation } from "react-i18next";
 
 const PriorityBarChart = ({ data }) => {
+  const { t } = useTranslation();
+
   // Transform data
   const chartData = useMemo(() => {
     if (!data || data.length === 0) {
@@ -71,10 +74,10 @@ const PriorityBarChart = ({ data }) => {
     <Card className="flex flex-col border-0 shadow-none">
       <CardHeader className="items-center pb-0">
         <CardTitle className="text-lg font-semibold">
-          Active Tasks by Priority
+          {t("dashboard.charts.priorityDistribution")}
         </CardTitle>
         <CardDescription className="text-xs">
-          {totalTasks} active tasks
+          {totalTasks} {t("dashboard.activeTasks")}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0 mt-4">

@@ -17,8 +17,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useTranslation } from "react-i18next";
 
 const UserPerformanceChart = ({ data }) => {
+  const { t } = useTranslation();
   // Transform data
   const chartData = useMemo(() => {
     if (!data || data.length === 0) {
@@ -68,10 +70,11 @@ const UserPerformanceChart = ({ data }) => {
     <Card className="flex flex-col border-0 shadow-none">
       <CardHeader className="items-center pb-0">
         <CardTitle className="text-lg font-semibold">
-          Employee Performance
+          {t("dashboard.charts.userPerformance")}
         </CardTitle>
         <CardDescription className="text-xs">
-          {totals.completed} completed, {totals.incomplete} incomplete tasks
+          {totals.completed} {t("dashboard.charts.completed")},{" "}
+          {totals.incomplete} {t("dashboard.charts.incomplete")}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">

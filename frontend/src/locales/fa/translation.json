@@ -1,0 +1,251 @@
+{
+  "common": {
+    "loading": "در حال بارگذاری...",
+    "error": "خطا",
+    "success": "موفقیت‌آمیز",
+    "save": "ذخیره",
+    "cancel": "لغو",
+    "delete": "حذف",
+    "edit": "ویرایش",
+    "create": "ایجاد",
+    "search": "جستجو",
+    "filter": "فیلتر",
+    "reset": "بازنشانی",
+    "confirm": "تأیید",
+    "yes": "بله",
+    "no": "خیر",
+    "all": "همه",
+    "actions": "عملیات",
+    "close": "بستن",
+    "back": "بازگشت",
+    "next": "بعدی",
+    "previous": "قبلی",
+    "submit": "ارسال",
+    "title": "عنوان",
+    "created": "ایجاد شده"
+  },
+  "auth": {
+    "login": "ورود",
+    "logout": "خروج",
+    "username": "نام کاربری",
+    "password": "رمز عبور",
+    "welcomeBack": "خوش آمدید",
+    "welcomeSubText": "مسئله داشتن زمان نیست، مسئله ساختن زمان است. برنامه کار هر روز خود را بچینید، سپس طبق آن عمل کنید.",
+    "loginToAccount": "ورود به حساب کاربری",
+    "invalidCredentials": "نام کاربری یا رمز عبور نامعتبر است",
+    "loginSuccess": "ورود موفقیت‌آمیز بود"
+  },
+  "navigation": {
+    "dashboard": "داشبورد",
+    "tasks": "وظایف",
+    "users": "کاربران",
+    "notifications": "اعلان‌ها",
+    "reports": "گزارش‌ها",
+    "settings": "تنظیمات"
+  },
+  "dashboard": {
+    "title": "داشبورد",
+    "welcomeMessage": "خوش آمدید، {{name}}!",
+    "overview": "نمای کلی",
+    "statistics": "آمار",
+    "totalTasks": "کل وظایف",
+    "activeTasks": "وظایف فعال",
+    "completedTasks": "وظایف تکمیل شده",
+    "overdueTasks": "وظایف عقب‌افتاده",
+    "charts": {
+      "statusDistribution": "توزیع وضعیت",
+      "priorityDistribution": "وظایف فعال بر اساس اولویت",
+      "dailyTasks": "وظایف ایجاد شده (۷ روز گذشته)",
+      "userPerformance": "عملکرد کارمندان",
+      "timeline": "جدول زمانی وظایف (۳ ماه گذشته)",
+      "totalTasks": "کل وظایف",
+      "completed": "تکمیل شده",
+      "incomplete": "ناتمام",
+      "tasksCreated": "وظیفه در این هفته ایجاد شده",
+      "tasksInLastSixMonths": "وظیفه در ۳ ماه گذشته ایجاد شده",
+      "todayTasks": "وظایف امروز",
+      "tasksStatus": "تفکیک وضعیت فعلی وظایف"
+    }
+  },
+  "tasks": {
+    "title": "وظایف",
+    "myTasks": "وظایف من",
+    "device": "دستگاه",
+    "employee": "کارمند",
+    "actions": "عملیات",
+    "createTask": "ایجاد وظیفه",
+    "editTask": "ویرایش وظیفه",
+    "deleteTask": "حذف وظیفه",
+    "taskDetails": "جزئیات وظیفه",
+    "taskTitle": "عنوان وظیفه",
+    "description": "شرح",
+    "status": "وضعیت",
+    "priority": "اولویت",
+    "assignedTo": "اختصاص داده شده به",
+    "createdBy": "ایجاد شده توسط",
+    "deadline": "مهلت",
+    "deviceModel": "مدل دستگاه",
+    "serialNumber": "شماره سریال",
+    "reportedIssue": "مشکل گزارش شده",
+    "noTasks": "وظیفه‌ای پیدا نشد",
+    "completedRate": "نرخ تکمیل",
+    "recentTasks": "وظایف اخیر",
+    "viewAll": "مشاهده همه",
+    "searchBy": "جستجو بر اساس عنوان، شرح، مدل دستگاه یا شماره سریال...",
+    "addReport": "افزودن گزارش",
+    "viewReport": "مشاهده گزارش",
+    "statuses": {
+      "open": "باز",
+      "in_progress": "در حال انجام",
+      "completed": "تکمیل شده",
+      "cancelled": "لغو شده"
+    },
+    "priorities": {
+      "urgent": "فوری",
+      "high": "بالا",
+      "medium": "متوسط",
+      "low": "پایین"
+    },
+    "filters": {
+      "all": "همه وظایف",
+      "status": "فیلتر بر اساس وضعیت",
+      "priority": "فیلتر بر اساس اولویت",
+      "employee": "فیلتر بر اساس کارمند",
+      "dateRange": "محدوده تاریخ",
+      "startDate": "تاریخ شروع",
+      "endDate": "تاریخ پایان",
+      "activeFilters": "فیلترهای فعال",
+      "from": "از",
+      "to": "تا"
+    },
+    "taskDate": "تاریخ وظیفه",
+    "workReport": "گزارش کار",
+    "messages": {
+      "createSuccess": "وظیفه با موفقیت ایجاد شد",
+      "updateSuccess": "وظیفه با موفقیت به‌روزرسانی شد",
+      "deleteSuccess": "وظیفه با موفقیت حذف شد",
+      "deleteConfirm": "آیا مطمئن هستید که می‌خواهید این وظیفه را حذف کنید؟",
+      "statusUpdateSuccess": "وضعیت وظیفه با موفقیت به‌روز شد",
+      "titleEmployeeRequired": "عنوان و کارمند الزامی هستند",
+      "createFailed": "ایجاد وظیفه با شکست مواجه شد"
+    },
+    "placeholders": {
+      "title": "عنوان وظیفه را وارد کنید",
+      "description": "شرح وظیفه را وارد کنید",
+      "selectEmployee": "کارمند را انتخاب کنید",
+      "deviceModel": "مثال: Siemens S7-1200",
+      "serialNumber": "مثال: 6ES7214-1AG40-0XB0",
+      "reportedIssue": "مشکل گزارش شده را شرح دهید"
+    }
+  },
+  "users": {
+    "title": "کاربران",
+    "createUser": "ایجاد کاربر",
+    "editUser": "ویرایش کاربر",
+    "deleteUser": "حذف کاربر",
+    "fullName": "نام کامل",
+    "username": "نام کاربری",
+    "password": "رمز عبور",
+    "role": "نقش",
+    "totalUsers": "کل کاربران",
+    "managers": "مدیران",
+    "employees": "کارمندان",
+    "noUsers": "کاربری پیدا نشد",
+    "roles": {
+      "manager": "مدیر",
+      "employee": "کارمند"
+    },
+    "table": {
+      "fullName": "نام کامل",
+      "username": "نام کاربری",
+      "role": "نقش",
+      "createdAt": "تاریخ ایجاد",
+      "actions": "عملیات"
+    },
+    "searchPlaceholder": "جستجو بر اساس نام یا نام کاربری...",
+    "filters": {
+      "all": "همه کاربران",
+      "managers": "مدیران",
+      "employees": "کارمندان"
+    },
+    "noUsersFound": "کاربری پیدا نشد",
+    "adjustFiltersMessage": "سعی کنید فیلترها یا جستجو را تغییر دهید",
+    "messages": {
+      "createSuccess": "کاربر با موفقیت ایجاد شد",
+      "updateSuccess": "کاربر با موفقیت به‌روزرسانی شد",
+      "deleteSuccess": "کاربر با موفقیت حذف شد",
+      "deleteConfirm": "آیا مطمئن هستید که می‌خواهید این کاربر را حذف کنید؟",
+      "requiredFields": "نام کامل و نام کاربری الزامی هستند",
+      "passwordRequired": "رمز عبور برای کاربران جدید الزامی است",
+      "passwordMinLength": "رمز عبور باید حداقل ۶ کاراکتر باشد",
+      "passwordMinLengthInfo": "باید حداقل ۶ کاراکتر باشد"
+    },
+    "placeholders": {
+      "fullName": "نام کامل را وارد کنید",
+      "username": "نام کاربری را وارد کنید",
+      "passwordEdit": "(برای حفظ رمز عبور فعلی، خالی بگذارید)",
+      "newPassword": "رمز عبور جدید را وارد کنید",
+      "enterPassword": "رمز عبور را وارد کنید"
+    }
+  },
+  "notifications": {
+    "title": "اعلان‌ها",
+    "noNotifications": "اعلان جدیدی وجود ندارد",
+    "markAsRead": "علامت خوانده شده",
+    "markAllAsRead": "علامت همه به عنوان خوانده شده",
+    "deleteAll": "حذف همه",
+    "viewAll": "مشاهده همه اعلان‌ها",
+    "taskPrefix": "وظیفه",
+    "viewTask": "مشاهده وظیفه",
+    "filters": {
+      "all": "همه",
+      "unread": "خوانده نشده",
+      "read": "خوانده شده",
+      "allTypes": "همه انواع"
+    },
+    "types": {
+      "task_assigned": "وظیفه اختصاص داده شد",
+      "task_completed": "وظیفه تکمیل شد",
+      "task_reassigned": "وظیفه دوباره اختصاص داده شد",
+      "deadline_approaching": "مهلت نزدیک است",
+      "task_overdue": "وظیفه عقب افتاده",
+      "status_changed": "وضعیت تغییر کرد",
+      "work_report_added": "گزارش کار اضافه شد"
+    },
+    "messages": {
+      "deleteConfirm": "آیا مطمئن هستید که می‌خواهید این اعلان را حذف کنید؟",
+      "deleteAllConfirm": "آیا مطمئن هستید که می‌خواهید همه اعلان‌ها را حذف کنید؟ این عمل غیرقابل بازگشت است.",
+      "deleteSuccess": "اعلان حذف شد",
+      "deleteAllSuccess": "همه اعلان‌ها حذف شدند",
+      "markAllSuccess": "همه اعلان‌ها به عنوان خوانده شده علامت‌گذاری شدند",
+      "markReadFailed": "خطا در علامت‌گذاری به عنوان خوانده شده",
+      "markAllFailed": "خطا در علامت‌گذاری همه به عنوان خوانده شده",
+      "deleteFailed": "خطا در حذف اعلان",
+      "deleteAllFailed": "خطا در حذف همه اعلان‌ها"
+    },
+    "empty": {
+      "noNotificationsTitle": "اعلان جدیدی وجود ندارد",
+      "noNotificationsMessage": "شما هنوز هیچ اعلانی ندارید",
+      "allCaughtUpTitle": "همه موارد بررسی شد!",
+      "allCaughtUpMessage": "شما هیچ اعلان خوانده نشده‌ای ندارید",
+      "noReadTitle": "اعلان خوانده شده‌ای وجود ندارد",
+      "noReadMessage": "شما هنوز هیچ اعلانی را نخوانده‌اید"
+    }
+  },
+  "pagination": {
+    "showing": "نمایش صفحه",
+    "of": "از",
+    "totalUsers": "کل کاربران",
+    "totalTasks": "کل وظایف"
+  },
+  "time": {
+    "justNow": "همین الان",
+    "minutesAgo": "{{count}} دقیقه پیش",
+    "hoursAgo": "{{count}} ساعت پیش",
+    "daysAgo": "{{count}} روز پیش",
+    "weeksAgo": "{{count}} هفته پیش",
+    "today": "امروز",
+    "thisWeek": "این هفته"
+  },
+  "locale": "fa-IR"
+}

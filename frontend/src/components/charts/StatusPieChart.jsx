@@ -15,8 +15,11 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useTranslation } from "react-i18next";
 
 const StatusPieChart = ({ data }) => {
+  const { t } = useTranslation();
+
   // Transform data
   const chartData = useMemo(() => {
     if (!data || data.length === 0) {
@@ -76,10 +79,10 @@ const StatusPieChart = ({ data }) => {
     <Card className="flex flex-col border-0 shadow-none">
       <CardHeader className="items-center pb-0">
         <CardTitle className="text-lg font-semibold">
-          Status Distribution
+          {t("dashboard.charts.statusDistribution")}
         </CardTitle>
         <CardDescription className="text-xs">
-          Current task status breakdown
+          {t("dashboard.charts.tasksStatus")}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
@@ -121,7 +124,7 @@ const StatusPieChart = ({ data }) => {
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground text-sm"
                         >
-                          Total Tasks
+                          {t("dashboard.totalTasks")}
                         </tspan>
                       </text>
                     );

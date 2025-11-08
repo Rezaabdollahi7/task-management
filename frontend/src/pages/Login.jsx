@@ -5,11 +5,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { showError, showSuccess } from "../utils/toast";
+import LanguageSwitcher from "../components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -44,7 +46,7 @@ const Login = () => {
       if (result.success) {
         // Redirect to dashboard
         navigate("/dashboard");
-        showSuccess("Login successfully :))");
+        showSuccess(t("auth.loginSuccess"));
       } else {
         setError(result.error || "Login failed");
       }
@@ -64,11 +66,11 @@ const Login = () => {
           {/* Logo and Title */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-semibold text-gray-900 text-start">
-              Welcome Back 👋
+              {t("auth.welcomeBack")}
+              👋
             </h1>
             <p className="text-slate-500 mt-4 text-start">
-              It's not about having time, it's about making time. Plan your work
-              for every day, then work your plan.
+              {t("auth.welcomeSubText")}
             </p>
           </div>
 
@@ -79,6 +81,10 @@ const Login = () => {
             </div>
           )}
 
+          <div className="flex justify-end mb-4">
+            <LanguageSwitcher />
+          </div>
+
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Username Field */}
@@ -87,7 +93,7 @@ const Login = () => {
                 htmlFor="username"
                 className="block text-sm  text-gray-700 mb-1"
               >
-                Username
+                {t("auth.username")}
               </label>
               <input
                 type="text"
@@ -96,7 +102,7 @@ const Login = () => {
                 value={formData.username}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border bg-[#F7FBFF] border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-                placeholder="Enter your username"
+                placeholder={t("auth.username")}
                 disabled={loading}
                 autoComplete="username"
               />
@@ -108,7 +114,7 @@ const Login = () => {
                 htmlFor="password"
                 className="block text-sm  text-gray-700 mb-1"
               >
-                Password
+                {t("auth.password")}
               </label>
               <input
                 type="password"
@@ -117,7 +123,7 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border bg-[#F7FBFF] border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-                placeholder="Enter your password"
+                placeholder={t("auth.password")}
                 disabled={loading}
                 autoComplete="current-password"
               />
@@ -154,7 +160,8 @@ const Login = () => {
                   Logging in...
                 </>
               ) : (
-                "Sign In"
+                // "Sign In"
+                t("auth.login")
               )}
             </button>
           </form>

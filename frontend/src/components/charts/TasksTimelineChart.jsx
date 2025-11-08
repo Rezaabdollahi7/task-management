@@ -17,8 +17,12 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useTranslation } from "react-i18next";
 
 const TasksTimelineChart = ({ data }) => {
+  const { t } = useTranslation();
+
+  
   // Transform data
   const chartData = useMemo(() => {
     if (!data || data.length === 0) {
@@ -67,10 +71,10 @@ const TasksTimelineChart = ({ data }) => {
     <Card className="flex flex-col border-0 shadow-none">
       <CardHeader className="items-center pb-0">
         <CardTitle className="text-lg font-semibold">
-          Tasks Timeline (Last 3 Months)
+          {t("dashboard.charts.timeline")}
         </CardTitle>
         <CardDescription className="text-xs">
-          {totalTasks} tasks created in the last 3 months
+          {totalTasks} {t("dashboard.charts.tasksInLastSixMonths")}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">

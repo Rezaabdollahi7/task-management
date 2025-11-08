@@ -15,8 +15,11 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useTranslation } from "react-i18next";
 
 const DailyLineChart = ({ data }) => {
+  const { t } = useTranslation();
+
   // Transform data
   const chartData = useMemo(() => {
     if (!data || data.length === 0) {
@@ -64,10 +67,10 @@ const DailyLineChart = ({ data }) => {
     <Card className="flex flex-col border-0 shadow-none">
       <CardHeader className="items-center pb-0">
         <CardTitle className="text-lg font-semibold">
-          Tasks Created (Last 7 Days)
+          {t("dashboard.charts.dailyTasks")}
         </CardTitle>
         <CardDescription className="text-xs">
-          {totalTasks} tasks created this week
+          {totalTasks} {t("dashboard.charts.tasksCreated")}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">

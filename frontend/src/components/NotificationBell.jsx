@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { notificationsAPI } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import SkeletonNotification from "./skeletons/SkeletonNotification";
-
+import { useTranslation } from "react-i18next";
 const NotificationBell = () => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -13,7 +13,8 @@ const NotificationBell = () => {
   const [loading, setLoading] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "fa";
   // Fetch unread count
   const fetchUnreadCount = async () => {
     try {
@@ -102,6 +103,7 @@ const NotificationBell = () => {
     if (hours < 24) return `${hours} ساعت پیش`;
     const days = Math.floor(hours / 24);
     if (days < 7) return `${days} روز پیش`;
+    اعلان;
     const weeks = Math.floor(days / 7);
     if (weeks < 4) return `${weeks} هفته پیش`;
     return new Date(date).toLocaleDateString("fa-IR");
@@ -149,16 +151,22 @@ const NotificationBell = () => {
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute left-0 mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-[600px] overflow-hidden flex flex-col">
+        <div
+          className={`absolute  mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-[600px] overflow-hidden flex flex-col ${
+            isRTL ? "left-0" : "right-0"
+          }`}
+        >
           {/* Header */}
           <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
-            <h3 className="text-lg font-semibold text-gray-900">اعلان‌ها</h3>
+            <h3 className="text-lg font-semibold text-gray-900">
+              {t("notifications.title")}
+            </h3>
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllAsRead}
                 className="text-sm text-blue-600 hover:text-blue-800 font-medium"
               >
-                علامت‌گذاری همه
+                {t("notifications.markAsRead")}
               </button>
             )}
           </div>
@@ -186,7 +194,7 @@ const NotificationBell = () => {
                     d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
                   />
                 </svg>
-                <p className="mt-2">اعلانی وجود ندارد</p>
+                <p className="mt-2">{t("notifications.noNotifications")}</p>
               </div>
             ) : (
               notifications.map((notification) => (
@@ -295,11 +303,11 @@ const NotificationBell = () => {
               <button
                 onClick={() => {
                   setIsOpen(false);
-                  navigate("/tasks");
+                  navigate("/notifications");
                 }}
                 className="text-sm text-blue-600 hover:text-blue-800 font-medium"
               >
-                مشاهده همه تسک‌ها
+                {t("notifications.viewAll")}
               </button>
             </div>
           )}
