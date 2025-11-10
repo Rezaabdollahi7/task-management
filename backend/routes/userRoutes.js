@@ -2,6 +2,10 @@
 // User management routes
 
 const express = require("express");
+// const {
+//   saveFCMToken,
+//   deleteFCMToken,
+// } = require("../controllers/fcmController");
 const router = express.Router();
 const {
   getAllUsers,
@@ -36,11 +40,11 @@ router.get("/:id", isManager, getUserById);
 // @route   POST /api/users
 // @desc    Create new user
 // @access  Private (Manager only)
-router.post("/", createUser);
+router.post("/", isManager, createUser);
 
 // FCM token routes
-router.post("/fcm-token", saveFCMToken);
-router.delete("/fcm-token", deleteFCMToken);
+// router.post("/fcm-token", saveFCMToken);
+// router.delete("/fcm-token", deleteFCMToken);
 
 // @route   PUT /api/users/:id
 // @desc    Update user

@@ -40,7 +40,7 @@ const getAssignableUsers = async (req, res) => {
 
     // result is an object like: { users: [...], total: X, ... }
     // Get the users array
-    const users = result.users || result.data || result; 
+    const users = result.users || result.data || result;
 
     // Filter only active users
     const activeUsers = Array.isArray(users)
