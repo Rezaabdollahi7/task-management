@@ -29,22 +29,19 @@ const TaskModal = ({
   const [error, setError] = useState("");
   const { t } = useTranslation();
 
-  // Fetch employees
+  // Fetch assignable users (all active users)
   useEffect(() => {
-    const fetchEmployees = async () => {
+    const fetchAssignableUsers = async () => {
       try {
-        const response = await usersAPI.getAll({
-          role: "employee",
-          limit: 100,
-        });
-        setEmployees(response.data.users);
+        const response = await usersAPI.getAssignable();
+        setEmployees(response.data);
       } catch (err) {
-        console.error("Failed to fetch employees:", err);
+        console.error("Failed to fetch assignable users:", err);
       }
     };
 
     if (isOpen && !viewOnly) {
-      fetchEmployees();
+      fetchAssignableUsers();
     }
   }, [isOpen, viewOnly]);
 

@@ -57,20 +57,17 @@ const TaskList = () => {
 
   // Fetch employees for filter (managers only)
   useEffect(() => {
-    const fetchEmployees = async () => {
+    const fetchAssignableUsers = async () => {
       if (isManager()) {
         try {
-          const response = await usersAPI.getAll({
-            role: "employee",
-            limit: 100,
-          });
-          setEmployees(response.data.users);
+          const response = await usersAPI.getAssignable();
+          setEmployees(response.data);
         } catch (err) {
-          console.error("Failed to fetch employees:", err);
+          console.error("Failed to fetch assignable users:", err);
         }
       }
     };
-    fetchEmployees();
+    fetchAssignableUsers();
   }, []);
 
   const handleLogout = async () => {
@@ -467,7 +464,7 @@ const TaskList = () => {
               {isManager() && (
                 <div>
                   <label className="block text-lg font-medium text-gray-700 mb-1">
-                    {t("tasks.employee")} :
+                    {t("tasks.filters.allUsers")} :
                   </label>
                   <select
                     value={filters.employeeId}
@@ -479,7 +476,8 @@ const TaskList = () => {
                     <option value="">All Employees</option>
                     {employees.map((emp) => (
                       <option key={emp.id} value={emp.id}>
-                        {emp.full_name}
+                        {emp.full_name}{" "}
+                        {emp.role === "manager" ? "(Manager)" : ""}
                       </option>
                     ))}
                   </select>

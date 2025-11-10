@@ -30,6 +30,36 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+// @route   GET /api/users/assignable
+// @desc    Get all users that can be assigned tasks (all users)
+// @access  Private (Manager only)
+const getAssignableUsers = async (req, res) => {
+  try {
+    // Return all active users (managers + employees)
+    const result = await User.getAll({}); // ← Pass empty object for filters
+
+    // result is an object like: { users: [...], total: X, ... }
+    // Get the users array
+    const users = result.users || result.data || result; 
+
+    // Filter only active users
+    const activeUsers = Array.isArray(users)
+      ? users.filter((user) => user.is_active !== false)
+      : [];
+
+    res.json({
+      success: true,
+      data: activeUsers,
+    });
+  } catch (error) {
+    console.error("Get assignable users error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching assignable users",
+    });
+  }
+};
+
 // @route   GET /api/users/:id
 // @desc    Get user by ID
 // @access  Private (Manager only)
@@ -293,4 +323,5 @@ module.exports = {
   deleteUser,
   changeUserRole,
   changeUserPassword,
+  getAssignableUsers,
 };

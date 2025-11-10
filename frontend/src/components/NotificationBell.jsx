@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import SkeletonNotification from "./skeletons/SkeletonNotification";
 import { useTranslation } from "react-i18next";
 import { useSocket } from "../context/SocketContext";
+import { showSuccess } from "../utils/toast";
 
 const NotificationBell = () => {
   const [notifications, setNotifications] = useState([]);

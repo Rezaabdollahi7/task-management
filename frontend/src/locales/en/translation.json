@@ -116,7 +116,8 @@
       "endDate": "End Date",
       "activeFilters": "Active Filters",
       "from": "From",
-      "to": "To"
+      "to": "To",
+      "allUsers": "All Users"
     },
     "taskDate": "Task Date",
     "workReport": "Work Report",

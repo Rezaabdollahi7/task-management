@@ -11,46 +11,55 @@ const {
   deleteUser,
   changeUserRole,
   changeUserPassword,
+  getAssignableUsers, // ✅
 } = require("../controllers/userController");
 const { auth, isManager } = require("../middleware/auth");
 
-// All routes require authentication and manager role
+// All routes require authentication
 router.use(auth);
-router.use(isManager);
 
 // @route   GET /api/users
 // @desc    Get all users
 // @access  Private (Manager only)
-router.get("/", getAllUsers);
+router.get("/", isManager, getAllUsers);
+
+// @route   GET /api/users/assignable
+// @desc    Get all assignable users
+// @access  Private (Manager only)
+router.get("/assignable", isManager, getAssignableUsers); 
 
 // @route   GET /api/users/:id
 // @desc    Get user by ID
 // @access  Private (Manager only)
-router.get("/:id", getUserById);
+router.get("/:id", isManager, getUserById);
 
 // @route   POST /api/users
 // @desc    Create new user
 // @access  Private (Manager only)
 router.post("/", createUser);
 
+// FCM token routes
+router.post("/fcm-token", saveFCMToken);
+router.delete("/fcm-token", deleteFCMToken);
+
 // @route   PUT /api/users/:id
 // @desc    Update user
 // @access  Private (Manager only)
-router.put("/:id", updateUser);
+router.put("/:id", isManager, updateUser);
 
 // @route   DELETE /api/users/:id
 // @desc    Delete user
 // @access  Private (Manager only)
-router.delete("/:id", deleteUser);
+router.delete("/:id", isManager, deleteUser);
 
 // @route   PATCH /api/users/:id/role
 // @desc    Change user role
 // @access  Private (Manager only)
-router.patch("/:id/role", changeUserRole);
+router.patch("/:id/role", isManager, changeUserRole);
 
 // @route   PATCH /api/users/:id/password
 // @desc    Change user password
 // @access  Private (Manager only)
-router.patch("/:id/password", changeUserPassword);
+router.patch("/:id/password", isManager, changeUserPassword);
 
 module.exports = router;

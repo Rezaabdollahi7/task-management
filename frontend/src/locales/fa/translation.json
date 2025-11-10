@@ -116,7 +116,8 @@
       "endDate": "تاریخ پایان",
       "activeFilters": "فیلترهای فعال",
       "from": "از",
-      "to": "تا"
+      "to": "تا",
+      "allUsers": "همه کاربران"
     },
     "taskDate": "تاریخ وظیفه",
     "workReport": "گزارش کار",
