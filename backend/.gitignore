@@ -34,3 +34,5 @@ Thumbs.db
 *.tmp
 *.temp
 *.swp
+
+backend/config/firebase-service-account.json
