@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
+import "moment-jalaali";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { tasksAPI } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
@@ -18,6 +19,28 @@ import {
 } from "react-icons/fa";
 
 const localizer = momentLocalizer(moment);
+
+const configureMomentForPersian = () => {
+  moment.locale("fa", {
+    months:
+      "فروردین_اردیبهشت_خرداد_تیر_مرداد_شهریور_مهر_آبان_آذر_دی_بهمن_اسفند".split(
+        "_"
+      ),
+    monthsShort:
+      "فروردین_اردیبهشت_خرداد_تیر_مرداد_شهریور_مهر_آبان_آذر_دی_بهمن_اسفند".split(
+        "_"
+      ),
+    weekdays: "یکشنبه_دوشنبه_سه‌شنبه_چهارشنبه_پنجشنبه_جمعه_شنبه".split("_"),
+    weekdaysShort: "یک‌شنبه_دو‌شنبه_سه‌شنبه_چهارشنبه_پنج‌شنبه_جمعه_شنبه".split(
+      "_"
+    ),
+    weekdaysMin: "ی_د_س_چ_پ_ج_ش".split("_"),
+    week: {
+      dow: 6,
+      doy: 12,
+    },
+  });
+};
 
 const CalendarPage = () => {
   const { user, isManager } = useAuth();
@@ -102,6 +125,15 @@ const CalendarPage = () => {
     fetchTasks();
   }, [fetchTasks]);
 
+  useEffect(() => {
+    if (isRTL) {
+      configureMomentForPersian();
+      moment.locale("fa");
+    } else {
+      moment.locale("en");
+    }
+  }, [isRTL]);
+
   // Event style based on priority and status
   const eventStyleGetter = (event) => {
     let backgroundColor = "#3174ad"; // default blue
@@ -156,7 +188,29 @@ const CalendarPage = () => {
   };
 
   // Custom toolbar component
-  const CustomToolbar = ({ onNavigate, label }) => {
+  const CustomToolbar = ({ onNavigate, label, date }) => {
+    const formatDateForDisplay = (date) => {
+      if (isRTL) {
+        const jDate = moment(date);
+
+        switch (view) {
+          case Views.MONTH:
+            return jDate.format("jMMMM jYYYY");
+          case Views.WEEK:
+            const startOfWeek = moment(date).startOf("week");
+            const endOfWeek = moment(date).endOf("week");
+            return `هفته ${startOfWeek.format(
+              "jD jMMMM"
+            )} تا ${endOfWeek.format("jD jMMMM jYYYY")}`;
+          case Views.DAY:
+            return jDate.format("dddd، jD jMMMM jYYYY");
+          default:
+            return jDate.format("jD jMMMM jYYYY");
+        }
+      }
+      return label;
+    };
+
     return (
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
         <div className="flex items-center gap-2">
@@ -164,7 +218,11 @@ const CalendarPage = () => {
             onClick={() => onNavigate("PREV")}
             className="p-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
           >
-            <FaArrowLeft className="w-4 h-4" />
+            {isRTL ? (
+              <FaArrowRight className="w-4 h-4" />
+            ) : (
+              <FaArrowLeft className="w-4 h-4" />
+            )}
           </button>
 
           <button
@@ -178,11 +236,17 @@ const CalendarPage = () => {
             onClick={() => onNavigate("NEXT")}
             className="p-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
           >
-            <FaArrowRight className="w-4 h-4" />
+            {isRTL ? (
+              <FaArrowLeft className="w-4 h-4" />
+            ) : (
+              <FaArrowRight className="w-4 h-4" />
+            )}
           </button>
         </div>
 
-        <h2 className="text-lg font-semibold text-gray-900">{label}</h2>
+        <h2 className="text-lg font-semibold text-gray-900">
+          {formatDateForDisplay(date)}
+        </h2>
 
         <div className="flex items-center gap-2">
           <select
@@ -208,6 +272,38 @@ const CalendarPage = () => {
     );
   };
 
+  const getCalendarMessages = () => {
+    if (isRTL) {
+      return {
+        today: "امروز",
+        previous: "قبلی",
+        next: "بعدی",
+        month: "ماه",
+        week: "هفته",
+        day: "روز",
+        agenda: "برنامه",
+        date: "تاریخ",
+        time: "زمان",
+        event: "رویداد",
+        noEventsInRange: "رویدادی در این بازه وجود ندارد",
+        showMore: (total) => `+${total} بیشتر`,
+      };
+    }
+    return {
+      today: t("calendar.today"),
+      previous: t("calendar.previous"),
+      next: t("calendar.next"),
+      month: t("calendar.month"),
+      week: t("calendar.week"),
+      day: t("calendar.day"),
+      agenda: t("calendar.agenda"),
+      date: t("calendar.date"),
+      time: t("calendar.time"),
+      event: t("calendar.event"),
+      noEventsInRange: t("calendar.noEventsInRange"),
+      showMore: (total) => `+${total} ${t("calendar.more")}`,
+    };
+  };
   // Custom event component
   const CustomEvent = ({ event }) => {
     return (
@@ -286,23 +382,10 @@ const CalendarPage = () => {
             onNavigate={setDate}
             eventPropGetter={eventStyleGetter}
             components={{
-              toolbar: CustomToolbar,
+              toolbar: (props) => <CustomToolbar {...props} date={date} />,
               event: CustomEvent,
             }}
-            messages={{
-              today: t("calendar.today"),
-              previous: t("calendar.previous"),
-              next: t("calendar.next"),
-              month: t("calendar.month"),
-              week: t("calendar.week"),
-              day: t("calendar.day"),
-              agenda: t("calendar.agenda"),
-              date: t("calendar.date"),
-              time: t("calendar.time"),
-              event: t("calendar.event"),
-              noEventsInRange: t("calendar.noEventsInRange"),
-              showMore: (total) => `+${total} ${t("calendar.more")}`,
-            }}
+            messages={getCalendarMessages()}
             rtl={isRTL}
           />
         </div>
@@ -333,7 +416,9 @@ const CalendarPage = () => {
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 bg-green-600 rounded"></div>
-              <span className="text-sm text-gray-700">{t("tasks.priorities.low")}</span>
+              <span className="text-sm text-gray-700">
+                {t("tasks.priorities.low")}
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 bg-gray-500 rounded"></div>
