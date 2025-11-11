@@ -117,7 +117,15 @@
       "activeFilters": "فیلترهای فعال",
       "from": "از",
       "to": "تا",
-      "allUsers": "همه کاربران"
+      "allUsers": "همه کاربران",
+      "quickDate": "فیلتر سریع تاریخ",
+      "today": "امروز",
+      "thisWeek": "این هفته",
+      "thisMonth": "این ماه",
+      "fromDate": "از تاریخ",
+      "toDate": "تا تاریخ",
+      "clearDate": "پاک کردن",
+      "persianDateFormat": "فرمت: سال/ماه/روز (مثال: 1403/08/19)"
     },
     "taskDate": "تاریخ وظیفه",
     "workReport": "گزارش کار",

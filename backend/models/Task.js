@@ -67,12 +67,12 @@ class Task {
     // Filter by date range
     if (filters.startDate) {
       params.push(filters.startDate);
-      query += ` AND t.task_date >= $${paramCount++}`;
+      query += ` AND t.deadline >= $${paramCount++}`;
     }
 
     if (filters.endDate) {
       params.push(filters.endDate);
-      query += ` AND t.task_date <= $${paramCount++}`;
+      query += ` AND t.deadline <= $${paramCount++}`;
     }
 
     // Check for overdue tasks

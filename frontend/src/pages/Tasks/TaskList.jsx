@@ -23,6 +23,8 @@ import { FaEye } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { MdAssignmentAdd } from "react-icons/md";
 import LanguageSwitcher from "../../components/LanguageSwitcher";
+import { formatDate } from "../../utils/dateHelper";
+import DateFilter from "../../components/DateFilter";
 
 const TaskList = () => {
   const { user, logout, isManager } = useAuth();
@@ -39,6 +41,8 @@ const TaskList = () => {
     status: "",
     priority: "",
     employeeId: "",
+    startDate: "",
+    endDate: "",
   });
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -116,6 +120,15 @@ const TaskList = () => {
     setPagination({ ...pagination, currentPage: 1 });
   };
 
+  // Handle date filter change
+  const handleDateFilterChange = (startDate, endDate) => {
+    setFilters({
+      ...filters,
+      startDate,
+      endDate,
+    });
+    setPagination({ ...pagination, currentPage: 1 });
+  };
   // Handle delete task
   const handleDelete = async (taskId, title) => {
     if (!window.confirm(`Are you sure you want to delete task "${title}"?`)) {
@@ -351,9 +364,9 @@ const TaskList = () => {
             </div>
 
             {/* Filters Row */}
-            <div className="flex flex-col md:flex-row gap-4 justify-between items-baseline md:items-center">
+            <div className="grid grid-cols-6 gap-3 gap-y-6 items-center">
               {/* Status Filter */}
-              <div>
+              <div className="col-span-2">
                 <label className="block text-lg  font-medium text-gray-700 mb-1">
                   {t("tasks.status")} :
                 </label>
@@ -402,8 +415,8 @@ const TaskList = () => {
               </div>
 
               {/* Priority Filter */}
-              <div>
-                <label className="block text-lg font-medium text-gray-700 mb-1">
+              <div className="col-span-2">
+                <label className=" block text-lg font-medium text-gray-700 mb-1">
                   {t("tasks.priority")} :
                 </label>
                 <div className="flex gap-2">
@@ -462,7 +475,7 @@ const TaskList = () => {
 
               {/* Employee Filter (Manager only) */}
               {isManager() && (
-                <div>
+                <div className="col-span-2">
                   <label className="block text-lg font-medium text-gray-700 mb-1">
                     {t("tasks.filters.allUsers")} :
                   </label>
@@ -471,7 +484,7 @@ const TaskList = () => {
                     onChange={(e) =>
                       handleFilterChange("employeeId", e.target.value)
                     }
-                    className="px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                    className="px-4 py-2 w-full border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">All Employees</option>
                     {employees.map((emp) => (
@@ -484,18 +497,28 @@ const TaskList = () => {
                 </div>
               )}
 
+              <div className=" col-span-3  ">
+                <DateFilter
+                  onFilterChange={handleDateFilterChange}
+                  startDate={filters.startDate}
+                  endDate={filters.endDate}
+                />
+              </div>
+
               {/* Create Button (Manager only) */}
               {isManager() && (
-                <button
-                  onClick={() => {
-                    setEditingTask(null);
-                    setViewOnlyMode(false);
-                    setIsModalOpen(true);
-                  }}
-                  className="self-end bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition whitespace-nowrap"
-                >
-                  + {t("tasks.createTask")}
-                </button>
+                <div className="col-span-3 flex items-center justify-end">
+                  <button
+                    onClick={() => {
+                      setEditingTask(null);
+                      setViewOnlyMode(false);
+                      setIsModalOpen(true);
+                    }}
+                    className="self-end bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition whitespace-nowrap"
+                  >
+                    + {t("tasks.createTask")}
+                  </button>
+                </div>
               )}
             </div>
           </div>
@@ -624,7 +647,7 @@ const TaskList = () => {
                           </td>
                           <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
                             {task.deadline
-                              ? new Date(task.deadline).toLocaleDateString()
+                              ? formatDate(task.deadline, i18n.language)
                               : "N/A"}
                           </td>
                           <td className="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">

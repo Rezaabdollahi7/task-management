@@ -117,7 +117,15 @@
       "activeFilters": "Active Filters",
       "from": "From",
       "to": "To",
-      "allUsers": "All Users"
+      "allUsers": "All Users",
+      "quickDate": "Quick Date Filter",
+      "today": "Today",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month",
+      "fromDate": "From Date",
+      "toDate": "To Date",
+      "clearDate": "Clear",
+      "persianDateFormat": "Format: YYYY/MM/DD (e.g., 1403/08/19)"
     },
     "taskDate": "Task Date",
     "workReport": "Work Report",
