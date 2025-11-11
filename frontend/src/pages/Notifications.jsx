@@ -1,43 +1,24 @@
 // src/pages/Notifications.jsx
-// Notification history page - Enhanced with Dashboard styling
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { notificationsAPI } from "../services/api";
 import { showSuccess, showError } from "../utils/toast";
 import SkeletonNotification from "../components/skeletons/SkeletonNotification";
+import AppLayout from "../components/Layout/AppLayout";
 import { useTranslation } from "react-i18next";
-import NotificationBell from "../components/NotificationBell"; // Assuming you have this component
-import LanguageSwitcher from "../components/LanguageSwitcher"; // Assuming you have this component
-
-import {
-  FaBars,
-  FaTimes,
-  FaUsers,
-  FaSignOutAlt,
-  FaTrash,
-  FaCheckDouble,
-  FaBellSlash,
-} from "react-icons/fa";
-import { MdOutlineTaskAlt } from "react-icons/md";
-import { RiNotification3Line } from "react-icons/ri";
-import { RxDashboard } from "react-icons/rx";
-import { TbLogout } from "react-icons/tb";
-import { HiOutlineUsers } from "react-icons/hi2";
+import { FaTrash, FaCheckDouble, FaBellSlash } from "react-icons/fa";
 
 const Notifications = () => {
-  const { t, i18n } = useTranslation(); // Use i18n for language check
-  const { user, logout, isManager } = useAuth();
+  const { t, i18n } = useTranslation();
+  const { user } = useAuth();
   const navigate = useNavigate();
+
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all"); // all, unread, read
   const [typeFilter, setTypeFilter] = useState("all");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  // Check RTL direction based on current language
-  const isRTL = i18n.language === "fa";
 
   const fetchNotifications = async () => {
     try {
@@ -141,7 +122,7 @@ const Notifications = () => {
     return new Date(date).toLocaleDateString(t("locale"));
   };
 
-  // Get priority color (not translatable, kept as is)
+  // Get priority color
   const getPriorityColor = (priority) => {
     const colors = {
       urgent: "text-red-600",
@@ -152,7 +133,7 @@ const Notifications = () => {
     return colors[priority] || "text-gray-600";
   };
 
-  // Get notification icon (not translatable, kept as is)
+  // Get notification icon
   const getNotificationIcon = (type) => {
     switch (type) {
       case "task_assigned":
@@ -226,395 +207,253 @@ const Notifications = () => {
     }
   };
 
-  const handleLogout = async () => {
-    await logout();
-    navigate("/login");
-  };
-
   // Count by filter
   const unreadCount = notifications.filter((n) => !n.is_read).length;
   const readCount = notifications.filter((n) => n.is_read).length;
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar - Fixed on desktop, slide-in on mobile */}
-      <aside
-        className={`fixed top-0 ${
-          isRTL ? "right-0" : "left-0"
-        } h-full bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out w-full lg:w-[20%] flex flex-col ${
-          sidebarOpen
-            ? "translate-x-0"
-            : isRTL
-            ? "translate-x-full"
-            : "-translate-x-full"
-        } lg:translate-x-0`}
+  // Loading state
+  if (loading) {
+    return (
+      <AppLayout
+        title={t("notifications.title")}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
       >
-        {/* Close button for mobile */}
-        <div className="lg:hidden flex justify-end items-center p-6 relative">
-          <div
-            className={`flex container absolute lg:hidden ${
-              isRTL
-                ? "left-[50%] -translate-x-1/2"
-                : "right-[50%] translate-x-1/2"
-            } items-center justify-center py-1 -z-10`}
-          >
-            <img
-              src="../../public/icons/full_rounded.png"
-              alt=""
-              className="size-16 mr-[30%]"
-            />
-            <span className="text-xl absolute italic">ero Task</span>
+        {/* Skeleton Content */}
+        <div className="bg-white rounded-lg shadow">
+          <div className="p-4 border-b border-gray-200">
+            <div className="flex gap-2">
+              <div className="h-10 w-24 bg-gray-200 rounded-lg animate-pulse"></div>
+              <div className="h-10 w-24 bg-gray-200 rounded-lg animate-pulse"></div>
+              <div className="h-10 w-24 bg-gray-200 rounded-lg animate-pulse"></div>
+              <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse"></div>
+            </div>
           </div>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="text-gray-500 hover:text-gray-700 z-10"
-          >
-            <FaTimes className="w-6 h-6" />
-          </button>
+          <div className="divide-y divide-gray-200">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <SkeletonNotification key={i} />
+            ))}
+          </div>
         </div>
+      </AppLayout>
+    );
+  }
 
-        {/* header & logo */}
-        <div className="hidden container lg:flex items-center justify-center relative py-1 border border-b mb-8">
-          <img
-            src="../../public/icons/full_rounded.png"
-            alt=""
-            className="size-24 mr-[30%]"
-          />
-          <span className="text-xl absolute italic">ero Task</span>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto">
-          <div className="space-y-2">
+  return (
+    <AppLayout
+      title={t("notifications.title")}
+      sidebarOpen={sidebarOpen}
+      setSidebarOpen={setSidebarOpen}
+    >
+      {/* Filters and Actions */}
+      <div className="bg-white rounded-lg shadow mb-6">
+        <div className="p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          {/* Filter Tabs */}
+          <div className="flex gap-2 flex-wrap">
             <button
-              onClick={() => {
-                navigate("/dashboard");
-                setSidebarOpen(false);
-              }}
-              className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 text-lg hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+              onClick={() => setFilter("all")}
+              className={`px-4 py-2 rounded-lg font-medium transition ${
+                filter === "all"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
             >
-              <RxDashboard className="size-6 flex-shrink-0" />
-              <span className="font-medium">{t("navigation.dashboard")}</span>
+              {t("notifications.filters.all")} ({notifications.length})
             </button>
-
             <button
-              onClick={() => {
-                navigate("/tasks");
-                setSidebarOpen(false);
-              }}
-              className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 text-lg hover:bg-myYellow-50/10 hover:text-yellow-600 rounded-lg transition-colors"
+              onClick={() => setFilter("unread")}
+              className={`px-4 py-2 rounded-lg font-medium transition ${
+                filter === "unread"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
             >
-              <MdOutlineTaskAlt className="size-6 flex-shrink-0" />
-              <span className="font-medium">{t("navigation.tasks")}</span>
+              {t("notifications.filters.unread")} ({unreadCount})
             </button>
+            <button
+              onClick={() => setFilter("read")}
+              className={`px-4 py-2 rounded-lg font-medium transition ${
+                filter === "read"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              {t("notifications.filters.read")} ({readCount})
+            </button>
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            >
+              <option value="all">{t("notifications.filters.allTypes")}</option>
+              <option value="task_assigned">
+                {t("notifications.types.task_assigned")}
+              </option>
+              <option value="task_completed">
+                {t("notifications.types.task_completed")}
+              </option>
+              <option value="task_reassigned">
+                {t("notifications.types.task_reassigned")}
+              </option>
+              <option value="deadline_approaching">
+                {t("notifications.types.deadline_approaching")}
+              </option>
+              <option value="task_overdue">
+                {t("notifications.types.task_overdue")}
+              </option>
+              <option value="status_changed">
+                {t("notifications.types.status_changed")}
+              </option>
+              <option value="work_report_added">
+                {t("notifications.types.work_report_added")}
+              </option>
+            </select>
+          </div>
 
-            {isManager() && (
+          {/* Actions */}
+          <div className="flex gap-2">
+            {unreadCount > 0 && (
               <button
-                onClick={() => {
-                  navigate("/users");
-                  setSidebarOpen(false);
-                }}
-                className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 text-lg hover:bg-purple-50 hover:text-purple-600 rounded-lg transition-colors"
+                onClick={handleMarkAllAsRead}
+                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
               >
-                <HiOutlineUsers className="size-6 flex-shrink-0" />
-                <span className="font-medium">{t("navigation.users")}</span>
+                <FaCheckDouble className="w-4 h-4" />
+                <span className="hidden sm:inline">
+                  {t("notifications.markAllAsRead")}
+                </span>
               </button>
             )}
-
-            <button
-              onClick={() => {
-                navigate("/notifications");
-                setSidebarOpen(false);
-              }}
-              // Highlight the current page button
-              className="w-full flex items-center gap-3 px-4 py-3 text-[#2b7fff] font-bold text-xl"
-            >
-              <RiNotification3Line className="size-6 flex-shrink-0" />
-              <span className="font-medium">
-                {t("navigation.notifications")}
-              </span>
-            </button>
-          </div>
-        </nav>
-
-        <div className="user-info flex flex-row-reverse items-center justify-between px-4 border border-t-gray-200">
-          {/* Logout button at bottom */}
-          <div className="">
-            <button
-              onClick={handleLogout}
-              className="text-gray-700 hover:bg-red-50 hover:text-red-600 p-4 rounded-lg transition-colors"
-            >
-              <TbLogout className="size-6 flex-shrink-0" />
-            </button>
-          </div>
-          {/* User info */}
-          <div className="p-4 ">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
-                {user?.fullName?.charAt(0).toUpperCase()}
-              </div>
-              <div className="min-w-0">
-                <p className="font-semibold text-gray-900 truncate">
-                  {user?.fullName}
-                </p>
-                <p className="text-xs text-gray-500 capitalize">
-                  {t(`users.roles.${user?.role}`)}
-                </p>
-              </div>
-            </div>
+            {notifications.length > 0 && (
+              <button
+                onClick={handleDeleteAll}
+                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+              >
+                <FaTrash className="w-4 h-4" />
+                <span className="hidden sm:inline">
+                  {t("notifications.deleteAll")}
+                </span>
+              </button>
+            )}
           </div>
         </div>
-      </aside>
 
-      {/* Main content - with margin for fixed sidebar on desktop */}
-      <div className={`flex-1 ${isRTL ? "lg:mr-[20%]" : "lg:ml-[20%]"}`}>
-        {/* Header - Sticky */}
-        <header className="bg-white shadow-sm sticky top-0 z-30">
-          <div className="px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                {/* Mobile menu button */}
-                <button
-                  onClick={() => setSidebarOpen(true)}
-                  className="lg:hidden text-gray-600 hover:text-gray-900 p-2"
-                >
-                  <FaBars className="w-6 h-6" />
-                </button>
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
-                  {t("notifications.title")}
-                </h1>
-              </div>
-              {/* Language Switcher and Notification Bell */}
-              <div className="flex items-center gap-3">
-                <LanguageSwitcher />
-                <NotificationBell />
-              </div>
-            </div>
-          </div>
-        </header>
-
-        {/* Main Content */}
-        <main className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 bg-[#FAFAFB] min-h-[calc(100vh-73px)]">
-          {/* Filters and Actions */}
-          <div className="bg-white rounded-lg shadow mb-6">
-            <div className="p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              {/* Filter Tabs */}
-              <div className="flex gap-2 flex-wrap">
-                <button
-                  onClick={() => setFilter("all")}
-                  className={`px-4 py-2 rounded-lg font-medium transition ${
-                    filter === "all"
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
-                >
-                  {t("notifications.filters.all")} ({notifications.length})
-                </button>
-                <button
-                  onClick={() => setFilter("unread")}
-                  className={`px-4 py-2 rounded-lg font-medium transition ${
-                    filter === "unread"
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
-                >
-                  {t("notifications.filters.unread")} ({unreadCount})
-                </button>
-                <button
-                  onClick={() => setFilter("read")}
-                  className={`px-4 py-2 rounded-lg font-medium transition ${
-                    filter === "read"
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
-                >
-                  {t("notifications.filters.read")} ({readCount})
-                </button>
-                <select
-                  value={typeFilter}
-                  onChange={(e) => setTypeFilter(e.target.value)}
-                  className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                >
-                  <option value="all">
-                    {t("notifications.filters.allTypes")}
-                  </option>
-                  <option value="task_assigned">
-                    {t("notifications.types.task_assigned")}
-                  </option>
-                  <option value="task_completed">
-                    {t("notifications.types.task_completed")}
-                  </option>
-                  <option value="task_reassigned">
-                    {t("notifications.types.task_reassigned")}
-                  </option>
-                  <option value="deadline_approaching">
-                    {t("notifications.types.deadline_approaching")}
-                  </option>
-                  <option value="task_overdue">
-                    {t("notifications.types.task_overdue")}
-                  </option>
-                  <option value="status_changed">
-                    {t("notifications.types.status_changed")}
-                  </option>
-                  <option value="work_report_added">
-                    {t("notifications.types.work_report_added")}
-                  </option>
-                </select>
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-2">
-                {unreadCount > 0 && (
-                  <button
-                    onClick={handleMarkAllAsRead}
-                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-                  >
-                    <FaCheckDouble className="w-4 h-4" />
-                    <span className="hidden sm:inline">
-                      {t("notifications.markAllAsRead")}
-                    </span>
-                  </button>
-                )}
-                {notifications.length > 0 && (
-                  <button
-                    onClick={handleDeleteAll}
-                    className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-                  >
-                    <FaTrash className="w-4 h-4" />
-                    <span className="hidden sm:inline">
-                      {t("notifications.deleteAll")}
-                    </span>
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Notifications List */}
-            <div className="divide-y divide-gray-200">
-              {loading ? (
-                // Skeleton Loading
-                Array.from({ length: 8 }).map((_, i) => (
-                  <SkeletonNotification key={i} />
-                ))
-              ) : notifications.length === 0 ? (
-                // Empty State
-                <div className="text-center py-16 text-gray-500">
-                  {filter === "all" ? (
-                    <>
-                      <FaBellSlash className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-                      <p className="text-lg font-medium">
-                        {t("notifications.empty.noNotificationsTitle")}
-                      </p>
-                      <p className="text-sm mt-2">
-                        {t("notifications.empty.noNotificationsMessage")}
-                      </p>
-                    </>
-                  ) : filter === "unread" ? (
-                    <>
-                      <FaCheckDouble className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-                      <p className="text-lg font-medium">
-                        {t("notifications.empty.allCaughtUpTitle")}
-                      </p>
-                      <p className="text-sm mt-2">
-                        {t("notifications.empty.allCaughtUpMessage")}
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <FaBellSlash className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-                      <p className="text-lg font-medium">
-                        {t("notifications.empty.noReadTitle")}
-                      </p>
-                      <p className="text-sm mt-2">
-                        {t("notifications.empty.noReadMessage")}
-                      </p>
-                    </>
-                  )}
-                </div>
+        {/* Notifications List */}
+        <div className="divide-y divide-gray-200">
+          {notifications.length === 0 ? (
+            // Empty State
+            <div className="text-center py-16 text-gray-500">
+              {filter === "all" ? (
+                <>
+                  <FaBellSlash className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+                  <p className="text-lg font-medium">
+                    {t("notifications.empty.noNotificationsTitle")}
+                  </p>
+                  <p className="text-sm mt-2">
+                    {t("notifications.empty.noNotificationsMessage")}
+                  </p>
+                </>
+              ) : filter === "unread" ? (
+                <>
+                  <FaCheckDouble className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+                  <p className="text-lg font-medium">
+                    {t("notifications.empty.allCaughtUpTitle")}
+                  </p>
+                  <p className="text-sm mt-2">
+                    {t("notifications.empty.allCaughtUpMessage")}
+                  </p>
+                </>
               ) : (
-                // Notification Items
-                notifications.map((notification) => (
+                <>
+                  <FaBellSlash className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+                  <p className="text-lg font-medium">
+                    {t("notifications.empty.noReadTitle")}
+                  </p>
+                  <p className="text-sm mt-2">
+                    {t("notifications.empty.noReadMessage")}
+                  </p>
+                </>
+              )}
+            </div>
+          ) : (
+            // Notification Items
+            notifications.map((notification) => (
+              <div
+                key={notification.id}
+                className={`p-4 hover:bg-gray-50 transition ${
+                  !notification.is_read ? "bg-blue-50" : ""
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  {/* Icon */}
                   <div
-                    key={notification.id}
-                    className={`p-4 hover:bg-gray-50 transition ${
-                      !notification.is_read ? "bg-blue-50" : ""
-                    }`}
+                    className={`mt-1 flex-shrink-0 ${getPriorityColor(
+                      notification.priority
+                    )}`}
                   >
-                    <div className="flex items-start gap-3">
-                      {/* Icon */}
-                      <div
-                        className={`mt-1 flex-shrink-0 ${getPriorityColor(
-                          notification.priority
-                        )}`}
-                      >
-                        {getNotificationIcon(notification.type)}
-                      </div>
+                    {getNotificationIcon(notification.type)}
+                  </div>
 
-                      {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2 mb-1">
-                          <p className="text-sm font-medium text-gray-900">
-                            {notification.title}
-                          </p>
-                          {!notification.is_read && (
-                            <span className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-1"></span>
-                          )}
-                        </div>
-                        <p className="text-sm text-gray-600 mb-2">
-                          {notification.message}
-                        </p>
-                        {notification.task_title && (
-                          <p className="text-xs text-gray-500 mb-2">
-                            {t("notifications.taskPrefix")}:{" "}
-                            {notification.task_title}
-                          </p>
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <p className="text-sm font-medium text-gray-900">
+                        {notification.title}
+                      </p>
+                      {!notification.is_read && (
+                        <span className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-1"></span>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2">
+                      {notification.message}
+                    </p>
+                    {notification.task_title && (
+                      <p className="text-xs text-gray-500 mb-2">
+                        {t("notifications.taskPrefix")}:{" "}
+                        {notification.task_title}
+                      </p>
+                    )}
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs text-gray-400">
+                        {getTimeAgo(notification.created_at)}
+                      </p>
+                      <div className="flex gap-2">
+                        {!notification.is_read && (
+                          <button
+                            onClick={() => handleMarkAsRead(notification.id)}
+                            className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                          >
+                            {t("notifications.markAsRead")}
+                          </button>
                         )}
-                        <div className="flex items-center justify-between">
-                          <p className="text-xs text-gray-400">
-                            {getTimeAgo(notification.created_at)}
-                          </p>
-                          <div className="flex gap-2">
-                            {!notification.is_read && (
-                              <button
-                                onClick={() =>
-                                  handleMarkAsRead(notification.id)
-                                }
-                                className="text-xs text-blue-600 hover:text-blue-800 font-medium"
-                              >
-                                {t("notifications.markAsRead")}
-                              </button>
-                            )}
-                            {notification.task_id && (
-                              <button
-                                onClick={() => {
-                                  if (!notification.is_read) {
-                                    handleMarkAsRead(notification.id);
-                                  }
-                                  navigate("/tasks");
-                                }}
-                                className="text-xs text-blue-600 hover:text-blue-800 font-medium"
-                              >
-                                {t("notifications.viewTask")}
-                              </button>
-                            )}
-                            <button
-                              onClick={() => handleDelete(notification.id)}
-                              className="text-xs text-red-600 hover:text-red-800 font-medium"
-                            >
-                              {t("common.delete")}
-                            </button>
-                          </div>
-                        </div>
+                        {notification.task_id && (
+                          <button
+                            onClick={() => {
+                              if (!notification.is_read) {
+                                handleMarkAsRead(notification.id);
+                              }
+                              navigate("/tasks");
+                            }}
+                            className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                          >
+                            {t("notifications.viewTask")}
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(notification.id)}
+                          className="text-xs text-red-600 hover:text-red-800 font-medium"
+                        >
+                          {t("common.delete")}
+                        </button>
                       </div>
                     </div>
                   </div>
-                ))
-              )}
-            </div>
-          </div>
-        </main>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
-    </div>
+    </AppLayout>
   );
 };
 

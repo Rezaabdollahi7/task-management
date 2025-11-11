@@ -8,7 +8,6 @@ import { tasksAPI } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import {
-  FaCalendarAlt,
   FaFilter,
   FaCalendarDay,
   FaCalendarWeek,
@@ -16,6 +15,7 @@ import {
   FaArrowLeft,
   FaArrowRight,
 } from "react-icons/fa";
+import AppLayout from "../../components/Layout/AppLayout";
 import DayTasksModal from "../../components/Calendar/DayTasksModal";
 
 const localizer = momentLocalizer(moment);
@@ -57,6 +57,7 @@ const CalendarPage = () => {
     priority: "",
     employeeId: "",
   });
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // State for modal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -223,7 +224,7 @@ const CalendarPage = () => {
     };
   };
 
-  // Custom toolbar component (unchanged)
+  // Custom toolbar component
   const CustomToolbar = ({ onNavigate, label, date }) => {
     const formatDateForDisplay = (date) => {
       if (isRTL) {
@@ -338,55 +339,29 @@ const CalendarPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-64 mb-6"></div>
-            <div className="bg-white rounded-lg h-96"></div>
-          </div>
+      <AppLayout
+        title={t("navigation.calendar")}
+        subtitle={t("calendar.subtitle")}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+      >
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-64 mb-6"></div>
+          <div className="bg-white rounded-lg h-96"></div>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <FaCalendarAlt className="w-8 h-8 text-blue-600" />
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  {t("navigation.calendar")}
-                </h1>
-                <p className="text-sm text-gray-600">
-                  {t("calendar.subtitle")} - برای مشاهده تسک‌ها روی روزها کلیک
-                  کنید
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              {isManager() && (
-                <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                  <FaFilter className="w-4 h-4" />
-                  <span>{t("calendar.filters")}</span>
-                </button>
-              )}
-              <button
-                onClick={fetchTasks}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                {t("calendar.refresh")}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Calendar */}
-      <div className="max-w-[90rem] mx-auto p-4 sm:p-6 lg:p-8" id="calendar">
+    <AppLayout
+      title={t("navigation.calendar")}
+      subtitle={t("calendar.subtitle") + " - " + t("calendar.clickToView")}
+      sidebarOpen={sidebarOpen}
+      setSidebarOpen={setSidebarOpen}
+    >
+      {/* Calendar Content */}
+      <div className="max-w-[90rem] mx-auto" id="calendar">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
           <Calendar
             localizer={localizer}
@@ -442,7 +417,7 @@ const CalendarPage = () => {
             </div>
           </div>
           <p className="text-sm text-gray-600 mt-4">
-            روی هر روز کلیک کنید تا لیست کامل تسک‌ها را مشاهده کنید
+            {t("calendar.clickToView")}
           </p>
         </div>
       </div>
@@ -454,7 +429,7 @@ const CalendarPage = () => {
         selectedDate={selectedDate}
         tasks={selectedDateTasks}
       />
-    </div>
+    </AppLayout>
   );
 };
 
