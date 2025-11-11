@@ -83,3 +83,7 @@ tr,
 th {
   text-align: center;
 }
+
+#calendar .rbc-header{
+  padding: 15px;
+}

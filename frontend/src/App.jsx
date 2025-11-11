@@ -15,6 +15,7 @@ import UserList from "./pages/Users/UserList";
 import TaskList from "./pages/Tasks/TaskList";
 import Notifications from "./pages/Notifications";
 import { SocketProvider } from "./context/SocketContext";
+import Calendar from "./pages/Calendar/Calendar";
 
 function App() {
   return (
@@ -58,6 +59,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Notifications />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/calendar"
+              element={
+                <ProtectedRoute>
+                  <Calendar />
                 </ProtectedRoute>
               }
             />

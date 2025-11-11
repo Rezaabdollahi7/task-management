@@ -41,7 +41,26 @@
     "users": "کاربران",
     "notifications": "اعلان‌ها",
     "reports": "گزارش‌ها",
-    "settings": "تنظیمات"
+    "settings": "تنظیمات",
+    "calendar": "تقویم"
+  },
+  "calendar": {
+    "today": "امروز",
+    "previous": "قبلی",
+    "next": "بعدی",
+    "month": "ماه",
+    "week": "هفته",
+    "day": "روز",
+    "agenda": "Agenda",
+    "date": "تاریخ",
+    "time": "زمان",
+    "event": "رویداد",
+    "noEventsInRange": "رویدادی در این بازه یافت نشد",
+    "more": "بیشتر",
+    "subtitle": "تسک های خود را در تقویم مشاهده و تغییر دهید ",
+    "filters": "فیتر ها",
+    "refresh": "به روز رسانی",
+    "legend": "راهنما"
   },
   "dashboard": {
     "title": "داشبورد",

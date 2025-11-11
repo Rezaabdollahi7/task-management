@@ -41,7 +41,26 @@
     "users": "Users",
     "notifications": "Notifications",
     "reports": "Reports",
-    "settings": "Settings"
+    "settings": "Settings",
+    "calendar": "Calendar"
+  },
+  "calendar": {
+    "today": "Today",
+    "previous": "Previous",
+    "next": "Next",
+    "month": "Month",
+    "week": "Week",
+    "day": "Day",
+    "agenda": "Agenda",
+    "date": "Date",
+    "time": "Time",
+    "event": "Event",
+    "noEventsInRange": "No events in this range",
+    "more": "more",
+    "subtitle": "View and manage your tasks in calendar view",
+    "filters": "Filters",
+    "refresh": "Refresh",
+    "legend": "Legend"
   },
   "dashboard": {
     "title": "Dashboard",
