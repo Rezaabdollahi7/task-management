@@ -91,26 +91,55 @@ const CalendarPage = () => {
 
       switch (view) {
         case Views.MONTH:
-          startDate = currentDate.startOf("month").format("YYYY-MM-DD");
-          endDate = currentDate.endOf("month").format("YYYY-MM-DD");
+          startDate = currentDate
+            .clone()
+            .startOf("month")
+            .subtract(7, "days")
+            .format("YYYY-MM-DD");
+          endDate = currentDate
+            .clone()
+            .endOf("month")
+            .add(7, "days")
+            .format("YYYY-MM-DD");
           break;
         case Views.WEEK:
-          startDate = currentDate.startOf("week").format("YYYY-MM-DD");
-          endDate = currentDate.endOf("week").format("YYYY-MM-DD");
+          startDate = currentDate
+            .clone()
+            .startOf("week")
+            .subtract(2, "days")
+            .format("YYYY-MM-DD");
+          endDate = currentDate
+            .clone()
+            .endOf("week")
+            .add(2, "days")
+            .format("YYYY-MM-DD");
           break;
         case Views.DAY:
-          startDate = currentDate.format("YYYY-MM-DD");
-          endDate = currentDate.format("YYYY-MM-DD");
+          startDate = currentDate
+            .clone()
+            .subtract(1, "days")
+            .format("YYYY-MM-DD");
+          endDate = currentDate.clone().add(1, "days").format("YYYY-MM-DD");
           break;
         default:
-          startDate = currentDate.startOf("month").format("YYYY-MM-DD");
-          endDate = currentDate.endOf("month").format("YYYY-MM-DD");
+          startDate = currentDate
+            .clone()
+            .startOf("month")
+            .subtract(7, "days")
+            .format("YYYY-MM-DD");
+          endDate = currentDate
+            .clone()
+            .endOf("month")
+            .add(7, "days")
+            .format("YYYY-MM-DD");
       }
 
       const params = {
         startDate,
         endDate,
         ...filters,
+        page: 1,
+        limit: 1000,
       };
 
       // If employee, only show their tasks
@@ -119,7 +148,7 @@ const CalendarPage = () => {
       }
 
       const response = await tasksAPI.getAll(params);
-      const tasks = response.data.tasks;
+      const tasks = response.data.data?.tasks || response.data.tasks;
 
       setAllTasks(tasks);
 
@@ -127,6 +156,7 @@ const CalendarPage = () => {
       const eventsByDate = {};
       tasks.forEach((task) => {
         const taskDate = moment(task.task_date).format("YYYY-MM-DD");
+
         if (!eventsByDate[taskDate]) {
           eventsByDate[taskDate] = {
             urgent: 0,
@@ -137,7 +167,6 @@ const CalendarPage = () => {
         }
         eventsByDate[taskDate][task.priority]++;
       });
-
       const calendarEvents = Object.keys(eventsByDate).map((date) => ({
         id: date,
         title: "", // Empty title to hide text
@@ -471,6 +500,7 @@ const CalendarPage = () => {
         onClose={() => setIsModalOpen(false)}
         selectedDate={selectedDate}
         tasks={selectedDateTasks}
+        onTaskCreated={fetchTasks}
       />
     </AppLayout>
   );

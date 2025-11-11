@@ -12,6 +12,7 @@ const TaskModal = ({
   onSuccess,
   editTask = null,
   viewOnly = false,
+  initialTaskDate = null,
 }) => {
   const [formData, setFormData] = useState({
     title: "",
@@ -60,11 +61,15 @@ const TaskModal = ({
         employeeId: editTask.employee_id || "",
       });
     } else {
+      const defaultDate = initialTaskDate
+        ? new Date(initialTaskDate).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0];
+
       setFormData({
         title: "",
         description: "",
         priority: "medium",
-        taskDate: "",
+        taskDate: defaultDate,
         deadline: "",
         deviceModel: "",
         serialNumber: "",
@@ -73,7 +78,7 @@ const TaskModal = ({
       });
     }
     setError("");
-  }, [editTask, isOpen]);
+  }, [editTask, isOpen, initialTaskDate]);
 
   // Handle input change
   const handleChange = (e) => {
