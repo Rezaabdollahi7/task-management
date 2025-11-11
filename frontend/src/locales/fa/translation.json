@@ -22,7 +22,8 @@
     "previous": "قبلی",
     "submit": "ارسال",
     "title": "عنوان",
-    "created": "ایجاد شده"
+    "created": "ایجاد شده",
+    "clearAll": "پاک کردن همه"
   },
   "auth": {
     "login": "ورود",
@@ -58,13 +59,19 @@
     "noEventsInRange": "رویدادی در این بازه یافت نشد",
     "more": "بیشتر",
     "subtitle": "تسک های خود را در تقویم مشاهده و تغییر دهید ",
-    "filters": "فیتر ها",
     "refresh": "به روز رسانی",
     "legend": "راهنما",
     "dayTasks": "تسک‌های روز",
     "noTasksForDay": "هیچ تسکی برای این روز وجود ندارد",
     "tasksCount": "تسک",
-    "clickToView": "روی روزها کلیک کنید تا تسک‌ها را مشاهده کنید"
+    "clickToView": "روی روزها کلیک کنید تا تسک‌ها را مشاهده کنید",
+    "quickActions": "عملیات سریع",
+    "filters": {
+      "filters": "فیلتر ها",
+      "allStatuses": "همه وضعیت‌ها",
+      "allPriorities": "همه اولویت‌ها",
+      "allEmployees": "همه کارمندان"
+    }
   },
   "dashboard": {
     "title": "داشبورد",

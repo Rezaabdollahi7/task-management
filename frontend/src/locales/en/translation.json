@@ -22,7 +22,8 @@
     "previous": "Previous",
     "submit": "Submit",
     "title": "title",
-    "created": "Created"
+    "created": "Created",
+    "clearAll": "Clear All"
   },
   "auth": {
     "login": "Login",
@@ -58,13 +59,19 @@
     "noEventsInRange": "No events in this range",
     "more": "more",
     "subtitle": "View and manage your tasks in calendar view",
-    "filters": "Filters",
     "refresh": "Refresh",
     "legend": "Legend",
     "dayTasks": "Day tasks",
-    "noTasksForDay":  "No Tasks For Day",
+    "noTasksForDay": "No Tasks For Day",
     "tasksCount": "Tasks Count",
-    "clickToView": "Click To View"
+    "clickToView": "Click To View",
+    "quickActions": "Quick Actions",
+    "filters": {
+      "filters": "Filters",
+      "allStatuses": " All Statuses",
+      "allPriorities": "All Priority",
+      "allEmployees": "All Employees"
+    }
   },
   "dashboard": {
     "title": "Dashboard",

@@ -4,11 +4,10 @@ import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
 import "moment-jalaali";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { tasksAPI } from "../../services/api";
+import { tasksAPI, usersAPI } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import {
-  FaFilter,
   FaCalendarDay,
   FaCalendarWeek,
   FaCalendar,
@@ -17,6 +16,7 @@ import {
 } from "react-icons/fa";
 import AppLayout from "../../components/Layout/AppLayout";
 import DayTasksModal from "../../components/Calendar/DayTasksModal";
+import CalendarFilters from "../../components/Calendar/CalendarFilters";
 
 const localizer = momentLocalizer(moment);
 
@@ -49,6 +49,7 @@ const CalendarPage = () => {
 
   const [events, setEvents] = useState([]);
   const [allTasks, setAllTasks] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState(Views.MONTH);
   const [date, setDate] = useState(new Date());
@@ -63,6 +64,21 @@ const CalendarPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedDateTasks, setSelectedDateTasks] = useState([]);
+
+  // Fetch employees for manager filter
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      if (isManager) {
+        try {
+          const response = await usersAPI.getAssignable();
+          setEmployees(response.data);
+        } catch (error) {
+          console.error("Failed to fetch employees:", error);
+        }
+      }
+    };
+    fetchEmployees();
+  }, [isManager]);
 
   // Fetch all tasks for the current view range
   const fetchTasks = useCallback(async () => {
@@ -154,6 +170,23 @@ const CalendarPage = () => {
       moment.locale("en");
     }
   }, [isRTL]);
+
+  // Handle filter change
+  const handleFilterChange = (filterName, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [filterName]: value,
+    }));
+  };
+
+  // Handle clear all filters
+  const handleClearAll = () => {
+    setFilters({
+      status: "",
+      priority: "",
+      employeeId: "",
+    });
+  };
 
   // Handle day click
   const handleSelectSlot = (slotInfo) => {
@@ -360,6 +393,16 @@ const CalendarPage = () => {
       sidebarOpen={sidebarOpen}
       setSidebarOpen={setSidebarOpen}
     >
+      {/* Calendar Filters */}
+      <CalendarFilters
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        isManager={isManager}
+        employees={employees}
+        onRefresh={fetchTasks}
+        onClearAll={handleClearAll}
+      />
+
       {/* Calendar Content */}
       <div className="max-w-[90rem] mx-auto" id="calendar">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
