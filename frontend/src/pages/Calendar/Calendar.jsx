@@ -10,13 +10,13 @@ import { useTranslation } from "react-i18next";
 import {
   FaCalendarAlt,
   FaFilter,
-  FaList,
   FaCalendarDay,
   FaCalendarWeek,
   FaCalendar,
   FaArrowLeft,
   FaArrowRight,
 } from "react-icons/fa";
+import DayTasksModal from "../../components/Calendar/DayTasksModal";
 
 const localizer = momentLocalizer(moment);
 
@@ -48,6 +48,7 @@ const CalendarPage = () => {
   const isRTL = i18n.language === "fa";
 
   const [events, setEvents] = useState([]);
+  const [allTasks, setAllTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState(Views.MONTH);
   const [date, setDate] = useState(new Date());
@@ -57,7 +58,12 @@ const CalendarPage = () => {
     employeeId: "",
   });
 
-  // Fetch tasks for calendar
+  // State for modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDateTasks, setSelectedDateTasks] = useState([]);
+
+  // Fetch all tasks for the current view range
   const fetchTasks = useCallback(async () => {
     try {
       setLoading(true);
@@ -98,18 +104,32 @@ const CalendarPage = () => {
       const response = await tasksAPI.getAll(params);
       const tasks = response.data.tasks;
 
-      // Convert tasks to calendar events
-      const calendarEvents = tasks.map((task) => ({
-        id: task.id,
-        title: task.title,
-        start: new Date(task.task_date),
-        end: new Date(task.deadline),
+      setAllTasks(tasks);
+
+      // Create events with dots instead of full task details
+      const eventsByDate = {};
+      tasks.forEach((task) => {
+        const taskDate = moment(task.task_date).format("YYYY-MM-DD");
+        if (!eventsByDate[taskDate]) {
+          eventsByDate[taskDate] = {
+            urgent: 0,
+            high: 0,
+            medium: 0,
+            low: 0,
+          };
+        }
+        eventsByDate[taskDate][task.priority]++;
+      });
+
+      const calendarEvents = Object.keys(eventsByDate).map((date) => ({
+        id: date,
+        title: "", // Empty title to hide text
+        start: new Date(date),
+        end: new Date(date),
         allDay: true,
         resource: {
-          task: task,
-          status: task.status,
-          priority: task.priority,
-          employee: task.employee_name,
+          date: date,
+          priorities: eventsByDate[date],
         },
       }));
 
@@ -134,65 +154,80 @@ const CalendarPage = () => {
     }
   }, [isRTL]);
 
-  // Event style based on priority and status
-  const eventStyleGetter = (event) => {
-    let backgroundColor = "#3174ad"; // default blue
-    let borderColor = "#3174ad";
-    let color = "white";
+  // Handle day click
+  const handleSelectSlot = (slotInfo) => {
+    const selectedDate = moment(slotInfo.start).format("YYYY-MM-DD");
+    const tasksForDate = allTasks.filter(
+      (task) => moment(task.task_date).format("YYYY-MM-DD") === selectedDate
+    );
 
-    // Priority-based colors
-    switch (event.resource.priority) {
-      case "urgent":
-        backgroundColor = "#dc2626"; // red-600
-        borderColor = "#dc2626";
-        break;
-      case "high":
-        backgroundColor = "#ea580c"; // orange-600
-        borderColor = "#ea580c";
-        break;
-      case "medium":
-        backgroundColor = "#ca8a04"; // yellow-600
-        borderColor = "#ca8a04";
-        break;
-      case "low":
-        backgroundColor = "#16a34a"; // green-600
-        borderColor = "#16a34a";
-        break;
-      default:
-        backgroundColor = "#3174ad";
-        borderColor = "#3174ad";
-    }
+    setSelectedDate(selectedDate);
+    setSelectedDateTasks(tasksForDate);
+    setIsModalOpen(true);
+  };
 
-    // Status-based styling
-    if (event.resource.status === "completed") {
-      backgroundColor = "#16a34a"; // green-600
-      borderColor = "#16a34a";
-    } else if (event.resource.status === "cancelled") {
-      backgroundColor = "#6b7280"; // gray-500
-      borderColor = "#6b7280";
-      color = "#f3f4f6";
-    }
+  // Custom event component showing priority dots
+  const CustomEvent = ({ event }) => {
+    const { priorities } = event.resource;
 
+    return (
+      <div className="w-full h-full flex justify-center items-center gap-1 p-1">
+        {priorities.urgent > 0 && (
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 bg-red-600 rounded-full"></div>
+            {priorities.urgent > 1 && (
+              <span className="text-xs text-red-600">{priorities.urgent}</span>
+            )}
+          </div>
+        )}
+        {priorities.high > 0 && (
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
+            {priorities.high > 1 && (
+              <span className="text-xs text-orange-600">{priorities.high}</span>
+            )}
+          </div>
+        )}
+        {priorities.medium > 0 && (
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 bg-yellow-600 rounded-full"></div>
+            {priorities.medium > 1 && (
+              <span className="text-xs text-yellow-600">
+                {priorities.medium}
+              </span>
+            )}
+          </div>
+        )}
+        {priorities.low > 0 && (
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+            {priorities.low > 1 && (
+              <span className="text-xs text-green-600">{priorities.low}</span>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // No event styling needed since we're just showing dots
+  const eventStyleGetter = () => {
     return {
       style: {
-        backgroundColor,
-        borderColor,
-        color,
-        borderRadius: "4px",
+        backgroundColor: "transparent",
         border: "none",
-        fontSize: "12px",
-        padding: "2px 4px",
+        padding: 0,
+        margin: 0,
         cursor: "pointer",
       },
     };
   };
 
-  // Custom toolbar component
+  // Custom toolbar component (unchanged)
   const CustomToolbar = ({ onNavigate, label, date }) => {
     const formatDateForDisplay = (date) => {
       if (isRTL) {
         const jDate = moment(date);
-
         switch (view) {
           case Views.MONTH:
             return jDate.format("jMMMM jYYYY");
@@ -224,14 +259,12 @@ const CalendarPage = () => {
               <FaArrowLeft className="w-4 h-4" />
             )}
           </button>
-
           <button
             onClick={() => onNavigate("TODAY")}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
           >
             {t("calendar.today")}
           </button>
-
           <button
             onClick={() => onNavigate("NEXT")}
             className="p-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
@@ -243,11 +276,9 @@ const CalendarPage = () => {
             )}
           </button>
         </div>
-
         <h2 className="text-lg font-semibold text-gray-900">
           {formatDateForDisplay(date)}
         </h2>
-
         <div className="flex items-center gap-2">
           <select
             value={view}
@@ -304,17 +335,6 @@ const CalendarPage = () => {
       showMore: (total) => `+${total} ${t("calendar.more")}`,
     };
   };
-  // Custom event component
-  const CustomEvent = ({ event }) => {
-    return (
-      <div className="w-full h-full p-1">
-        <div className="text-xs font-medium truncate">{event.title}</div>
-        <div className="text-xs opacity-75 truncate">
-          {event.resource.employee}
-        </div>
-      </div>
-    );
-  };
 
   if (loading) {
     return (
@@ -342,20 +362,18 @@ const CalendarPage = () => {
                   {t("navigation.calendar")}
                 </h1>
                 <p className="text-sm text-gray-600">
-                  {t("calendar.subtitle")}
+                  {t("calendar.subtitle")} - برای مشاهده تسک‌ها روی روزها کلیک
+                  کنید
                 </p>
               </div>
             </div>
-
             <div className="flex items-center gap-4">
-              {/* Filter Button - Only for managers */}
               {isManager() && (
                 <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                   <FaFilter className="w-4 h-4" />
                   <span>{t("calendar.filters")}</span>
                 </button>
               )}
-
               <button
                 onClick={fetchTasks}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -387,6 +405,8 @@ const CalendarPage = () => {
             }}
             messages={getCalendarMessages()}
             rtl={isRTL}
+            selectable
+            onSelectSlot={handleSelectSlot}
           />
         </div>
 
@@ -397,44 +417,43 @@ const CalendarPage = () => {
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-red-600 rounded"></div>
+              <div className="w-3 h-3 bg-red-600 rounded-full"></div>
               <span className="text-sm text-gray-700">
                 {t("tasks.priorities.urgent")}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-orange-600 rounded"></div>
+              <div className="w-3 h-3 bg-orange-600 rounded-full"></div>
               <span className="text-sm text-gray-700">
                 {t("tasks.priorities.high")}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-yellow-600 rounded"></div>
+              <div className="w-3 h-3 bg-yellow-600 rounded-full"></div>
               <span className="text-sm text-gray-700">
                 {t("tasks.priorities.medium")}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-green-600 rounded"></div>
+              <div className="w-3 h-3 bg-green-600 rounded-full"></div>
               <span className="text-sm text-gray-700">
                 {t("tasks.priorities.low")}
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-gray-500 rounded"></div>
-              <span className="text-sm text-gray-700">
-                {t("tasks.statuses.cancelled")}
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-blue-600 rounded"></div>
-              <span className="text-sm text-gray-700">
-                {t("tasks.statuses.completed")}
-              </span>
-            </div>
           </div>
+          <p className="text-sm text-gray-600 mt-4">
+            روی هر روز کلیک کنید تا لیست کامل تسک‌ها را مشاهده کنید
+          </p>
         </div>
       </div>
+
+      {/* Day Tasks Modal */}
+      <DayTasksModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        selectedDate={selectedDate}
+        tasks={selectedDateTasks}
+      />
     </div>
   );
 };

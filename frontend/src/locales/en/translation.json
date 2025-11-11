@@ -60,7 +60,11 @@
     "subtitle": "View and manage your tasks in calendar view",
     "filters": "Filters",
     "refresh": "Refresh",
-    "legend": "Legend"
+    "legend": "Legend",
+    "dayTasks": "Day tasks",
+    "noTasksForDay":  "No Tasks For Day",
+    "tasksCount": "Tasks Count",
+    "clickToView": "Click To View"
   },
   "dashboard": {
     "title": "Dashboard",
