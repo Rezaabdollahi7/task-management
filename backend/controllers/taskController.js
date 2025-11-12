@@ -30,6 +30,21 @@ const getAllTasks = async (req, res) => {
 
     const result = await Task.getAll(filters);
 
+    if (req.query.startDate && req.query.endDate) {
+      const startDate = new Date(req.query.startDate);
+      const endDate = new Date(req.query.endDate);
+
+      result.tasks = result.tasks.filter((task) => {
+        const taskDate = new Date(task.task_date);
+        return taskDate >= startDate && taskDate <= endDate;
+      });
+
+      result.pagination.totalItems = result.tasks.length;
+      result.pagination.totalPages = Math.ceil(
+        result.tasks.length / (filters.limit || 10)
+      );
+    }
+
     res.json({
       success: true,
       data: result,

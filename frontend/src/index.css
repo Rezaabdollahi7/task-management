@@ -84,6 +84,10 @@ th {
   text-align: center;
 }
 
-#calendar .rbc-header{
+#calendar .rbc-header {
   padding: 15px;
+}
+
+.rbc-day-bg:hover {
+  cursor: pointer;
 }

@@ -133,27 +133,9 @@ const DayTasksModal = ({
                     ? "هیچ تسکی برای این روز وجود ندارد"
                     : "No tasks for this day"}
                 </p>
-
-                <button
-                  onClick={handleAddNewTask}
-                  className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 mx-auto"
-                >
-                  <FaPlus className="w-4 h-4" />
-                  {isRTL ? "افزودن تسک جدید" : "Add New Task"}
-                </button>
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="flex justify-end mb-4">
-                  <button
-                    onClick={handleAddNewTask}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-                  >
-                    <FaPlus className="w-4 h-4" />
-                    {isRTL ? "افزودن تسک جدید" : "Add New Task"}
-                  </button>
-                </div>
-
                 {tasks.map((task) => (
                   <div
                     key={task.id}
@@ -178,7 +160,7 @@ const DayTasksModal = ({
                         }`}
                       >
                         <span
-                          className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${getPriorityColor(
+                          className={`inline-flex items-center gap-1 px-4 py-2 rounded-lg  font-medium ${getPriorityColor(
                             task.priority
                           )}`}
                         >
@@ -186,7 +168,7 @@ const DayTasksModal = ({
                           {getTaskPriorityText(task.priority)}
                         </span>
                         <span
-                          className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                          className={`inline-flex items-center gap-1 px-4 py-2 rounded-lg  font-medium ${getStatusColor(
                             task.status
                           )}`}
                         >
@@ -284,14 +266,10 @@ const DayTasksModal = ({
             }`}
           >
             <div
-              className={`flex justify-between items-center ${
+              className={`flex justify-center items-center ${
                 isRTL ? "flex-row-reverse" : ""
               }`}
             >
-              <div className="text-sm text-gray-600">
-                {tasks.length}{" "}
-                {isRTL ? "تسک" : tasks.length === 1 ? "task" : "tasks"}
-              </div>
               <div className="flex gap-3">
                 <button
                   onClick={handleAddNewTask}

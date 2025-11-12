@@ -234,10 +234,10 @@ const CalendarPage = () => {
     const { priorities } = event.resource;
 
     return (
-      <div className="w-full h-full flex justify-center items-center gap-1 p-1">
+      <div className="w-full h-full flex justify-center items-center gap-1 p-1 mt-[20%]">
         {priorities.urgent > 0 && (
           <div className="flex items-center gap-1">
-            <div className="w-2 h-2 bg-red-600 rounded-full"></div>
+            <div className="size-4 bg-red-600 rounded-md"></div>
             {priorities.urgent > 1 && (
               <span className="text-xs text-red-600">{priorities.urgent}</span>
             )}
@@ -245,7 +245,7 @@ const CalendarPage = () => {
         )}
         {priorities.high > 0 && (
           <div className="flex items-center gap-1">
-            <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
+            <div className="size-4 bg-orange-600 rounded-md"></div>
             {priorities.high > 1 && (
               <span className="text-xs text-orange-600">{priorities.high}</span>
             )}
@@ -253,7 +253,7 @@ const CalendarPage = () => {
         )}
         {priorities.medium > 0 && (
           <div className="flex items-center gap-1">
-            <div className="w-2 h-2 bg-yellow-600 rounded-full"></div>
+            <div className="size-4 bg-yellow-600 rounded-md"></div>
             {priorities.medium > 1 && (
               <span className="text-xs text-yellow-600">
                 {priorities.medium}
@@ -263,7 +263,7 @@ const CalendarPage = () => {
         )}
         {priorities.low > 0 && (
           <div className="flex items-center gap-1">
-            <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+            <div className="size-4 bg-green-600 rounded-md"></div>
             {priorities.low > 1 && (
               <span className="text-xs text-green-600">{priorities.low}</span>
             )}
