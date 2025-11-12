@@ -1,15 +1,18 @@
 // src/components/Calendar/DayTasksModal.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaTimes,
   FaUser,
   FaCalendar,
-  FaFlag,
-  FaCircle,
   FaPlus,
+  FaEdit,
+  FaEye,
 } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import TaskModal from "../TaskModal";
+import { tasksAPI } from "../../services/api";
+import { showSuccess, showError } from "../../utils/toast";
+import { MdOutlineFileDownloadDone } from "react-icons/md";
 
 const DayTasksModal = ({
   isOpen,
@@ -17,23 +20,23 @@ const DayTasksModal = ({
   selectedDate,
   tasks,
   onTaskCreated,
+  onTaskUpdated,
 }) => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "fa";
 
   const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false);
+  const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
+  const [isViewTaskModalOpen, setIsViewTaskModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [loadingTaskId, setLoadingTaskId] = useState(null);
+  const [localTasks, setLocalTasks] = useState(tasks);
+
+  useEffect(() => {
+    setLocalTasks(tasks);
+  }, [tasks]);
 
   if (!isOpen) return null;
-
-  const getPriorityColor = (priority) => {
-    const colors = {
-      urgent: "text-red-600 bg-red-50",
-      high: "text-orange-600 bg-orange-50",
-      medium: "text-yellow-600 bg-yellow-50",
-      low: "text-green-600 bg-green-50",
-    };
-    return colors[priority] || "text-gray-600 bg-gray-50";
-  };
 
   const getStatusColor = (status) => {
     const colors = {
@@ -75,25 +78,77 @@ const DayTasksModal = ({
     return statusMap[status] || status;
   };
 
-  const getTaskPriorityText = (priority) => {
-    const priorityMap = {
-      urgent: isRTL ? "فوری" : "Urgent",
-      high: isRTL ? "بالا" : "High",
-      medium: isRTL ? "متوسط" : "Medium",
-      low: isRTL ? "پایین" : "Low",
-    };
-    return priorityMap[priority] || priority;
-  };
-
   const handleTaskCreated = () => {
     setIsCreateTaskModalOpen(false);
     if (onTaskCreated) {
       onTaskCreated();
     }
+    if (onTaskUpdated) {
+      onTaskUpdated();
+    }
+  };
+
+  const handleTaskUpdated = () => {
+    setIsEditTaskModalOpen(false);
+    if (onTaskCreated) {
+      onTaskCreated();
+    }
+    if (onTaskUpdated) {
+      onTaskUpdated();
+    }
   };
 
   const handleAddNewTask = () => {
     setIsCreateTaskModalOpen(true);
+  };
+
+  const handleEditTask = (task) => {
+    setSelectedTask(task);
+    setIsEditTaskModalOpen(true);
+  };
+
+  const handleViewTask = (task) => {
+    setSelectedTask(task);
+    setIsViewTaskModalOpen(true);
+  };
+
+  const handleCompleteTask = async (task) => {
+    try {
+      setLoadingTaskId(task.id);
+      await tasksAPI.updateStatus(task.id, "completed");
+
+      setLocalTasks((prevTasks) =>
+        prevTasks.map((t) =>
+          t.id === task.id ? { ...t, status: "completed" } : t
+        )
+      );
+
+      if (onTaskUpdated) {
+        onTaskUpdated();
+      }
+
+      if (onTaskCreated) {
+        onTaskCreated();
+      }
+    } catch (error) {
+      console.error("Error completing task:", error);
+      showError(error.message || t("tasks.messages.completeFailed"));
+    } finally {
+      setLoadingTaskId(null);
+    }
+  };
+
+  const canEditTask = (task) => {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    return user.role === "manager" || task.employee_id === user.id;
+  };
+
+  const canCompleteTask = (task) => {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const isAssignedUser = task.employee_id === user.id;
+    const isCompletableStatus = ["open", "in_progress"].includes(task.status);
+
+    return isAssignedUser && isCompletableStatus;
   };
 
   return (
@@ -125,7 +180,7 @@ const DayTasksModal = ({
 
           {/* Content */}
           <div className="p-6 overflow-y-auto max-h-[60vh]">
-            {tasks.length === 0 ? (
+            {localTasks.length === 0 ? (
               <div className="text-center py-8">
                 <FaCalendar className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                 <p className="text-gray-500 text-lg">
@@ -136,10 +191,10 @@ const DayTasksModal = ({
               </div>
             ) : (
               <div className="space-y-4">
-                {tasks.map((task) => (
+                {localTasks.map((task) => (
                   <div
                     key={task.id}
-                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                    className="border-2 border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                   >
                     {/* Task Header */}
                     <div
@@ -160,19 +215,10 @@ const DayTasksModal = ({
                         }`}
                       >
                         <span
-                          className={`inline-flex items-center gap-1 px-4 py-2 rounded-lg  font-medium ${getPriorityColor(
-                            task.priority
-                          )}`}
-                        >
-                          <FaFlag className="w-3 h-3" />
-                          {getTaskPriorityText(task.priority)}
-                        </span>
-                        <span
-                          className={`inline-flex items-center gap-1 px-4 py-2 rounded-lg  font-medium ${getStatusColor(
+                          className={`inline-flex items-center gap-1 justify-center px-4 py-2 text-sm md:text-base rounded-lg font-medium ${getStatusColor(
                             task.status
                           )}`}
                         >
-                          <FaCircle className="w-2 h-2" />
                           {getTaskStatusText(task.status)}
                         </span>
                       </div>
@@ -232,9 +278,57 @@ const DayTasksModal = ({
                       )}
                     </div>
 
+                    {/* Action Buttons */}
+                    <div
+                      className={`mt-4 pt-3 flex gap-2 ${
+                        isRTL ? "flex-row-reverse justify-end" : "justify-end"
+                      }`}
+                    >
+                      {/* View Button */}
+                      <button
+                        onClick={() => handleViewTask(task)}
+                        className=" text-sm md:text-muted lg:text-base px-3 md:px-4 py-1 md:py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-2 "
+                      >
+                        <FaEye className="size-3 md:size-5" />
+                        {isRTL ? "مشاهده" : "View"}
+                      </button>
+
+                      {/* Edit Button */}
+                      {canEditTask(task) && (
+                        <button
+                          onClick={() => handleEditTask(task)}
+                          className=" text-sm md:text-muted lg:text-base px-3 md:px-4 py-1 md:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 "
+                        >
+                          <FaEdit className="size-3 md:size-5" />
+                          {isRTL ? "ویرایش" : "Edit"}
+                        </button>
+                      )}
+
+                      {/* Complete Button */}
+                      {canCompleteTask(task) && (
+                        <button
+                          onClick={() => handleCompleteTask(task)}
+                          disabled={loadingTaskId === task.id}
+                          className=" text-sm md:text-muted lg:text-base px-3 md:px-4 py-1 md:py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2  disabled:opacity-50"
+                        >
+                          {loadingTaskId === task.id ? (
+                            <>
+                              <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                              {isRTL ? "..." : "..."}
+                            </>
+                          ) : (
+                            <>
+                              <MdOutlineFileDownloadDone className="size-6" />
+                              {isRTL ? "تکمیل" : "Complete"}
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </div>
+
                     {/* Task Dates */}
                     <div
-                      className={`mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500 ${
+                      className={`mt-3 pt-3 border-t border-gray-100  text-gray-500 text-sm md:text-md ${
                         isRTL ? "text-right" : "text-left"
                       }`}
                     >
@@ -273,9 +367,9 @@ const DayTasksModal = ({
               <div className="flex gap-3">
                 <button
                   onClick={handleAddNewTask}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+                  className=" text-sm md:text-muted lg:text-base px-3 md:px-4 py-1 md:py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
                 >
-                  <FaPlus className="w-4 h-4" />
+                  <FaPlus className="size-3 md:size-5" />
                   {isRTL ? "افزودن تسک جدید" : "Add New Task"}
                 </button>
                 <button
@@ -295,6 +389,20 @@ const DayTasksModal = ({
         onClose={() => setIsCreateTaskModalOpen(false)}
         onSuccess={handleTaskCreated}
         initialTaskDate={selectedDate}
+      />
+
+      <TaskModal
+        isOpen={isEditTaskModalOpen}
+        onClose={() => setIsEditTaskModalOpen(false)}
+        onSuccess={handleTaskUpdated}
+        editTask={selectedTask}
+      />
+
+      <TaskModal
+        isOpen={isViewTaskModalOpen}
+        onClose={() => setIsViewTaskModalOpen(false)}
+        viewOnly={true}
+        editTask={selectedTask}
       />
     </>
   );

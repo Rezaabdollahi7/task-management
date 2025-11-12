@@ -65,6 +65,17 @@ const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedDateTasks, setSelectedDateTasks] = useState([]);
 
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  useEffect(() => {
+    if (selectedDate && allTasks.length > 0) {
+      const tasksForDate = allTasks.filter(
+        (task) => moment(task.task_date).format("YYYY-MM-DD") === selectedDate
+      );
+      setSelectedDateTasks(tasksForDate);
+    }
+  }, [allTasks, selectedDate]);
+
   // Fetch employees for manager filter
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -189,7 +200,7 @@ const CalendarPage = () => {
 
   useEffect(() => {
     fetchTasks();
-  }, [fetchTasks]);
+  }, [fetchTasks, refreshTrigger]);
 
   useEffect(() => {
     if (isRTL) {
@@ -229,12 +240,16 @@ const CalendarPage = () => {
     setIsModalOpen(true);
   };
 
+  const handleTaskUpdate = useCallback(() => {
+    setRefreshTrigger((prev) => prev + 1);
+  }, []);
+
   // Custom event component showing priority dots
   const CustomEvent = ({ event }) => {
     const { priorities } = event.resource;
 
     return (
-      <div className="w-full h-full flex justify-center items-center gap-1 p-1 mt-[20%]">
+      <div className="w-full h-full flex justify-center items-center gap-1 p-1 ">
         {priorities.urgent > 0 && (
           <div className="flex items-center gap-1">
             <div className="size-4 bg-red-600 rounded-md"></div>
@@ -279,8 +294,9 @@ const CalendarPage = () => {
       style: {
         backgroundColor: "transparent",
         border: "none",
+        width: "max-content",
         padding: 0,
-        margin: 0,
+        margin: "0 auto",
         cursor: "pointer",
       },
     };
@@ -501,6 +517,7 @@ const CalendarPage = () => {
         selectedDate={selectedDate}
         tasks={selectedDateTasks}
         onTaskCreated={fetchTasks}
+        onTaskUpdated={handleTaskUpdate}
       />
     </AppLayout>
   );
