@@ -16,8 +16,27 @@ import TaskList from "./pages/Tasks/TaskList";
 import Notifications from "./pages/Notifications";
 import { SocketProvider } from "./context/SocketContext";
 import Calendar from "./pages/Calendar/Calendar";
+import "./styles/fonts.css";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 function App() {
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    document.documentElement.lang = i18n.language;
+
+    const handleLanguageChange = (lng) => {
+      document.documentElement.lang = lng;
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
+  }, [i18n]);
+
   return (
     <Router>
       <AuthProvider>

@@ -6,6 +6,21 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        en: ["Inter", "system-ui", "sans-serif"],
+        fa: ["Dana", "Inter", "system-ui", "sans-serif"],
+      },
+      fontWeight: {
+        hairline: 100,
+        thin: 200,
+        light: 300,
+        normal: 400,
+        medium: 500,
+        semibold: 600,
+        bold: 700,
+        extrabold: 800,
+        black: 900,
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

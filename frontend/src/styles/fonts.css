@@ -1,0 +1,82 @@
+/* src/styles/fonts.css */
+
+@font-face {
+  font-family: "Dana";
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: local("Dana Hairline"), local("Dana-Hairline"),
+    url("/fonts/fa/Dana-Hairline.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Dana";
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap;
+  src: local("Dana Thin"), local("Dana-Thin"),
+    url("/fonts/fa/Dana-Thin.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Dana";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: local("Dana Light"), local("Dana-Light"),
+    url("/fonts/fa/Dana-Light.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Dana";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Dana Regular"), local("Dana-Regular"),
+    url("/fonts/fa/Dana-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Dana";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local("Dana Medium"), local("Dana-Medium"),
+    url("/fonts/fa/Dana-Medium.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Dana";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local("Dana DemiBold"), local("Dana-DemiBold"),
+    url("/fonts/fa/Dana-DemiBold.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Dana";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local("Dana Bold"), local("Dana-Bold"),
+    url("/fonts/fa/Dana-Bold.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Dana";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: local("Dana ExtraBold"), local("Dana-ExtraBold"),
+    url("/fonts/fa/Dana-ExtraBold.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Dana";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: local("Dana Black"), local("Dana-Black"),
+    url("/fonts/fa/Dana-Black.woff") format("woff");
+}

@@ -75,20 +75,20 @@ const CalendarFilters = ({
         )}
 
         {/* Quick Actions */}
-        <div>
+        <div className="flex flex-col justify-end">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             {t("calendar.quickActions")}
           </label>
           <div className="flex gap-2">
             <button
               onClick={onClearAll}
-              className="flex-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm transition-colors"
+              className="flex-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200  transition-colors"
             >
               {t("common.clearAll")}
             </button>
             <button
               onClick={onRefresh}
-              className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm transition-colors"
+              className="flex-1 px-3 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700  transition-colors"
             >
               {t("calendar.refresh")}
             </button>

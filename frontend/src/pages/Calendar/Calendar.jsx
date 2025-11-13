@@ -326,8 +326,8 @@ const CalendarPage = () => {
     };
 
     return (
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row justify-center items-center mb-4 gap-4">
+        <div className="flex items-center gap-5">
           <button
             onClick={() => onNavigate("PREV")}
             className="p-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
@@ -338,12 +338,9 @@ const CalendarPage = () => {
               <FaArrowLeft className="w-4 h-4" />
             )}
           </button>
-          <button
-            onClick={() => onNavigate("TODAY")}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-          >
-            {t("calendar.today")}
-          </button>
+          <h2 className="text-lg font-semibold text-gray-900">
+            {formatDateForDisplay(date)}
+          </h2>
           <button
             onClick={() => onNavigate("NEXT")}
             className="p-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
@@ -354,29 +351,6 @@ const CalendarPage = () => {
               <FaArrowRight className="w-4 h-4" />
             )}
           </button>
-        </div>
-        <h2 className="text-lg font-semibold text-gray-900">
-          {formatDateForDisplay(date)}
-        </h2>
-        <div className="flex items-center gap-2">
-          <select
-            value={view}
-            onChange={(e) => setView(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value={Views.MONTH}>
-              <FaCalendar className="inline mr-2" />
-              {t("calendar.month")}
-            </option>
-            <option value={Views.WEEK}>
-              <FaCalendarWeek className="inline mr-2" />
-              {t("calendar.week")}
-            </option>
-            <option value={Views.DAY}>
-              <FaCalendarDay className="inline mr-2" />
-              {t("calendar.day")}
-            </option>
-          </select>
         </div>
       </div>
     );
