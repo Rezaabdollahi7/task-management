@@ -17,6 +17,7 @@ import {
 import AppLayout from "../../components/Layout/AppLayout";
 import DayTasksModal from "../../components/Calendar/DayTasksModal";
 import CalendarFilters from "../../components/Calendar/CalendarFilters";
+import SkeletonCalendar from "../../components/skeletons/SkeletonCalendar";
 
 const localizer = momentLocalizer(moment);
 
@@ -397,10 +398,7 @@ const CalendarPage = () => {
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       >
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-64 mb-6"></div>
-          <div className="bg-white rounded-lg h-96"></div>
-        </div>
+        <SkeletonCalendar view={view} />
       </AppLayout>
     );
   }
