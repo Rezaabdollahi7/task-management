@@ -70,16 +70,6 @@ const DayTasksModal = ({
     }
   };
 
-  const getTaskStatusText = (status) => {
-    const statusMap = {
-      open: isRTL ? "باز" : "Open",
-      in_progress: isRTL ? "در حال انجام" : "In Progress",
-      completed: isRTL ? "تکمیل شده" : "Completed",
-      cancelled: isRTL ? "لغو شده" : "Cancelled",
-    };
-    return statusMap[status] || status;
-  };
-
   const handleTaskCreated = () => {
     setIsCreateTaskModalOpen(false);
     if (onTaskCreated) {
@@ -132,9 +122,11 @@ const DayTasksModal = ({
       if (onTaskCreated) {
         onTaskCreated();
       }
+
+      showSuccess(t("dayTasks.messages.completeSuccess"));
     } catch (error) {
       console.error("Error completing task:", error);
-      showError(error.message || t("tasks.messages.completeFailed"));
+      showError(error.message || t("dayTasks.messages.completeFailed"));
     } finally {
       setLoadingTaskId(null);
     }
@@ -169,7 +161,7 @@ const DayTasksModal = ({
           >
             <div className={isRTL ? "text-right" : "text-left"}>
               <h2 className="text-xl font-bold text-gray-900">
-                {isRTL ? "تسک‌های روز" : "Day Tasks"}
+                {t("dayTasks.title")}
               </h2>
               <p className="text-gray-600 mt-1">{formatDate(selectedDate)}</p>
             </div>
@@ -186,11 +178,7 @@ const DayTasksModal = ({
             {localTasks.length === 0 ? (
               <div className="text-center py-8">
                 <FaCalendar className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 text-lg">
-                  {isRTL
-                    ? "هیچ تسکی برای این روز وجود ندارد"
-                    : "No tasks for this day"}
-                </p>
+                <p className="text-gray-500 text-lg">{t("dayTasks.noTasks")}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -222,7 +210,7 @@ const DayTasksModal = ({
                             task.status
                           )}`}
                         >
-                          {getTaskStatusText(task.status)}
+                          {t(`tasks.statuses.${task.status}`)}
                         </span>
                       </div>
                     </div>
@@ -256,7 +244,7 @@ const DayTasksModal = ({
                       {task.device_model && (
                         <div>
                           <span className="font-medium">
-                            {isRTL ? "دستگاه:" : "Device:"}
+                            {t("tasks.deviceModel")}:
                           </span>{" "}
                           {task.device_model}
                         </div>
@@ -265,7 +253,7 @@ const DayTasksModal = ({
                       {task.serial_number && (
                         <div>
                           <span className="font-medium">
-                            {isRTL ? "سریال:" : "Serial:"}
+                            {t("tasks.serialNumber")}:
                           </span>{" "}
                           {task.serial_number}
                         </div>
@@ -274,7 +262,7 @@ const DayTasksModal = ({
                       {task.reported_issue && (
                         <div className="md:col-span-2">
                           <span className="font-medium">
-                            {isRTL ? "مشکل گزارش شده:" : "Reported Issue:"}
+                            {t("tasks.reportedIssue")}:
                           </span>{" "}
                           {task.reported_issue}
                         </div>
@@ -293,7 +281,7 @@ const DayTasksModal = ({
                         className=" text-sm md:text-muted lg:text-base px-3 md:px-4 py-1 md:py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-2 "
                       >
                         <FaEye className="size-3 md:size-5" />
-                        {isRTL ? "مشاهده" : "View"}
+                        {t("common.view")}
                       </button>
 
                       {/* Edit Button */}
@@ -303,7 +291,7 @@ const DayTasksModal = ({
                           className=" text-sm md:text-muted lg:text-base px-3 md:px-4 py-1 md:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 "
                         >
                           <FaEdit className="size-3 md:size-5" />
-                          {isRTL ? "ویرایش" : "Edit"}
+                          {t("common.edit")}
                         </button>
                       )}
 
@@ -317,12 +305,12 @@ const DayTasksModal = ({
                           {loadingTaskId === task.id ? (
                             <>
                               <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                              {isRTL ? "..." : "..."}
+                              {t("common.loading")}
                             </>
                           ) : (
                             <>
                               <MdOutlineFileDownloadDone className="size-6" />
-                              {isRTL ? "تکمیل" : "Complete"}
+                              {t("dayTasks.complete")}
                             </>
                           )}
                         </button>
@@ -341,12 +329,10 @@ const DayTasksModal = ({
                         }`}
                       >
                         <span>
-                          {isRTL ? "تاریخ ایجاد:" : "Created:"}{" "}
-                          {formatDate(task.created_at)}
+                          {t("dayTasks.created")}: {formatDate(task.created_at)}
                         </span>
                         <span>
-                          {isRTL ? "ددلاین:" : "Deadline:"}{" "}
-                          {formatDate(task.deadline)}
+                          {t("tasks.deadline")}: {formatDate(task.deadline)}
                         </span>
                       </div>
                     </div>
@@ -373,13 +359,13 @@ const DayTasksModal = ({
                   className=" text-sm md:text-muted lg:text-base px-3 md:px-4 py-1 md:py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
                 >
                   <FaPlus className="size-3 md:size-5" />
-                  {isRTL ? "افزودن تسک جدید" : "Add New Task"}
+                  {t("dayTasks.addNewTask")}
                 </button>
                 <button
                   onClick={onClose}
                   className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
-                  {isRTL ? "بستن" : "Close"}
+                  {t("common.close")}
                 </button>
               </div>
             </div>

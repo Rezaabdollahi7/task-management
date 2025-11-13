@@ -23,7 +23,8 @@
     "submit": "Submit",
     "title": "title",
     "created": "Created",
-    "clearAll": "Clear All"
+    "clearAll": "Clear All",
+    "view" :"View"
   },
   "auth": {
     "login": "Login",
@@ -286,6 +287,39 @@
     "weeksAgo": "{{count}} weeks ago",
     "today": "today",
     "thisWeek": "this Week"
+  },
+  "workReport": {
+    "title": "Work Report",
+    "task": "Task",
+    "currentReport": "Current Work Report",
+    "replaceNote": "Note: Submitting a new report will replace the existing one.",
+    "updateReport": "Update Report",
+    "workReport": "Work Report",
+    "submitReport": "Submit Report",
+    "saving": "Saving Report...",
+    "guidelinesTitle": "Report Guidelines",
+    "guidelinesBrief": "Be detailed and include: diagnosis, actions taken, parts used, time spent, and recommendations.",
+    "guideline1": "Include problem diagnosis and root cause",
+    "guideline2": "List all actions taken and parts replaced",
+    "guideline3": "Mention time spent on the task",
+    "guideline4": "Add any recommendations for future maintenance",
+    "guideline5": "Note any issues that need follow-up",
+    "placeholder": "Describe the work performed, parts replaced, time spent, and any observations...\n\nExample:\n- Diagnosed the issue: faulty communication cable\n- Replaced the cable with part #XYZ-123\n- Tested the system: all sensors now responding correctly\n- Time spent: 2 hours\n- Recommendation: Check other cables in the system next month",
+    "errors": {
+      "emptyReport": "Work report cannot be empty",
+      "submitFailed": "Failed to submit work report"
+    }
+  },
+  "dayTasks": {
+    "title": "Day Tasks",
+    "noTasks": "No tasks for this day",
+    "addNewTask": "Add New Task",
+    "complete": "Complete",
+    "created": "Created",
+    "messages": {
+      "completeSuccess": "Task completed successfully!",
+      "completeFailed": "Failed to complete task"
+    }
   },
   "locale": "en-US"
 }

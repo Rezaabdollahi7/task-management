@@ -15,17 +15,20 @@ import { FiEdit } from "react-icons/fi";
 import { FaEye } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { MdAssignmentAdd } from "react-icons/md";
+import { LuSearch } from "react-icons/lu";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 const TaskList = () => {
   const { user, isManager } = useAuth();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-
+  const isRTL = i18n.language === "fa";
   const [tasks, setTasks] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 1000);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [filters, setFilters] = useState({
     status: "",
@@ -92,7 +95,7 @@ const TaskList = () => {
   // Load tasks on mount and when filters change
   useEffect(() => {
     fetchTasks();
-  }, [pagination.currentPage, search, filters]);
+  }, [pagination.currentPage, debouncedSearch, filters]);
 
   // Handle search input
   const handleSearchChange = (e) => {
@@ -215,13 +218,16 @@ const TaskList = () => {
       {/* Filters and Actions */}
       <div className="bg-white rounded-lg shadow p-6 mb-6">
         {/* Search */}
-        <div className="mb-6">
+        <div className="mb-6 relative ">
+          <LuSearch className="size-7 absolute top-1/2 ms-2 -translate-y-1/2 text-gray-300" />
           <input
             type="text"
             placeholder={t("tasks.searchBy")}
             value={search}
             onChange={handleSearchChange}
-            className="w-full px-4 py-2 border text-end border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className={`w-full px-4 py-3  ps-10 border  border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+              isRTL ? "text-right " : "text-left"
+            }`}
           />
         </div>
 
