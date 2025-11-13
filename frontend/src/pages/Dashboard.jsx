@@ -254,7 +254,7 @@ const Dashboard = () => {
               {t("dashboard.charts.userPerformance")}
             </h2>
           </div>
-          <div className="overflow-x-auto">
+          <div className="max-w-full overflow-hidden">
             <EmployeePerformanceTable data={chartData.employeePerformance} />
           </div>
         </div>

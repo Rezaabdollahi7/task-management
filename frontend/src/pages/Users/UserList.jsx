@@ -7,12 +7,13 @@ import AppLayout from "../../components/Layout/AppLayout";
 import SkeletonTable from "../../components/skeletons/SkeletonTable";
 import { showSuccess, showError } from "../../utils/toast";
 import { useTranslation } from "react-i18next";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaSearch } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 
 const UserList = () => {
   const { user } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "fa";
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -131,24 +132,27 @@ const UserList = () => {
       setSidebarOpen={setSidebarOpen}
     >
       {/* Filters and Actions */}
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
-        <div className="flex flex-col md:flex-row gap-4 justify-between">
+      <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6">
+        <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
           {/* Search */}
-          <div className="flex-1">
+          <div className="flex-1 w-full lg:w-auto relative">
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
               type="text"
               placeholder={t("users.searchPlaceholder")}
               value={search}
               onChange={handleSearchChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={`w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base ${
+                isRTL ? "text-right" : "text-left"
+              }`}
             />
           </div>
 
           {/* Role Filter */}
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2 w-full lg:w-auto justify-center lg:justify-start">
             <button
               onClick={() => handleRoleFilter("")}
-              className={`px-4 py-2 rounded-lg transition ${
+              className={`px-3 sm:px-4 py-2 rounded-lg transition text-xs sm:text-sm ${
                 roleFilter === ""
                   ? "bg-blue-600 text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -158,7 +162,7 @@ const UserList = () => {
             </button>
             <button
               onClick={() => handleRoleFilter("manager")}
-              className={`px-4 py-2 rounded-lg transition ${
+              className={`px-3 sm:px-4 py-2 rounded-lg transition text-xs sm:text-sm ${
                 roleFilter === "manager"
                   ? "bg-blue-600 text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -168,7 +172,7 @@ const UserList = () => {
             </button>
             <button
               onClick={() => handleRoleFilter("employee")}
-              className={`px-4 py-2 rounded-lg transition ${
+              className={`px-3 sm:px-4 py-2 rounded-lg transition text-xs sm:text-sm ${
                 roleFilter === "employee"
                   ? "bg-blue-600 text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -184,7 +188,7 @@ const UserList = () => {
               setEditingUser(null);
               setIsModalOpen(true);
             }}
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition"
+            className="w-full lg:w-auto bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2 rounded-lg transition text-sm sm:text-base"
           >
             + {t("users.createUser")}
           </button>
@@ -193,7 +197,7 @@ const UserList = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm sm:text-base">
           {error}
         </div>
       )}
@@ -202,31 +206,34 @@ const UserList = () => {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {users.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
-            <p className="text-lg">{t("users.noUsersFound")}</p>
-            <p className="text-sm mt-2">{t("users.adjustFiltersMessage")}</p>
+            <p className="text-base sm:text-lg">{t("users.noUsersFound")}</p>
+            <p className="text-xs sm:text-sm mt-2">
+              {t("users.adjustFiltersMessage")}
+            </p>
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto">
+            {/* Desktop Table */}
+            <div className="hidden lg:block overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-center text-md font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 sm:px-6 py-3 text-center  sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                       ID
                     </th>
-                    <th className="px-6 py-3 text-center text-md font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 sm:px-6 py-3 text-center  sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                       {t("users.table.fullName")}
                     </th>
-                    <th className="px-6 py-3 text-center text-md font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 sm:px-6 py-3 text-center  sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                       {t("users.table.username")}
                     </th>
-                    <th className="px-6 py-3 text-center text-md font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 sm:px-6 py-3 text-center  sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                       {t("users.table.role")}
                     </th>
-                    <th className="px-6 py-3 text-center text-md font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 sm:px-6 py-3 text-center  sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                       {t("users.table.createdAt")}
                     </th>
-                    <th className="px-6 py-3 text-center text-md font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 sm:px-6 py-3 text-center  sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                       {t("users.table.actions")}
                     </th>
                   </tr>
@@ -234,20 +241,20 @@ const UserList = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {users.map((u) => (
                     <tr key={u.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
                         {u.id}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-center">
                         <div className="text-sm font-medium text-gray-900">
                           {u.full_name}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                         {u.username}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-center">
                         <span
-                          className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full capitalize ${
+                          className={`px-2 sm:px-3 py-1 inline-flex text-xs  font-semibold rounded-full capitalize ${
                             u.role === "manager"
                               ? "bg-blue-100 text-blue-800"
                               : "bg-green-100 text-green-800"
@@ -256,32 +263,40 @@ const UserList = () => {
                           {u.role}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                         {new Date(u.created_at).toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                        <button
-                          onClick={() => {
-                            setEditingUser(u);
-                            setIsModalOpen(true);
-                          }}
-                          className="text-blue-600 hover:text-blue-900 me-4"
-                        >
-                          <FaEdit className="size-6" />
-                          {t("common.edit")}
-                        </button>
-                        <button
-                          onClick={() => handleDelete(u.id, u.username)}
-                          disabled={u.id === user?.id}
-                          className={`${
-                            u.id === user?.id
-                              ? "text-gray-400 cursor-not-allowed"
-                              : "text-red-600 hover:text-red-900"
-                          }`}
-                        >
-                          <RiDeleteBin6Fill className="size-6" />
-                          {t("common.delete")}
-                        </button>
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                        <div className="flex justify-center items-center gap-3 sm:gap-4">
+                          <button
+                            onClick={() => {
+                              setEditingUser(u);
+                              setIsModalOpen(true);
+                            }}
+                            className="text-blue-600 hover:text-blue-900 flex items-center gap-1"
+                            title={t("common.edit")}
+                          >
+                            <FaEdit className="size-4 sm:size-5" />
+                            <span className="hidden sm:inline">
+                              {t("common.edit")}
+                            </span>
+                          </button>
+                          <button
+                            onClick={() => handleDelete(u.id, u.username)}
+                            disabled={u.id === user?.id}
+                            className={`flex items-center gap-1 ${
+                              u.id === user?.id
+                                ? "text-gray-400 cursor-not-allowed"
+                                : "text-red-600 hover:text-red-900"
+                            }`}
+                            title={t("common.delete")}
+                          >
+                            <RiDeleteBin6Fill className="size-4 sm:size-5" />
+                            <span className="hidden sm:inline">
+                              {t("common.delete")}
+                            </span>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -289,44 +304,97 @@ const UserList = () => {
               </table>
             </div>
 
-            {/* Pagination */}
-            {pagination.totalPages > 1 && (
-              <div className="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-                <div className="flex items-center justify-between">
-                  <div className="text-sm text-gray-700">
-                    {t("pagination.showing")}
-                    <strong>{pagination.currentPage}</strong>{" "}
-                    {t("pagination.of")}
-                    <strong>{pagination.totalPages}</strong> (
-                    <strong>{pagination.totalItems}</strong>{" "}
-                    {t("pagination.totalUsers")})
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() =>
-                        handlePageChange(pagination.currentPage - 1)
-                      }
-                      disabled={pagination.currentPage === 1}
-                      className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+            {/* Mobile Cards */}
+            <div className="lg:hidden space-y-4 p-4">
+              {users.map((u) => (
+                <div
+                  key={u.id}
+                  className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm"
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
+                        {u.full_name}
+                      </h3>
+                      <p className="text-xs text-gray-500 mt-1">ID: {u.id}</p>
+                    </div>
+                    <span
+                      className={`px-2 py-1 inline-flex text-xs font-semibold rounded-full capitalize ${
+                        u.role === "manager"
+                          ? "bg-blue-100 text-blue-800"
+                          : "bg-green-100 text-green-800"
+                      }`}
                     >
-                      {t("common.previous")}
+                      {u.role}
+                    </span>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <span className="text-gray-600">
+                      {t("users.table.username")}:
+                    </span>
+                    <p className="font-medium">{u.username}</p>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-3 border-t border-gray-100">
+                    <button
+                      onClick={() => {
+                        setEditingUser(u);
+                        setIsModalOpen(true);
+                      }}
+                      className="text-blue-600 hover:text-blue-800 flex items-center gap-1 text-xs"
+                    >
+                      <FaEdit className="size-3 sm:size-4" />
+                      <span>{t("common.edit")}</span>
                     </button>
                     <button
-                      onClick={() =>
-                        handlePageChange(pagination.currentPage + 1)
-                      }
-                      disabled={
-                        pagination.currentPage === pagination.totalPages
-                      }
-                      className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                      onClick={() => handleDelete(u.id, u.username)}
+                      disabled={u.id === user?.id}
+                      className={`flex items-center gap-1 text-xs ${
+                        u.id === user?.id
+                          ? "text-gray-400 cursor-not-allowed"
+                          : "text-red-600 hover:text-red-800"
+                      }`}
                     >
-                      {t("common.next")}
+                      <RiDeleteBin6Fill className="size-3 sm:size-4" />
+                      <span>{t("common.delete")}</span>
                     </button>
                   </div>
                 </div>
-              </div>
-            )}
+              ))}
+            </div>
           </>
+        )}
+
+        {/* Pagination */}
+        {pagination.totalPages > 1 && (
+          <div className="bg-white px-4 py-3 border-t border-gray-200">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="text-xs sm:text-sm text-gray-700 text-center sm:text-left">
+                {t("pagination.showing")}{" "}
+                <strong>{pagination.currentPage}</strong> {t("pagination.of")}{" "}
+                <strong>{pagination.totalPages}</strong> (
+                <strong>{pagination.totalItems}</strong>{" "}
+                {t("pagination.totalUsers")})
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handlePageChange(pagination.currentPage - 1)}
+                  disabled={pagination.currentPage === 1}
+                  className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 text-xs sm:text-sm"
+                >
+                  {t("common.previous")}
+                </button>
+                <button
+                  onClick={() => handlePageChange(pagination.currentPage + 1)}
+                  disabled={pagination.currentPage === pagination.totalPages}
+                  className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 text-xs sm:text-sm"
+                >
+                  {t("common.next")}
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
 

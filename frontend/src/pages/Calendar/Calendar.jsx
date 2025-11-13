@@ -250,38 +250,44 @@ const CalendarPage = () => {
     const { priorities } = event.resource;
 
     return (
-      <div className="w-full h-full flex justify-center items-center gap-1 p-1 ">
+      <div className="w-full h-full flex justify-center items-center gap-0.5 sm:gap-1 p-0.5 sm:p-1">
         {priorities.urgent > 0 && (
-          <div className="flex items-center gap-1">
-            <div className="size-4 bg-red-600 rounded-md"></div>
+          <div className="flex items-center gap-0.5 sm:gap-1">
+            <div className="size-2 sm:size-3 md:size-4 bg-red-600 rounded-sm sm:rounded-md"></div>
             {priorities.urgent > 1 && (
-              <span className="text-xs text-red-600">{priorities.urgent}</span>
+              <span className="text-[8px] sm:text-[10px] md:text-xs text-red-600 font-medium">
+                {priorities.urgent}
+              </span>
             )}
           </div>
         )}
         {priorities.high > 0 && (
-          <div className="flex items-center gap-1">
-            <div className="size-4 bg-orange-600 rounded-md"></div>
+          <div className="flex items-center gap-0.5 sm:gap-1">
+            <div className="size-2 sm:size-3 md:size-4 bg-orange-600 rounded-sm sm:rounded-md"></div>
             {priorities.high > 1 && (
-              <span className="text-xs text-orange-600">{priorities.high}</span>
+              <span className="text-[8px] sm:text-[10px] md:text-xs text-orange-600 font-medium">
+                {priorities.high}
+              </span>
             )}
           </div>
         )}
         {priorities.medium > 0 && (
-          <div className="flex items-center gap-1">
-            <div className="size-4 bg-yellow-600 rounded-md"></div>
+          <div className="flex items-center gap-0.5 sm:gap-1">
+            <div className="size-2 sm:size-3 md:size-4 bg-yellow-600 rounded-sm sm:rounded-md"></div>
             {priorities.medium > 1 && (
-              <span className="text-xs text-yellow-600">
+              <span className="text-[8px] sm:text-[10px] md:text-xs text-yellow-600 font-medium">
                 {priorities.medium}
               </span>
             )}
           </div>
         )}
         {priorities.low > 0 && (
-          <div className="flex items-center gap-1">
-            <div className="size-4 bg-green-600 rounded-md"></div>
+          <div className="flex items-center gap-0.5 sm:gap-1">
+            <div className="size-2 sm:size-3 md:size-4 bg-green-600 rounded-sm sm:rounded-md"></div>
             {priorities.low > 1 && (
-              <span className="text-xs text-green-600">{priorities.low}</span>
+              <span className="text-[8px] sm:text-[10px] md:text-xs text-green-600 font-medium">
+                {priorities.low}
+              </span>
             )}
           </div>
         )}
@@ -327,29 +333,29 @@ const CalendarPage = () => {
     };
 
     return (
-      <div className="flex flex-col sm:flex-row justify-center items-center mb-4 gap-4">
-        <div className="flex items-center gap-5">
+      <div className="flex flex-col sm:flex-row justify-center items-center mb-3 sm:mb-4 gap-3 sm:gap-4">
+        <div className="flex items-center gap-3 sm:gap-5">
           <button
             onClick={() => onNavigate("PREV")}
-            className="p-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="p-1.5 sm:p-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
           >
             {isRTL ? (
-              <FaArrowRight className="w-4 h-4" />
+              <FaArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
             ) : (
-              <FaArrowLeft className="w-4 h-4" />
+              <FaArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
             )}
           </button>
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 min-w-[200px] sm:min-w-0 text-center">
             {formatDateForDisplay(date)}
           </h2>
           <button
             onClick={() => onNavigate("NEXT")}
-            className="p-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="p-1.5 sm:p-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
           >
             {isRTL ? (
-              <FaArrowLeft className="w-4 h-4" />
+              <FaArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
             ) : (
-              <FaArrowRight className="w-4 h-4" />
+              <FaArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
             )}
           </button>
         </div>
@@ -390,6 +396,18 @@ const CalendarPage = () => {
     };
   };
 
+  // 🔥 Custom formats for responsive day names
+  const formats = {
+    weekdayFormat: (date, culture, localizer) => {
+      // Use short format (ی، د، س...) on mobile
+      if (window.innerWidth < 640) {
+        return localizer.format(date, "dd", culture);
+      }
+      // Use full format on desktop
+      return localizer.format(date, "dddd", culture);
+    },
+  };
+
   if (loading) {
     return (
       <AppLayout
@@ -421,14 +439,77 @@ const CalendarPage = () => {
       />
 
       {/* Calendar Content */}
-      <div className="max-w-[90rem] mx-auto" id="calendar">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+      <div className="max-w-[90rem] mx-auto px-2 sm:px-0" id="calendar">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2 sm:p-4 md:p-6">
+          <style>
+            {`
+              /* Responsive Calendar Styles */
+              @media (max-width: 640px) {
+                .rbc-header {
+                  padding: 4px 2px !important;
+                  font-size: 11px !important;
+                  min-height: 30px !important;
+                }
+                
+                .rbc-date-cell {
+                  padding: 2px !important;
+                  font-size: 11px !important;
+                }
+                
+                .rbc-event {
+                  padding: 1px !important;
+                }
+                
+                .rbc-month-view {
+                  border: 1px solid #e5e7eb !important;
+                }
+                
+                .rbc-day-bg + .rbc-day-bg {
+                  border-left: 1px solid #e5e7eb !important;
+                }
+                
+                .rbc-month-row + .rbc-month-row {
+                  border-top: 1px solid #e5e7eb !important;
+                }
+                
+                .rbc-day-slot .rbc-time-slot {
+                  min-height: 30px !important;
+                }
+              }
+              
+              @media (min-width: 641px) and (max-width: 768px) {
+                .rbc-header {
+                  padding: 6px 4px !important;
+                  font-size: 12px !important;
+                }
+                
+                .rbc-date-cell {
+                  padding: 4px !important;
+                  font-size: 12px !important;
+                }
+              }
+              
+              /* Better touch targets on mobile */
+              @media (max-width: 640px) {
+                .rbc-day-bg {
+                  min-height: 60px !important;
+                }
+              }
+            `}
+          </style>
           <Calendar
             localizer={localizer}
             events={events}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: 800 }}
+            style={{
+              height:
+                window.innerWidth < 640
+                  ? 500
+                  : window.innerWidth < 768
+                  ? 600
+                  : 800,
+            }}
             view={view}
             date={date}
             onView={setView}
@@ -438,6 +519,7 @@ const CalendarPage = () => {
               toolbar: (props) => <CustomToolbar {...props} date={date} />,
               event: CustomEvent,
             }}
+            formats={formats}
             messages={getCalendarMessages()}
             rtl={isRTL}
             selectable
@@ -446,37 +528,37 @@ const CalendarPage = () => {
         </div>
 
         {/* Legend */}
-        <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="mt-4 sm:mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
             {t("calendar.legend")}
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-red-600 rounded-full"></div>
-              <span className="text-sm text-gray-700">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-red-600 rounded-full flex-shrink-0"></div>
+              <span className="text-xs sm:text-sm text-gray-700">
                 {t("tasks.priorities.urgent")}
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-orange-600 rounded-full"></div>
-              <span className="text-sm text-gray-700">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-orange-600 rounded-full flex-shrink-0"></div>
+              <span className="text-xs sm:text-sm text-gray-700">
                 {t("tasks.priorities.high")}
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-yellow-600 rounded-full"></div>
-              <span className="text-sm text-gray-700">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-yellow-600 rounded-full flex-shrink-0"></div>
+              <span className="text-xs sm:text-sm text-gray-700">
                 {t("tasks.priorities.medium")}
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-600 rounded-full"></div>
-              <span className="text-sm text-gray-700">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-600 rounded-full flex-shrink-0"></div>
+              <span className="text-xs sm:text-sm text-gray-700">
                 {t("tasks.priorities.low")}
               </span>
             </div>
           </div>
-          <p className="text-sm text-gray-600 mt-4">
+          <p className="text-xs sm:text-sm text-gray-600 mt-3 sm:mt-4">
             {t("calendar.clickToView")}
           </p>
         </div>
