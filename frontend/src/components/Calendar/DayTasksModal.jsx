@@ -13,6 +13,7 @@ import TaskModal from "../TaskModal";
 import { tasksAPI } from "../../services/api";
 import { showSuccess, showError } from "../../utils/toast";
 import { MdOutlineFileDownloadDone } from "react-icons/md";
+import { useModal } from "../../../hooks/useModal";
 
 const DayTasksModal = ({
   isOpen,
@@ -36,6 +37,7 @@ const DayTasksModal = ({
     setLocalTasks(tasks);
   }, [tasks]);
 
+  const { handleBackdropClick } = useModal(isOpen, onClose);
   if (!isOpen) return null;
 
   const getStatusColor = (status) => {
@@ -156,6 +158,7 @@ const DayTasksModal = ({
       <div
         className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
         dir={isRTL ? "rtl" : "ltr"}
+        onClick={handleBackdropClick}
       >
         <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
           {/* Header */}

@@ -3,11 +3,13 @@
 
 import { useState, useEffect } from "react";
 import { tasksAPI } from "../services/api";
+import { useModal } from "../../hooks/useModal";
 
 const WorkReportModal = ({ isOpen, onClose, onSuccess, task }) => {
   const [workReport, setWorkReport] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { handleBackdropClick } = useModal(isOpen, onClose);
 
   // Load existing work report when task changes
   useEffect(() => {
@@ -47,7 +49,10 @@ const WorkReportModal = ({ isOpen, onClose, onSuccess, task }) => {
   if (!isOpen || !task) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      onClick={handleBackdropClick}
+    >
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-white flex justify-between items-center p-6 border-b border-gray-200">
