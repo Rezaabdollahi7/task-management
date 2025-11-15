@@ -1,8 +1,7 @@
 // src/pages/Calendar.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
-import moment from "moment";
-import "moment-jalaali";
+import jMoment from "moment-jalaali";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { tasksAPI, usersAPI } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
@@ -19,29 +18,12 @@ import DayTasksModal from "../../components/Calendar/DayTasksModal";
 import CalendarFilters from "../../components/Calendar/CalendarFilters";
 import SkeletonCalendar from "../../components/skeletons/SkeletonCalendar";
 
-const localizer = momentLocalizer(moment);
+jMoment.loadPersian({
+  usePersianDigits: false,
+  dialect: "persian-modern",
+});
 
-const configureMomentForPersian = () => {
-  moment.locale("fa", {
-    months:
-      "فروردین_اردیبهشت_خرداد_تیر_مرداد_شهریور_مهر_آبان_آذر_دی_بهمن_اسفند".split(
-        "_"
-      ),
-    monthsShort:
-      "فروردین_اردیبهشت_خرداد_تیر_مرداد_شهریور_مهر_آبان_آذر_دی_بهمن_اسفند".split(
-        "_"
-      ),
-    weekdays: "یکشنبه_دوشنبه_سه‌شنبه_چهارشنبه_پنجشنبه_جمعه_شنبه".split("_"),
-    weekdaysShort: "یک‌شنبه_دو‌شنبه_سه‌شنبه_چهارشنبه_پنج‌شنبه_جمعه_شنبه".split(
-      "_"
-    ),
-    weekdaysMin: "ی_د_س_چ_پ_ج_ش".split("_"),
-    week: {
-      dow: 6,
-      doy: 12,
-    },
-  });
-};
+const localizer = momentLocalizer(jMoment);
 
 const CalendarPage = () => {
   const { user, isManager } = useAuth();
@@ -71,7 +53,7 @@ const CalendarPage = () => {
   useEffect(() => {
     if (selectedDate && allTasks.length > 0) {
       const tasksForDate = allTasks.filter(
-        (task) => moment(task.task_date).format("YYYY-MM-DD") === selectedDate
+        (task) => jMoment(task.task_date).format("YYYY-MM-DD") === selectedDate
       );
       setSelectedDateTasks(tasksForDate);
     }
@@ -99,18 +81,18 @@ const CalendarPage = () => {
 
       // Calculate date range based on current view
       let startDate, endDate;
-      const currentDate = moment(date);
+      const currentDate = jMoment(date);
 
       switch (view) {
         case Views.MONTH:
           startDate = currentDate
             .clone()
-            .startOf("month")
+            .startOf("jMonth")
             .subtract(7, "days")
             .format("YYYY-MM-DD");
           endDate = currentDate
             .clone()
-            .endOf("month")
+            .endOf("jMonth")
             .add(7, "days")
             .format("YYYY-MM-DD");
           break;
@@ -136,12 +118,12 @@ const CalendarPage = () => {
         default:
           startDate = currentDate
             .clone()
-            .startOf("month")
+            .startOf("jMonth")
             .subtract(7, "days")
             .format("YYYY-MM-DD");
           endDate = currentDate
             .clone()
-            .endOf("month")
+            .endOf("jMonth")
             .add(7, "days")
             .format("YYYY-MM-DD");
       }
@@ -167,7 +149,7 @@ const CalendarPage = () => {
       // Create events with dots instead of full task details
       const eventsByDate = {};
       tasks.forEach((task) => {
-        const taskDate = moment(task.task_date).format("YYYY-MM-DD");
+        const taskDate = jMoment(task.task_date).format("YYYY-MM-DD");
 
         if (!eventsByDate[taskDate]) {
           eventsByDate[taskDate] = {
@@ -179,9 +161,10 @@ const CalendarPage = () => {
         }
         eventsByDate[taskDate][task.priority]++;
       });
+
       const calendarEvents = Object.keys(eventsByDate).map((date) => ({
         id: date,
-        title: "", // Empty title to hide text
+        title: "",
         start: new Date(date),
         end: new Date(date),
         allDay: true,
@@ -198,17 +181,15 @@ const CalendarPage = () => {
       setLoading(false);
     }
   }, [date, view, filters, user.id, isManager]);
-
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks, refreshTrigger]);
 
   useEffect(() => {
     if (isRTL) {
-      configureMomentForPersian();
-      moment.locale("fa");
+      jMoment.locale("fa");
     } else {
-      moment.locale("en");
+      jMoment.locale("en");
     }
   }, [isRTL]);
 
@@ -231,9 +212,9 @@ const CalendarPage = () => {
 
   // Handle day click
   const handleSelectSlot = (slotInfo) => {
-    const selectedDate = moment(slotInfo.start).format("YYYY-MM-DD");
+    const selectedDate = jMoment(slotInfo.start).format("YYYY-MM-DD");
     const tasksForDate = allTasks.filter(
-      (task) => moment(task.task_date).format("YYYY-MM-DD") === selectedDate
+      (task) => jMoment(task.task_date).format("YYYY-MM-DD") === selectedDate
     );
 
     setSelectedDate(selectedDate);
@@ -313,13 +294,13 @@ const CalendarPage = () => {
   const CustomToolbar = ({ onNavigate, label, date }) => {
     const formatDateForDisplay = (date) => {
       if (isRTL) {
-        const jDate = moment(date);
+        const jDate = jMoment(date);
         switch (view) {
           case Views.MONTH:
             return jDate.format("jMMMM jYYYY");
           case Views.WEEK:
-            const startOfWeek = moment(date).startOf("week");
-            const endOfWeek = moment(date).endOf("week");
+            const startOfWeek = jMoment(date).startOf("jWeek");
+            const endOfWeek = jMoment(date).endOf("jWeek");
             return `هفته ${startOfWeek.format(
               "jD jMMMM"
             )} تا ${endOfWeek.format("jD jMMMM jYYYY")}`;
@@ -396,15 +377,47 @@ const CalendarPage = () => {
     };
   };
 
-  // 🔥 Custom formats for responsive day names
   const formats = {
     weekdayFormat: (date, culture, localizer) => {
-      // Use short format (ی، د، س...) on mobile
       if (window.innerWidth < 640) {
         return localizer.format(date, "dd", culture);
       }
-      // Use full format on desktop
+
       return localizer.format(date, "dddd", culture);
+    },
+
+    dateFormat: (date, culture, localizer) => {
+      if (isRTL) {
+        return jMoment(date).format("jD");
+      }
+      return localizer.format(date, "D", culture);
+    },
+
+    dayFormat: (date, culture, localizer) => {
+      if (isRTL) {
+        return jMoment(date).format("jD");
+      }
+      return localizer.format(date, "D", culture);
+    },
+
+    dayHeaderFormat: (date, culture, localizer) => {
+      if (isRTL) {
+        return jMoment(date).format("dddd، jD jMMMM");
+      }
+      return localizer.format(date, "dddd, MMMM D", culture);
+    },
+
+    dayRangeHeaderFormat: ({ start, end }, culture, localizer) => {
+      if (isRTL) {
+        return `${jMoment(start).format("jD jMMMM")} - ${jMoment(end).format(
+          "jD jMMMM jYYYY"
+        )}`;
+      }
+      return `${localizer.format(
+        start,
+        "MMMM D",
+        culture
+      )} - ${localizer.format(end, "MMMM D, YYYY", culture)}`;
     },
   };
 
