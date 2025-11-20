@@ -272,7 +272,8 @@ class Task {
     }
 
     if (status === "completed") {
-      query += `, actual_end_time = CURRENT_TIMESTAMP`;
+        query += `, actual_start_time = COALESCE(actual_start_time, CURRENT_TIMESTAMP)`;
+    query += `, actual_end_time = CURRENT_TIMESTAMP`;
     }
 
     params.push(id);

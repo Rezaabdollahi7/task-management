@@ -87,10 +87,11 @@ const markAsRead = async (req, res) => {
 // @access  Private
 const markAllAsRead = async (req, res) => {
   try {
+	console.log('📝 Mark all as read for user:', req.user.id); 
     const userId = req.user.id;
 
     const notifications = await Notification.markAllAsRead(userId);
-
+	
     res.json({
       success: true,
       message: `${notifications.length} notification(s) marked as read`,
@@ -114,7 +115,7 @@ const deleteNotification = async (req, res) => {
     const userId = req.user.id;
 
     const notification = await Notification.delete(id, userId);
-
+  console.log('✅ All notifications marked as read');
     if (!notification) {
       return res.status(404).json({
         success: false,
@@ -127,6 +128,7 @@ const deleteNotification = async (req, res) => {
       message: "Notification deleted successfully",
     });
   } catch (error) {
+ console.error("Mark all as read error:", error); 
     console.error("Delete notification error:", error);
     res.status(500).json({
       success: false,

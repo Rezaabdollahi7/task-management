@@ -16,10 +16,11 @@ const generateToken = (userId) => {
 // @access  Public
 const login = async (req, res) => {
   try {
-    const { username, password } = req.body;
-
+    const { username, password } = req.body
+	console.log('login attempt:',{username});
     // Validate input
     if (!username || !password) {
+	 console.log('❌ Missing credentials'); 
       return res.status(400).json({
         success: false,
         message: "Please provide username and password",
@@ -28,7 +29,7 @@ const login = async (req, res) => {
 
     // Find user by username
     const user = await User.findByUsername(username);
-
+	 console.log('👤 User found:', user ? 'YES' : 'NO');
     if (!user) {
       return res.status(401).json({
         success: false,

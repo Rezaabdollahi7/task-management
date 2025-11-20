@@ -34,12 +34,12 @@ export const SocketProvider = ({ children }) => {
     }
 
     // Create socket connection
-    // ← Fix: استفاده از URL مشخص
-    const SOCKET_URL = "http://localhost:5000";
+    const SOCKET_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://188.213.199.116';
 
     console.log("🔌 Connecting to:", SOCKET_URL);
 
     const newSocket = io(SOCKET_URL, {
+path: '/socket.io', 
       autoConnect: true,
       reconnection: true,
       reconnectionDelay: 1000,
