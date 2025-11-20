@@ -10,6 +10,11 @@ COPY package*.json ./
 FROM base AS development
 RUN npm install
 COPY . .
+
+# Build args for development
+ARG VITE_API_URL=http://localhost:5000/api
+ENV VITE_API_URL=$VITE_API_URL
+
 EXPOSE 3000
 CMD ["npm", "run", "dev", "--", "--host"]
 
@@ -17,23 +22,17 @@ CMD ["npm", "run", "dev", "--", "--host"]
 FROM base AS build
 RUN npm ci
 COPY . .
+
+# Build args for production - IMPORTANT!
+ARG VITE_API_URL=http://188.213.199.116/api
+ENV VITE_API_URL=$VITE_API_URL
+
 RUN npm run build
 
 # Stage 4: Production with nginx
 FROM nginx:alpine AS production
 
 # Copy built files from build stage
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose port 80
-EXPOSE 80
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-  CMD wget --quiet --tries=1 --spider http://localhost/health || exit 1
-
+COPY --from=build /app/dist /usr/sh
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]

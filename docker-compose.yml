@@ -67,12 +67,14 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       target: development
+      args:
+        - VITE_API_URL=http://188.213.199.116/api 
     container_name: task-management-frontend
     restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
-      VITE_API_URL: http://localhost:5000/api
+      VITE_API_URL: http://188.213.199.116/api
     volumes:
       - ./frontend:/app
       - /app/node_modules
