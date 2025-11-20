@@ -6,7 +6,6 @@ import { tasksAPI, usersAPI } from "../../services/api";
 import TaskModal from "../../components/TaskModal";
 import WorkReportModal from "../../components/WorkReportModal";
 import AppLayout from "../../components/Layout/AppLayout";
-import SkeletonTaskCard from "../../components/skeletons/SkeletonTaskCard";
 import DateFilter from "../../components/DateFilter";
 import { showSuccess, showError } from "../../utils/toast";
 import { formatDate } from "../../utils/dateHelper";
@@ -17,6 +16,7 @@ import { RiDeleteBin6Fill } from "react-icons/ri";
 import { MdAssignmentAdd } from "react-icons/md";
 import { LuSearch } from "react-icons/lu";
 import { useDebounce } from "../../../hooks/useDebounce";
+import SkeletonTaskLists from "../../components/skeletons/SkeletonTaskLists";
 
 const TaskList = () => {
   const { user, isManager } = useAuth();
@@ -180,31 +180,7 @@ const TaskList = () => {
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       >
-        {/* Skeleton Content */}
-        <div className="space-y-6">
-          {/* Skeleton Filters */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="mb-6">
-              <div className="h-10 bg-gray-200 rounded-lg animate-pulse"></div>
-            </div>
-            <div className="grid grid-cols-6 gap-3 gap-y-6">
-              <div className="col-span-2 h-20 bg-gray-200 rounded-lg animate-pulse"></div>
-              <div className="col-span-2 h-20 bg-gray-200 rounded-lg animate-pulse"></div>
-              <div className="col-span-2 h-20 bg-gray-200 rounded-lg animate-pulse"></div>
-              <div className="col-span-3 h-20 bg-gray-200 rounded-lg animate-pulse"></div>
-              <div className="col-span-3 h-20 bg-gray-200 rounded-lg animate-pulse"></div>
-            </div>
-          </div>
-
-          {/* Skeleton Task Cards */}
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="p-6">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <SkeletonTaskCard key={i} />
-              ))}
-            </div>
-          </div>
-        </div>
+        <SkeletonTaskLists />
       </AppLayout>
     );
   }
@@ -216,32 +192,32 @@ const TaskList = () => {
       setSidebarOpen={setSidebarOpen}
     >
       {/* Filters and Actions */}
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
+      <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6">
         {/* Search */}
-        <div className="mb-6 relative ">
-          <LuSearch className="size-7 absolute top-1/2 ms-2 -translate-y-1/2 text-gray-300" />
+        <div className="mb-6 relative">
+          <LuSearch className="size-5 sm:size-7 absolute top-1/2 ms-2 -translate-y-1/2 text-gray-300" />
           <input
             type="text"
             placeholder={t("tasks.searchBy")}
             value={search}
             onChange={handleSearchChange}
-            className={`w-full px-4 py-3  ps-10 border  border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              isRTL ? "text-right " : "text-left"
+            className={`w-full px-4 py-2 sm:py-3 ps-8 sm:ps-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base ${
+              isRTL ? "text-right" : "text-left"
             }`}
           />
         </div>
 
         {/* Filters Row */}
-        <div className="grid grid-cols-6 gap-3 gap-y-6 items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 gap-y-6 items-center">
           {/* Status Filter */}
-          <div className="col-span-2">
-            <label className="block text-lg font-medium text-gray-700 mb-1">
+          <div className="sm:col-span-2 lg:col-span-2">
+            <label className="block text-sm sm:text-lg font-medium text-gray-700 mb-1 sm:mb-2">
               {t("tasks.status")} :
             </label>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-1 sm:gap-2">
               <button
                 onClick={() => handleFilterChange("status", "")}
-                className={`px-3 py-2 rounded-lg text-sm transition ${
+                className={`px-2 sm:px-3 py-1 sm:py-2 rounded-lg text-xs sm:text-sm transition ${
                   filters.status === ""
                     ? "bg-blue-600 text-white"
                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -251,7 +227,7 @@ const TaskList = () => {
               </button>
               <button
                 onClick={() => handleFilterChange("status", "open")}
-                className={`px-3 py-2 rounded-lg text-sm transition ${
+                className={`px-2 sm:px-3 py-1 sm:py-2 rounded-lg text-xs sm:text-sm transition ${
                   filters.status === "open"
                     ? "bg-blue-600 text-white"
                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -261,7 +237,7 @@ const TaskList = () => {
               </button>
               <button
                 onClick={() => handleFilterChange("status", "in_progress")}
-                className={`px-3 py-2 rounded-lg text-sm transition ${
+                className={`px-2 sm:px-3 py-1 sm:py-2 rounded-lg text-xs sm:text-sm transition ${
                   filters.status === "in_progress"
                     ? "bg-blue-600 text-white"
                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -271,7 +247,7 @@ const TaskList = () => {
               </button>
               <button
                 onClick={() => handleFilterChange("status", "completed")}
-                className={`px-3 py-2 rounded-lg text-sm transition ${
+                className={`px-2 sm:px-3 py-1 sm:py-2 rounded-lg text-xs sm:text-sm transition ${
                   filters.status === "completed"
                     ? "bg-blue-600 text-white"
                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -283,14 +259,14 @@ const TaskList = () => {
           </div>
 
           {/* Priority Filter */}
-          <div className="col-span-2">
-            <label className="block text-lg font-medium text-gray-700 mb-1">
+          <div className="sm:col-span-2 lg:col-span-2">
+            <label className="block text-sm sm:text-lg font-medium text-gray-700 mb-1 sm:mb-2">
               {t("tasks.priority")} :
             </label>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-1 sm:gap-2">
               <button
                 onClick={() => handleFilterChange("priority", "")}
-                className={`px-3 py-2 rounded-lg text-sm transition ${
+                className={`px-2 sm:px-3 py-1 sm:py-2 rounded-lg text-xs sm:text-sm transition ${
                   filters.priority === ""
                     ? "bg-blue-600 text-white"
                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -300,7 +276,7 @@ const TaskList = () => {
               </button>
               <button
                 onClick={() => handleFilterChange("priority", "urgent")}
-                className={`px-3 py-2 rounded-lg text-sm transition ${
+                className={`px-2 sm:px-3 py-1 sm:py-2 rounded-lg text-xs sm:text-sm transition ${
                   filters.priority === "urgent"
                     ? "bg-blue-600 text-white"
                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -310,7 +286,7 @@ const TaskList = () => {
               </button>
               <button
                 onClick={() => handleFilterChange("priority", "high")}
-                className={`px-3 py-2 rounded-lg text-sm transition ${
+                className={`px-2 sm:px-3 py-1 sm:py-2 rounded-lg text-xs sm:text-sm transition ${
                   filters.priority === "high"
                     ? "bg-blue-600 text-white"
                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -320,7 +296,7 @@ const TaskList = () => {
               </button>
               <button
                 onClick={() => handleFilterChange("priority", "medium")}
-                className={`px-3 py-2 rounded-lg text-sm transition ${
+                className={`px-2 sm:px-3 py-1 sm:py-2 rounded-lg text-xs sm:text-sm transition ${
                   filters.priority === "medium"
                     ? "bg-blue-600 text-white"
                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -330,7 +306,7 @@ const TaskList = () => {
               </button>
               <button
                 onClick={() => handleFilterChange("priority", "low")}
-                className={`px-3 py-2 rounded-lg text-sm transition ${
+                className={`px-2 sm:px-3 py-1 sm:py-2 rounded-lg text-xs sm:text-sm transition ${
                   filters.priority === "low"
                     ? "bg-blue-600 text-white"
                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -343,8 +319,8 @@ const TaskList = () => {
 
           {/* Employee Filter (Manager only) */}
           {isManager() && (
-            <div className="col-span-2">
-              <label className="block text-lg font-medium text-gray-700 mb-1">
+            <div className="sm:col-span-2 lg:col-span-2">
+              <label className="block text-sm sm:text-lg font-medium text-gray-700 mb-1 sm:mb-2">
                 {t("tasks.filters.allUsers")} :
               </label>
               <select
@@ -352,7 +328,7 @@ const TaskList = () => {
                 onChange={(e) =>
                   handleFilterChange("employeeId", e.target.value)
                 }
-                className="px-4 py-2 w-full border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                className="px-3 sm:px-4 py-2 w-full border border-gray-300 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">All Employees</option>
                 {employees.map((emp) => (
@@ -364,7 +340,8 @@ const TaskList = () => {
             </div>
           )}
 
-          <div className="col-span-3">
+          {/* Date Filter */}
+          <div className="sm:col-span-3 lg:col-span-3">
             <DateFilter
               onFilterChange={handleDateFilterChange}
               startDate={filters.startDate}
@@ -374,14 +351,14 @@ const TaskList = () => {
 
           {/* Create Button (Manager only) */}
           {isManager() && (
-            <div className="col-span-3 flex items-center justify-end">
+            <div className="sm:col-span-3 lg:col-span-3 flex items-center justify-start sm:justify-end">
               <button
                 onClick={() => {
                   setEditingTask(null);
                   setViewOnlyMode(false);
                   setIsModalOpen(true);
                 }}
-                className="self-end bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition whitespace-nowrap"
+                className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2 sm:py-2 rounded-lg transition whitespace-nowrap text-sm sm:text-base"
               >
                 + {t("tasks.createTask")}
               </button>
@@ -392,7 +369,7 @@ const TaskList = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm sm:text-base">
           {error}
         </div>
       )}
@@ -401,37 +378,40 @@ const TaskList = () => {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {tasks.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
-            <p className="text-lg">No tasks found</p>
-            <p className="text-sm mt-2">Try adjusting your search or filters</p>
+            <p className="text-base sm:text-lg">No tasks found</p>
+            <p className="text-xs sm:text-sm mt-2">
+              Try adjusting your search or filters
+            </p>
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto">
+            {/* Desktop Table */}
+            <div className="hidden lg:block overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-4 py-3  font-medium text-gray-500 uppercase">
                       ID
                     </th>
-                    <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-4 py-3  font-medium text-gray-500 uppercase">
                       {t("tasks.title")}
                     </th>
-                    <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-4 py-3  font-medium text-gray-500 uppercase">
                       {t("tasks.device")}
                     </th>
-                    <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-4 py-3  font-medium text-gray-500 uppercase">
                       {t("tasks.employee")}
                     </th>
-                    <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-4 py-3  font-medium text-gray-500 uppercase">
                       {t("tasks.priority")}
                     </th>
-                    <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-4 py-3  font-medium text-gray-500 uppercase">
                       {t("tasks.status")}
                     </th>
-                    <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-4 py-3  font-medium text-gray-500 uppercase">
                       {t("tasks.deadline")}
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-4 py-3  text-center font-medium text-gray-500 uppercase">
                       {t("tasks.actions")}
                     </th>
                   </tr>
@@ -463,7 +443,7 @@ const TaskList = () => {
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
                         <span
-                          className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getPriorityColor(
+                          className={`px-3 py-2 inline-flex text-xs  font-semibold rounded-full ${getPriorityColor(
                             task.priority
                           )}`}
                         >
@@ -494,54 +474,69 @@ const TaskList = () => {
                           ? formatDate(task.deadline, i18n.language)
                           : "N/A"}
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
-                        <button
-                          onClick={() => {
-                            setEditingTask(task);
-                            setViewOnlyMode(!isManager());
-                            setIsModalOpen(true);
-                          }}
-                          className="text-blue-600 hover:text-blue-900 me-3"
-                        >
-                          {isManager() ? (
-                            <FiEdit className="size-6" />
-                          ) : (
-                            <FaEye className="size-6" />
-                          )}
-                        </button>
-
-                        {isManager() && (
+                      <td className="px-4 py-3 whitespace-nowrap text-right  font-medium">
+                        <div className="flex items-center justify-center gap-2">
                           <button
-                            onClick={() => handleDelete(task.id, task.title)}
-                            className="text-red-600 hover:text-red-900"
+                            onClick={() => {
+                              setEditingTask(task);
+                              setViewOnlyMode(!isManager());
+                              setIsModalOpen(true);
+                            }}
+                            className="text-blue-600 hover:text-blue-900"
+                            title={
+                              isManager() ? t("common.edit") : t("common.view")
+                            }
                           >
-                            <RiDeleteBin6Fill className="size-6" />
+                            {isManager() ? (
+                              <FiEdit className="size-5" />
+                            ) : (
+                              <FaEye className="size-5" />
+                            )}
                           </button>
-                        )}
-                        {/* Add Report Button */}
-                        {(isManager() || task.employee_id === user?.id) &&
-                          task.status !== "cancelled" && (
+
+                          {isManager() && (
                             <button
-                              onClick={() => {
-                                setReportTask(task);
-                                setIsWorkReportModalOpen(true);
-                              }}
-                              className="hover:text-green-900 me-3 min-w-48 ms-3"
-                              title="Add Work Report"
+                              onClick={() => handleDelete(task.id, task.title)}
+                              className="text-red-600 hover:text-red-900"
+                              title={t("common.delete")}
                             >
-                              {task.work_report ? (
-                                <div className="flex justify-center items-center gap-1 border rounded-lg px-2 py-1">
-                                  <FaEye className="size-6 text-purple-700" />
-                                  <span>{t("tasks.viewReport")}</span>
-                                </div>
-                              ) : (
-                                <div className="flex justify-center items-center gap-1 border rounded-lg px-2 py-1">
-                                  <MdAssignmentAdd className="size-6 text-green-600" />
-                                  <span>{t("tasks.addReport")}</span>
-                                </div>
-                              )}
+                              <RiDeleteBin6Fill className="size-5" />
                             </button>
                           )}
+
+                          {/* Add Report Button */}
+                          {(isManager() || task.employee_id === user?.id) &&
+                            task.status !== "cancelled" && (
+                              <button
+                                onClick={() => {
+                                  setReportTask(task);
+                                  setIsWorkReportModalOpen(true);
+                                }}
+                                className="text-green-600 hover:text-green-900 flex items-center gap-1 border px-4 py-2 rounded-md"
+                                title={
+                                  task.work_report
+                                    ? t("tasks.viewReport")
+                                    : t("tasks.addReport")
+                                }
+                              >
+                                {task.work_report ? (
+                                  <>
+                                    <FaEye className="size-4" />
+                                    <span className="hidden sm:inline">
+                                      {t("tasks.viewReport")}
+                                    </span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <MdAssignmentAdd className="size-4" />
+                                    <span className="hidden sm:inline">
+                                      {t("tasks.addReport")}
+                                    </span>
+                                  </>
+                                )}
+                              </button>
+                            )}
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -549,41 +544,180 @@ const TaskList = () => {
               </table>
             </div>
 
-            {/* Pagination */}
-            {pagination.totalPages > 1 && (
-              <div className="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-                <div className="flex items-center justify-between">
-                  <div className="text-sm text-gray-700">
-                    Showing page <strong>{pagination.currentPage}</strong> of{" "}
-                    <strong>{pagination.totalPages}</strong> (
-                    <strong>{pagination.totalItems}</strong> total tasks)
+            {/* Mobile Cards */}
+            <div className="lg:hidden space-y-4 p-4">
+              {tasks.map((task) => (
+                <div
+                  key={task.id}
+                  className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm"
+                >
+                  {/* Header */}
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
+                        {task.title}
+                      </h3>
+                      <p className="text-xs text-gray-500 mt-1">
+                        ID: {task.id}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end gap-1">
+                      <span
+                        className={`px-2 py-1 inline-flex text-xs  font-semibold rounded-full ${getPriorityColor(
+                          task.priority
+                        )}`}
+                      >
+                        {task.priority}
+                      </span>
+                      <select
+                        value={task.status}
+                        onChange={(e) =>
+                          handleStatusChange(task.id, e.target.value)
+                        }
+                        className={`text-xs font-semibold rounded-full px-2 py-1 ${getStatusColor(
+                          task.status
+                        )} border-0 focus:ring-1 focus:ring-blue-500`}
+                        disabled={!isManager() && task.employee_id !== user?.id}
+                      >
+                        <option value="open">Open</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                      </select>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() =>
-                        handlePageChange(pagination.currentPage - 1)
-                      }
-                      disabled={pagination.currentPage === 1}
-                      className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-                    >
-                      {t("common.previous")}
-                    </button>
-                    <button
-                      onClick={() =>
-                        handlePageChange(pagination.currentPage + 1)
-                      }
-                      disabled={
-                        pagination.currentPage === pagination.totalPages
-                      }
-                      className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-                    >
-                      {t("common.next")}
-                    </button>
+
+                  {/* Details */}
+                  <div className="grid grid-cols-2 gap-3 text-xs sm:text-sm mb-3">
+                    <div>
+                      <span className="text-gray-600">
+                        {t("tasks.employee")}:
+                      </span>
+                      <p className="font-medium">{task.employee_name}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">
+                        {t("tasks.deadline")}:
+                      </span>
+                      <p className="font-medium">
+                        {task.deadline
+                          ? formatDate(task.deadline, i18n.language)
+                          : "N/A"}
+                      </p>
+                    </div>
+                    {task.device_model && (
+                      <div className="col-span-2">
+                        <span className="text-gray-600">
+                          {t("tasks.device")}:
+                        </span>
+                        <p className="font-medium">{task.device_model}</p>
+                        {task.serial_number && (
+                          <p className="text-xs text-gray-500">
+                            SN: {task.serial_number}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Description */}
+                  {task.description && (
+                    <div className="mb-3">
+                      <p className="text-xs text-gray-600 line-clamp-2">
+                        {task.description}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="flex justify-between items-center pt-3 border-t border-gray-100">
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          setEditingTask(task);
+                          setViewOnlyMode(!isManager());
+                          setIsModalOpen(true);
+                        }}
+                        className="text-blue-600 hover:text-blue-800"
+                        title={
+                          isManager() ? t("common.edit") : t("common.view")
+                        }
+                      >
+                        {isManager() ? (
+                          <FiEdit className="size-4 sm:size-5" />
+                        ) : (
+                          <FaEye className="size-4 sm:size-5" />
+                        )}
+                      </button>
+
+                      {isManager() && (
+                        <button
+                          onClick={() => handleDelete(task.id, task.title)}
+                          className="text-red-600 hover:text-red-800"
+                          title={t("common.delete")}
+                        >
+                          <RiDeleteBin6Fill className="size-4 sm:size-5" />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Report Button */}
+                    {(isManager() || task.employee_id === user?.id) &&
+                      task.status !== "cancelled" && (
+                        <button
+                          onClick={() => {
+                            setReportTask(task);
+                            setIsWorkReportModalOpen(true);
+                          }}
+                          className="text-green-600 hover:text-green-800 flex items-center gap-1 text-xs"
+                        >
+                          {task.work_report ? (
+                            <>
+                              <FaEye className="size-3 sm:size-4" />
+                              <span>{t("tasks.viewReport")}</span>
+                            </>
+                          ) : (
+                            <>
+                              <MdAssignmentAdd className="size-3 sm:size-4" />
+                              <span>{t("tasks.addReport")}</span>
+                            </>
+                          )}
+                        </button>
+                      )}
                   </div>
                 </div>
-              </div>
-            )}
+              ))}
+            </div>
           </>
+        )}
+
+        {/* Pagination */}
+        {pagination.totalPages > 1 && (
+          <div className="bg-white px-4 py-3 border-t border-gray-200">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="text-xs sm:text-sm text-gray-700 text-center sm:text-left">
+                Showing page <strong>{pagination.currentPage}</strong> of{" "}
+                <strong>{pagination.totalPages}</strong> (
+                <strong>{pagination.totalItems}</strong> total tasks)
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handlePageChange(pagination.currentPage - 1)}
+                  disabled={pagination.currentPage === 1}
+                  className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 text-xs sm:text-sm"
+                >
+                  {t("common.previous")}
+                </button>
+                <button
+                  onClick={() => handlePageChange(pagination.currentPage + 1)}
+                  disabled={pagination.currentPage === pagination.totalPages}
+                  className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 text-xs sm:text-sm"
+                >
+                  {t("common.next")}
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
 
