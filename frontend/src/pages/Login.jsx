@@ -32,7 +32,7 @@ const Login = () => {
     e.preventDefault();
     setError("");
     setLoading(true);
-	 console.log('🔐 Submitting login...', { username: formData.username });
+    console.log("🔐 Submitting login...", { username: formData.username });
     // Basic validation
     if (!formData.username || !formData.password) {
       setError("Please fill in all fields");
@@ -41,20 +41,20 @@ const Login = () => {
     }
 
     try {
-  console.log('📡 Calling login API...'); 
+      console.log("📡 Calling login API...");
       const result = await login(formData.username, formData.password);
- console.log('📥 Login result:', result); 
+      console.log("📥 Login result:", result);
       if (result.success) {
- console.log('✅ Login successful');
+        console.log("✅ Login successful");
         // Redirect to dashboard
         navigate("/dashboard");
         showSuccess(t("auth.loginSuccess"));
       } else {
- console.error('❌ Login failed:', result.error); 
+        console.error("❌ Login failed:", result.error);
         setError(result.error || "Login failed");
       }
     } catch (err) {
- console.error('❌ Login error:', err); 
+      console.error("❌ Login error:", err);
       setError(err.message || "An error occurred during login");
     } finally {
       setLoading(false);
