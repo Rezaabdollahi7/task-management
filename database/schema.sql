@@ -19,6 +19,7 @@ CREATE TABLE users (
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(20) NOT NULL CHECK (role IN ('manager', 'employee')),
+    is_active BOOLEAN DEFAULT true, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -107,6 +108,8 @@ CREATE TABLE notifications (
     title VARCHAR(200) NOT NULL,
     message TEXT NOT NULL,
     is_read BOOLEAN DEFAULT FALSE,
+    priority VARCHAR(20) DEFAULT 'normal',
+    read_at TIMESTAMP, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

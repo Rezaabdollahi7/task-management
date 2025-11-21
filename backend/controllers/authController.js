@@ -2,6 +2,7 @@
 // Authentication controller for login and user management
 
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 
 // Generate JWT token
@@ -16,11 +17,15 @@ const generateToken = (userId) => {
 // @access  Public
 const login = async (req, res) => {
   try {
-    const { username, password } = req.body
-	console.log('login attempt:',{username});
+    const { username, password } = req.body;
+    console.log("🔐 Login attempt:", {
+      username,
+      passwordLength: password?.length,
+    });
+
     // Validate input
     if (!username || !password) {
-	 console.log('❌ Missing credentials'); 
+      console.log("❌ Missing credentials");
       return res.status(400).json({
         success: false,
         message: "Please provide username and password",
@@ -29,18 +34,42 @@ const login = async (req, res) => {
 
     // Find user by username
     const user = await User.findByUsername(username);
-	 console.log('👤 User found:', user ? 'YES' : 'NO');
+    console.log("👤 User found:", user ? "YES" : "NO");
+
+    if (user) {
+      console.log("👤 User details:", {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+        hasPassword: !!user.password,
+        passwordStart: user.password?.substring(0, 10) + "...",
+      });
+    }
+
     if (!user) {
+      console.log("❌ User not found");
       return res.status(401).json({
         success: false,
         message: "Invalid username or password",
       });
     }
 
+    // Check if active
+    if (user.is_active === false) {
+      console.log("❌ User inactive");
+      return res.status(403).json({
+        success: false,
+        message: "Your account has been deactivated",
+      });
+    }
+
     // Verify password
-    const isPasswordValid = await User.verifyPassword(password, user.password);
+    console.log("🔑 Verifying password...");
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    console.log("🔑 Password valid:", isPasswordValid);
 
     if (!isPasswordValid) {
+      console.log("❌ Invalid password");
       return res.status(401).json({
         success: false,
         message: "Invalid username or password",
@@ -49,6 +78,7 @@ const login = async (req, res) => {
 
     // Generate token
     const token = generateToken(user.id);
+    console.log("✅ Login successful, token generated");
 
     // Return user info and token
     res.json({
@@ -65,7 +95,7 @@ const login = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("❌ Login error:", error);
     res.status(500).json({
       success: false,
       message: "Server error during login",
