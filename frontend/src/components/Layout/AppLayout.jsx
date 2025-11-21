@@ -36,31 +36,39 @@ const AppLayout = ({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar - Fixed on desktop, slide-in on mobile */}
+    <div className="min-h-screen bg-gray-50 flex overflow-x-hidden">
+      {/* Overlay - Shows when sidebar is open */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar - Slide-in from side */}
       <aside
         className={`fixed top-0 ${
           isRTL ? "right-0" : "left-0"
-        } h-full bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out w-full lg:w-[20%] flex flex-col ${
+        } h-full bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out w-64 flex flex-col ${
           sidebarOpen
             ? "translate-x-0"
             : isRTL
             ? "translate-x-full"
             : "-translate-x-full"
-        } lg:translate-x-0`}
+        }`}
       >
-        {/* Close button for mobile */}
-        <div className="lg:hidden flex justify-end items-center p-6 relative">
+        {/* Close button */}
+        <div className="flex justify-end items-center p-6 relative">
           <div
-            className={`flex container absolute lg:hidden ${
+            className={`flex container absolute ${
               isRTL
                 ? "left-[50%] -translate-x-1/2"
                 : "right-[50%] translate-x-1/2"
             } items-center justify-center py-1 -z-10`}
           >
             <img
-              src="../../public/icons/full_rounded.png"
-              alt=""
+              src="/icons/full_rounded.png"
+              alt="Zero Task"
               className="size-16 mr-[30%]"
             />
             <span className="text-xl absolute italic">ero Task</span>
@@ -73,18 +81,8 @@ const AppLayout = ({
           </button>
         </div>
 
-        {/* header & logo */}
-        <div className="hidden container lg:flex items-center justify-center relative py-1 border border-b mb-8">
-          <img
-            src="../../public/icons/full_rounded.png"
-            alt=""
-            className="size-24 mr-[30%]"
-          />
-          <span className="text-xl absolute italic">ero Task</span>
-        </div>
-
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto">
+        <nav className="flex-1 overflow-y-auto px-3">
           <div className="space-y-2">
             {/* Dashboard */}
             <button
@@ -107,7 +105,7 @@ const AppLayout = ({
             {/* Calendar */}
             <button
               onClick={() => handleNavigation("/calendar")}
-              className="w-full flex items-center gap-3 px-4 py-3  text-gray-600 text-lg hover:text-red-500 hover:bg-red-50"
+              className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 text-lg hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
             >
               <LuCalendar1 className="size-6 flex-shrink-0" />
               <span className="font-medium">{t("navigation.calendar")}</span>
@@ -138,9 +136,9 @@ const AppLayout = ({
         </nav>
 
         {/* User Info & Logout */}
-        <div className="user-info flex flex-row-reverse items-center justify-between px-4 border border-t-gray-200">
+        <div className="user-info flex flex-row-reverse items-center justify-between px-4 border-t border-gray-200">
           {/* Logout button */}
-          <div className="">
+          <div>
             <button
               onClick={handleLogout}
               className="text-gray-700 hover:bg-red-50 hover:text-red-600 p-4 rounded-lg transition-colors"
@@ -168,17 +166,17 @@ const AppLayout = ({
         </div>
       </aside>
 
-      {/* Main content - with margin for fixed sidebar on desktop */}
-      <div className={`flex-1 ${isRTL ? "lg:mr-[20%]" : "lg:ml-[20%]"}`}>
+      {/* Main content - Full width */}
+      <div className="flex-1 w-full">
         {/* Header - Sticky */}
         <header className="bg-white shadow-sm sticky top-0 z-30">
           <div className="px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-3">
-                {/* Mobile menu button */}
+                {/* Hamburger menu button */}
                 <button
                   onClick={() => setSidebarOpen(true)}
-                  className="lg:hidden text-gray-600 hover:text-gray-900 p-2"
+                  className="text-gray-600 hover:text-gray-900 p-2"
                 >
                   <FaBars className="w-6 h-6" />
                 </button>
