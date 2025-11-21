@@ -4,7 +4,7 @@ services:
   # PostgreSQL Database
   database:
     image: postgres:14-alpine
-    container_name: task-management-db-local
+    container_name: task-management-db
     restart: unless-stopped
     environment:
       POSTGRES_DB: task_management
@@ -13,7 +13,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data_local:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
       - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d task_management"]
@@ -29,7 +29,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
       target: development
-    container_name: task-management-backend-local
+    container_name: task-management-backend
     restart: unless-stopped
     ports:
       - "5000:5000"
@@ -42,8 +42,7 @@ services:
       DB_NAME: task_management
       DB_USER: postgres
       DB_PASSWORD: local_dev_password_123
-      DATABASE_URL: postgresql://postgres:local_dev_password_123@database:5432/task_management
-
+      DATABASE_URL: ${DATABASE_URL}
       JWT_SECRET: your_super_secret_jwt_key_for_development_only
       JWT_EXPIRE: 7d
       BCRYPT_SALT_ROUNDS: 10
@@ -80,13 +79,13 @@ services:
       dockerfile: Dockerfile
       target: development
       args:
-        - VITE_API_URL=http://localhost:5000/api
-    container_name: task-management-frontend-local
+          - VITE_API_URL=${VITE_API_URL:-http://localhost:5000/api}
+    container_name: task-management-frontend
     restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
-      - VITE_API_URL=http://localhost:5000/api
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:5000/api}
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -96,7 +95,7 @@ services:
       - task-management-network
 
 volumes:
-  postgres_data_local:
+  postgres_data:
     driver: local
 
 networks:
