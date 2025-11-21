@@ -180,7 +180,7 @@ const Login = () => {
 
         {/* Footer */}
         <p className="text-center text-gray-600 text-sm mt-6">
-          © 2025 Zero Task System. All rights reserved.
+          © 2025 SieManage System. All rights reserved.
         </p>
       </div>
 

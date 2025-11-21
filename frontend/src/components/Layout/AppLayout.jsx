@@ -59,20 +59,6 @@ const AppLayout = ({
       >
         {/* Close button */}
         <div className="flex justify-end items-center p-6 relative">
-          <div
-            className={`flex container absolute ${
-              isRTL
-                ? "left-[50%] -translate-x-1/2"
-                : "right-[50%] translate-x-1/2"
-            } items-center justify-center py-1 -z-10`}
-          >
-            <img
-              src="/icons/full_rounded.png"
-              alt="Zero Task"
-              className="size-16 mr-[30%]"
-            />
-            <span className="text-xl absolute italic">ero Task</span>
-          </div>
           <button
             onClick={() => setSidebarOpen(false)}
             className="text-gray-500 hover:text-gray-700 z-10"
