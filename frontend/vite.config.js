@@ -7,18 +7,19 @@ import path from "path";
 
 export default defineConfig({
   plugins: [react()],
-  server: {
+  server:{
+    host: '0.0.0.0',
     port: 3000,
+    strictPort: true,  
     watch: {
       usePolling: true,
     },
-    host: true,
-    proxy: {
-      "/api": {
-        target: process.env.VITE_API_URL || "http://localhost:5000",
-        changeOrigin: true,
-      },
-    },
+    allowedHosts: [
+      'localhost',
+      '188.213.199.116',
+      'siemanage.com',
+      'www.siemanage.com',
+    ],
   },
   build: {
     outDir: "dist",
