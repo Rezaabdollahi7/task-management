@@ -14,6 +14,7 @@ import { tasksAPI } from "../../services/api";
 import { showSuccess, showError } from "../../utils/toast";
 import { MdOutlineFileDownloadDone } from "react-icons/md";
 import { useModal } from "../../../hooks/useModal";
+import { useAuth } from "../../context/AuthContext";
 
 const DayTasksModal = ({
   isOpen,
@@ -25,7 +26,7 @@ const DayTasksModal = ({
 }) => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "fa";
-
+  const { user, isManager } = useAuth();
   const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false);
   const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
   const [isViewTaskModalOpen, setIsViewTaskModalOpen] = useState(false);
@@ -354,13 +355,15 @@ const DayTasksModal = ({
               }`}
             >
               <div className="flex gap-3">
-                <button
-                  onClick={handleAddNewTask}
-                  className=" text-sm md:text-muted lg:text-base px-3 md:px-4 py-1 md:py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
-                >
-                  <FaPlus className="size-3 md:size-5" />
-                  {t("dayTasks.addNewTask")}
-                </button>
+                {isManager() && (
+                  <button
+                    onClick={handleAddNewTask}
+                    className=" text-sm md:text-muted lg:text-base px-3 md:px-4 py-1 md:py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+                  >
+                    <FaPlus className="size-3 md:size-5" />
+                    {t("dayTasks.addNewTask")}
+                  </button>
+                )}
                 <button
                   onClick={onClose}
                   className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"

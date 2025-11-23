@@ -24,7 +24,9 @@
     "title": "title",
     "created": "Created",
     "clearAll": "Clear All",
-    "view" :"View"
+    "view": "View",
+    "notAvailable": "Not available",
+    "desciption": "desciption"
   },
   "auth": {
     "login": "Login",
