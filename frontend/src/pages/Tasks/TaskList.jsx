@@ -443,11 +443,11 @@ const TaskList = () => {
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
                         <span
-                          className={`px-3 py-2 inline-flex text-xs  font-semibold rounded-full ${getPriorityColor(
+                          className={`px-4 py-2 inline-flex text-xs  font-semibold rounded-full ${getPriorityColor(
                             task.priority
                           )}`}
                         >
-                          {task.priority}
+                          {t(`tasks.priorities.${task.priority}`)}
                         </span>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
@@ -456,23 +456,31 @@ const TaskList = () => {
                           onChange={(e) =>
                             handleStatusChange(task.id, e.target.value)
                           }
-                          className={`text-xs font-semibold rounded-full px-3 py-2 ${getStatusColor(
+                          className={` font-semibold rounded-xl px-3 py-2  ${getStatusColor(
                             task.status
-                          )} border-0 focus:ring-2 focus:ring-blue-500`}
+                          )} border focus:ring-2 focus:ring-blue-500`}
                           disabled={
                             !isManager() && task.employee_id !== user?.id
                           }
                         >
-                          <option value="open">Open</option>
-                          <option value="in_progress">In Progress</option>
-                          <option value="completed">Completed</option>
-                          <option value="cancelled">Cancelled</option>
+                          <option value="open">
+                            {t("tasks.statuses.open")}
+                          </option>
+                          <option value="in_progress">
+                            {t("tasks.statuses.in_progress")}
+                          </option>
+                          <option value="completed">
+                            {t("tasks.statuses.completed")}
+                          </option>
+                          <option value="cancelled">
+                            {t("tasks.statuses.cancelled")}
+                          </option>
                         </select>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
                         {task.deadline
                           ? formatDate(task.deadline, i18n.language)
-                          : "N/A"}
+                          : "-"}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-right  font-medium">
                         <div className="flex items-center justify-center gap-2">
@@ -555,20 +563,10 @@ const TaskList = () => {
                   <div className="flex justify-between items-start mb-3">
                     <div>
                       <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
-                        {task.title}
+                        {task.id} - {task.title}
                       </h3>
-                      <p className="text-xs text-gray-500 mt-1">
-                        ID: {task.id}
-                      </p>
                     </div>
                     <div className="flex flex-col items-end gap-1">
-                      <span
-                        className={`px-2 py-1 inline-flex text-xs  font-semibold rounded-full ${getPriorityColor(
-                          task.priority
-                        )}`}
-                      >
-                        {task.priority}
-                      </span>
                       <select
                         value={task.status}
                         onChange={(e) =>
@@ -579,11 +577,24 @@ const TaskList = () => {
                         )} border-0 focus:ring-1 focus:ring-blue-500`}
                         disabled={!isManager() && task.employee_id !== user?.id}
                       >
-                        <option value="open">Open</option>
-                        <option value="in_progress">In Progress</option>
-                        <option value="completed">Completed</option>
-                        <option value="cancelled">Cancelled</option>
+                        <option value="open">{t("tasks.statuses.open")}</option>
+                        <option value="in_progress">
+                          {t("tasks.statuses.in_progress")}
+                        </option>
+                        <option value="completed">
+                          {t("tasks.statuses.completed")}
+                        </option>
+                        <option value="cancelled">
+                          {t("tasks.statuses.cancelled")}
+                        </option>
                       </select>
+                      <span
+                        className={`px-4 py-2 inline-flex text-xs  font-semibold rounded-full ${getPriorityColor(
+                          task.priority
+                        )}`}
+                      >
+                        {t(`tasks.priorities.${task.priority}`)}
+                      </span>
                     </div>
                   </div>
 
@@ -602,7 +613,7 @@ const TaskList = () => {
                       <p className="font-medium">
                         {task.deadline
                           ? formatDate(task.deadline, i18n.language)
-                          : "N/A"}
+                          : "-"}
                       </p>
                     </div>
                     {task.device_model && (
@@ -624,7 +635,7 @@ const TaskList = () => {
                   {task.description && (
                     <div className="mb-3">
                       <p className="text-xs text-gray-600 line-clamp-2">
-                        {task.description}
+                        {t("common.desciption")} : {task.description}
                       </p>
                     </div>
                   )}

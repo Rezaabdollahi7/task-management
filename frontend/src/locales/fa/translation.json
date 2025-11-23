@@ -24,7 +24,9 @@
     "title": "عنوان",
     "created": "ایجاد شده",
     "clearAll": "پاک کردن همه",
-    "view": "مشاهده"
+    "view": "مشاهده",
+    "notAvailable": "نا مشخص",
+    "desciption": "توضیحات"
   },
   "auth": {
     "login": "ورود",
