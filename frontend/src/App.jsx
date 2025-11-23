@@ -19,8 +19,10 @@ import Calendar from "./pages/Calendar/Calendar";
 import "./styles/fonts.css";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { I18nextProvider } from "react-i18next";
+import i18n from "./i18n";
 
-function App() {
+function AppContent() {
   const { i18n } = useTranslation();
 
   useEffect(() => {
@@ -118,6 +120,14 @@ function App() {
         </SocketProvider>
       </AuthProvider>
     </Router>
+  );
+}
+
+function App() {
+  return (
+    <I18nextProvider i18n={i18n}>
+      <AppContent />
+    </I18nextProvider>
   );
 }
 
