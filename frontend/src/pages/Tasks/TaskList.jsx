@@ -17,6 +17,7 @@ import { MdAssignmentAdd } from "react-icons/md";
 import { LuSearch } from "react-icons/lu";
 import { useDebounce } from "../../../hooks/useDebounce";
 import SkeletonTaskLists from "../../components/skeletons/SkeletonTaskLists";
+import UserProfileLink from "../../components/UserProfileLink";
 
 const TaskList = () => {
   const { user, isManager } = useAuth();
@@ -439,7 +440,10 @@ const TaskList = () => {
                         </div>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                        {task.employee_name}
+                        <UserProfileLink
+                          userId={task.employee_id}
+                          userName={task.employee_name}
+                        />
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
                         <span

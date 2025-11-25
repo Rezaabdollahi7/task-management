@@ -85,6 +85,8 @@
     "activeTasks": "وظایف فعال",
     "completedTasks": "وظایف تکمیل شده",
     "overdueTasks": "وظایف عقب‌افتاده",
+    "completionRate": " درصد تکمیل",
+    "monthlyPerformance": "عملکرد ماهانه ",
     "charts": {
       "statusDistribution": "توزیع وضعیت",
       "priorityDistribution": "وظایف فعال بر اساس اولویت",
@@ -127,6 +129,10 @@
     "searchBy": "جستجو بر اساس عنوان، شرح، مدل دستگاه یا شماره سریال...",
     "addReport": "افزودن گزارش",
     "viewReport": "مشاهده گزارش",
+    "totalTasks": "Total Tasks",
+    "overdue": "به تعویق افتاده",
+    "workReports": "گزارش کار ها ",
+    "noReports": "گزارش کاری وجود ندارد",
     "statuses": {
       "open": "باز",
       "in_progress": "در حال انجام",
@@ -177,7 +183,8 @@
       "selectEmployee": "کارمند را انتخاب کنید",
       "deviceModel": "مثال: Siemens S7-1200",
       "serialNumber": "مثال: 6ES7214-1AG40-0XB0",
-      "reportedIssue": "مشکل گزارش شده را شرح دهید"
+      "reportedIssue": "مشکل گزارش شده را شرح دهید",
+      "selectDate": "انتخاب تاریخ"
     }
   },
   "users": {

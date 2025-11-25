@@ -85,6 +85,8 @@
     "activeTasks": "Active Tasks",
     "completedTasks": "Completed Tasks",
     "overdueTasks": "Overdue Tasks",
+    "completionRate": "Completion Rate",
+    "monthlyPerformance": "Monthly Performance",
     "charts": {
       "statusDistribution": "Status Distribution",
       "priorityDistribution": "Active Tasks by Priority",
@@ -127,6 +129,10 @@
     "searchBy": "Search by title, description, device model, or serial number...",
     "addReport": "Add Report",
     "viewReport": "View Report",
+    "totalTasks": "Total Tasks",
+    "overdue": "Overdue",
+    "workReports": "Work Reports",
+    "noReports": "No work reports yet",
     "statuses": {
       "open": "Open",
       "in_progress": "In Progress",
@@ -162,7 +168,6 @@
     },
     "taskDate": "Task Date",
     "workReport": "Work Report",
-
     "messages": {
       "createSuccess": "Task created successfully",
       "updateSuccess": "Task updated successfully",
@@ -178,7 +183,8 @@
       "selectEmployee": "Select employee",
       "deviceModel": "e.g., Siemens S7-1200",
       "serialNumber": "e.g., 6ES7214-1AG40-0XB0",
-      "reportedIssue": "Describe the issue"
+      "reportedIssue": "Describe the issue",
+      "selectDate": "Select date"
     }
   },
   "users": {

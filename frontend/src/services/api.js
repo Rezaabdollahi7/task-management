@@ -74,6 +74,9 @@ export const usersAPI = {
   updateRole: (id, role) => api.patch(`/users/${id}/role`, { role }),
   updatePassword: (id, password) =>
     api.patch(`/users/${id}/password`, { newPassword: password }),
+  getStats: (id) => api.get(`/users/${id}/stats`),
+  getTasks: (id, params) => api.get(`/users/${id}/tasks`, { params }),
+  getReports: (id, params) => api.get(`/users/${id}/reports`, { params }),
 };
 
 // Tasks API endpoints (for future use)

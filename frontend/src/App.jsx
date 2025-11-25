@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import UserList from "./pages/Users/UserList";
 import TaskList from "./pages/Tasks/TaskList";
 import Notifications from "./pages/Notifications";
+import UserDetail from "./pages/Users/UserDetail";
 import { SocketProvider } from "./context/SocketContext";
 import Calendar from "./pages/Calendar/Calendar";
 import "./styles/fonts.css";
@@ -65,6 +66,8 @@ function AppContent() {
                 </ProtectedRoute>
               }
             />
+
+            <Route path="/users/:id" element={<UserDetail />} />
 
             <Route
               path="/tasks"

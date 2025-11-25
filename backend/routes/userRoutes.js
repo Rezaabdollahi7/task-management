@@ -15,7 +15,10 @@ const {
   deleteUser,
   changeUserRole,
   changeUserPassword,
-  getAssignableUsers, // ✅
+  getAssignableUsers,
+  getUserStats,
+  getUserTasks,
+  getUserReports,
 } = require("../controllers/userController");
 const { auth, isManager } = require("../middleware/auth");
 
@@ -30,7 +33,22 @@ router.get("/", isManager, getAllUsers);
 // @route   GET /api/users/assignable
 // @desc    Get all assignable users
 // @access  Private (Manager only)
-router.get("/assignable", isManager, getAssignableUsers); 
+router.get("/assignable", isManager, getAssignableUsers);
+
+// @route   GET /api/users/:id/stats
+// @desc    Get user statistics
+// @access  Private (Manager only)
+router.get("/:id/stats", isManager, getUserStats);
+
+// @route   GET /api/users/:id/tasks
+// @desc    Get user tasks
+// @access  Private (Manager only)
+router.get("/:id/tasks", isManager, getUserTasks);
+
+// @route   GET /api/users/:id/reports
+// @desc    Get user work reports
+// @access  Private (Manager only)
+router.get("/:id/reports", isManager, getUserReports);
 
 // @route   GET /api/users/:id
 // @desc    Get user by ID

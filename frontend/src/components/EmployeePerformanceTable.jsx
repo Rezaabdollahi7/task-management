@@ -1,5 +1,6 @@
 // src/components/EmployeePerformanceTable.jsx
 import { useTranslation } from "react-i18next";
+import UserProfileLink from "./UserProfileLink";
 
 const EmployeePerformanceTable = ({ data }) => {
   const { t } = useTranslation();
@@ -16,7 +17,11 @@ const EmployeePerformanceTable = ({ data }) => {
     <div className="bg-white border border-gray-200 rounded-lg p-4 mb-3 shadow-sm">
       <div className="flex justify-center items-center  mb-3">
         <h3 className="font-semibold text-gray-900 text-center">
-          {employee.full_name}
+          <UserProfileLink
+            userId={employee.id}
+            userName={employee.full_name}
+            className="text-lg font-semibold text-gray-900"
+          />
         </h3>
       </div>
 
@@ -124,7 +129,11 @@ const EmployeePerformanceTable = ({ data }) => {
                 <tr key={employee.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">
-                      {employee.full_name}
+                      <UserProfileLink
+                        userId={employee.id}
+                        userName={employee.full_name}
+                        className="font-semibold text-gray-900"
+                      />
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center">

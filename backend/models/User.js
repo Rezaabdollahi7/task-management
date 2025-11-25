@@ -180,6 +180,132 @@ class User {
     const result = await db.query(query, params);
     return result.rows.length > 0;
   }
+
+  // Get user statistics
+  static async getUserStats(userId) {
+    const query = `
+      SELECT 
+        COUNT(*) as total_tasks,
+        COUNT(*) FILTER (WHERE status = 'completed') as completed_tasks,
+        COUNT(*) FILTER (WHERE status = 'in_progress') as in_progress_tasks,
+        COUNT(*) FILTER (WHERE status = 'open') as open_tasks,
+        COUNT(*) FILTER (WHERE deadline < CURRENT_DATE AND status NOT IN ('completed', 'cancelled')) as overdue_tasks,
+        ROUND(
+          (COUNT(*) FILTER (WHERE status = 'completed')::DECIMAL / NULLIF(COUNT(*), 0)) * 100, 
+          2
+        ) as completion_rate
+      FROM tasks 
+      WHERE employee_id = $1
+    `;
+
+    const result = await db.query(query, [userId]);
+    return result.rows[0];
+  }
+
+  // Get user monthly performance (last 6 months)
+  static async getUserMonthlyPerformance(userId) {
+    const query = `
+      SELECT 
+        TO_CHAR(created_at, 'YYYY-MM') as month,
+        COUNT(*) as total,
+        COUNT(*) FILTER (WHERE status = 'completed') as completed,
+        COUNT(*) FILTER (WHERE status = 'in_progress') as in_progress,
+        COUNT(*) FILTER (WHERE status = 'open') as open
+      FROM tasks
+      WHERE employee_id = $1
+        AND created_at >= CURRENT_DATE - INTERVAL '6 months'
+      GROUP BY TO_CHAR(created_at, 'YYYY-MM')
+      ORDER BY month DESC
+    `;
+
+    const result = await db.query(query, [userId]);
+    return result.rows;
+  }
+
+  // Get user tasks with filters
+  static async getUserTasks(userId, filters = {}) {
+    let query = `
+      SELECT t.*, 
+             e.full_name as employee_name,
+             c.full_name as creator_name
+      FROM tasks t
+      INNER JOIN users e ON t.employee_id = e.id
+      INNER JOIN users c ON t.creator_id = c.id
+      WHERE t.employee_id = $1
+    `;
+    const params = [userId];
+    let paramCount = 2;
+
+    // Filter by status
+    if (filters.status) {
+      params.push(filters.status);
+      query += ` AND t.status = $${paramCount++}`;
+    }
+
+    // Filter by priority
+    if (filters.priority) {
+      params.push(filters.priority);
+      query += ` AND t.priority = $${paramCount++}`;
+    }
+
+    // Check for overdue
+    if (filters.overdue === "true") {
+      query += ` AND t.deadline < CURRENT_DATE AND t.status NOT IN ('completed', 'cancelled')`;
+    }
+
+    query += ` ORDER BY t.created_at DESC`;
+
+    // Pagination
+    const page = parseInt(filters.page) || 1;
+    const limit = parseInt(filters.limit) || 20;
+    const offset = (page - 1) * limit;
+
+    params.push(limit, offset);
+    query += ` LIMIT $${paramCount++} OFFSET $${paramCount}`;
+
+    const result = await db.query(query, params);
+
+    // Get total count
+    let countQuery = `SELECT COUNT(*) FROM tasks WHERE employee_id = $1`;
+    const countParams = [userId];
+
+    const countResult = await db.query(countQuery, countParams);
+    const totalItems = parseInt(countResult.rows[0].count);
+
+    return {
+      tasks: result.rows,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(totalItems / limit),
+        totalItems,
+        itemsPerPage: limit,
+      },
+    };
+  }
+
+  // Get user work reports (tasks with reports)
+  static async getUserReports(userId, limit = 10) {
+    const query = `
+      SELECT 
+        t.id,
+        t.title,
+        t.work_report,
+        t.status,
+        t.priority,
+        t.actual_end_time,
+        t.updated_at,
+        c.full_name as creator_name
+      FROM tasks t
+      INNER JOIN users c ON t.creator_id = c.id
+      WHERE t.employee_id = $1 
+        AND t.work_report IS NOT NULL
+      ORDER BY t.updated_at DESC
+      LIMIT $2
+    `;
+
+    const result = await db.query(query, [userId, limit]);
+    return result.rows;
+  }
 }
 
 module.exports = User;

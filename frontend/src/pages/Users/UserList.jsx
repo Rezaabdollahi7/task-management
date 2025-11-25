@@ -9,6 +9,7 @@ import { showSuccess, showError } from "../../utils/toast";
 import { useTranslation } from "react-i18next";
 import { FaEdit, FaSearch } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 
 const UserList = () => {
   const { user } = useAuth();
@@ -28,6 +29,8 @@ const UserList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   // Fetch users from API
   const fetchUsers = async () => {
@@ -241,15 +244,21 @@ const UserList = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {users.map((u) => (
                     <tr key={u.id} className="hover:bg-gray-50">
-                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-cente cursor-pointer">
                         {u.id}
                       </td>
-                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-center">
-                        <div className="text-sm font-medium text-gray-900">
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-center cursor-pointer hover:text-blue-600">
+                        <div
+                          className="text-sm font-medium text-gray-900"
+                          onClick={() => navigate(`/users/${u.id}`)}
+                        >
                           {u.full_name}
                         </div>
                       </td>
-                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                      <td
+                        className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center cursor-pointer hover:text-blue-600"
+                        onClick={() => navigate(`/users/${u.id}`)}
+                      >
                         {u.username}
                       </td>
                       <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-center">
@@ -309,7 +318,8 @@ const UserList = () => {
               {users.map((u) => (
                 <div
                   key={u.id}
-                  className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm"
+                  className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm cursor-pointer hover:shadow-md transition"
+                  onClick={() => navigate(`/users/${u.id}`)}
                 >
                   <div className="flex justify-between items-start mb-3">
                     <div>
@@ -336,7 +346,10 @@ const UserList = () => {
                     <p className="font-medium">{u.username}</p>
                   </div>
 
-                  <div className="flex justify-between items-center pt-3 border-t border-gray-100">
+                  <div
+                    className="flex justify-between items-center pt-3 border-t border-gray-100"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <button
                       onClick={() => {
                         setEditingUser(u);

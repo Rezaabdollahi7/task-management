@@ -315,6 +315,129 @@ const changeUserPassword = async (req, res) => {
   }
 };
 
+// @route   GET /api/users/:id/stats
+// @desc    Get user statistics
+// @access  Private (Manager only)
+const getUserStats = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if user exists
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Get stats
+    const stats = await User.getUserStats(id);
+
+    // Get monthly performance
+    const monthlyPerformance = await User.getUserMonthlyPerformance(id);
+
+    res.json({
+      success: true,
+      data: {
+        user: {
+          id: user.id,
+          full_name: user.full_name,
+          username: user.username,
+          role: user.role,
+          created_at: user.created_at,
+        },
+        stats: {
+          total_tasks: parseInt(stats.total_tasks) || 0,
+          completed_tasks: parseInt(stats.completed_tasks) || 0,
+          in_progress_tasks: parseInt(stats.in_progress_tasks) || 0,
+          open_tasks: parseInt(stats.open_tasks) || 0,
+          overdue_tasks: parseInt(stats.overdue_tasks) || 0,
+          completion_rate: parseFloat(stats.completion_rate) || 0,
+        },
+        monthlyPerformance,
+      },
+    });
+  } catch (error) {
+    console.error("Get user stats error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching user statistics",
+    });
+  }
+};
+
+// @route   GET /api/users/:id/tasks
+// @desc    Get user tasks
+// @access  Private (Manager only)
+const getUserTasks = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if user exists
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const filters = {
+      status: req.query.status,
+      priority: req.query.priority,
+      overdue: req.query.overdue,
+      page: req.query.page,
+      limit: req.query.limit,
+    };
+
+    const result = await User.getUserTasks(id, filters);
+
+    res.json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    console.error("Get user tasks error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching user tasks",
+    });
+  }
+};
+
+// @route   GET /api/users/:id/reports
+// @desc    Get user work reports
+// @access  Private (Manager only)
+const getUserReports = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if user exists
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const limit = parseInt(req.query.limit) || 10;
+    const reports = await User.getUserReports(id, limit);
+
+    res.json({
+      success: true,
+      data: reports,
+    });
+  } catch (error) {
+    console.error("Get user reports error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching user reports",
+    });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getUserById,
@@ -324,4 +447,7 @@ module.exports = {
   changeUserRole,
   changeUserPassword,
   getAssignableUsers,
+  getUserStats,
+  getUserTasks,
+  getUserReports,
 };
