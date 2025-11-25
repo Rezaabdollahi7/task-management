@@ -13,6 +13,8 @@ const userRoutes = require("./routes/userRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const dailyReportRoutes = require("./routes/dailyReportRoutes");
+
 const { initCronJobs } = require("./services/notificationCron");
 const db = require("./config/db");
 
@@ -53,6 +55,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/daily-reports", dailyReportRoutes);
 
 // 404 handler
 app.use((req, res) => {

@@ -115,4 +115,24 @@ export const notificationsAPI = {
   deleteAll: () => api.delete("/notifications"),
 };
 
+// Daily Reports API endpoints
+export const dailyReportsAPI = {
+  // Get all reports (Manager only)
+  getAll: (params) => api.get("/daily-reports", { params }),
+
+  // Get my reports (Employee - only their own)
+  getMy: (params) => api.get("/daily-reports/my", { params }),
+
+  // Get report by ID
+  getById: (id) => api.get(`/daily-reports/${id}`),
+
+  // Create new report
+  create: (data) => api.post("/daily-reports", data),
+
+  // Update report
+  update: (id, data) => api.put(`/daily-reports/${id}`, data),
+
+  // Delete report
+  delete: (id) => api.delete(`/daily-reports/${id}`),
+};
 export default api;

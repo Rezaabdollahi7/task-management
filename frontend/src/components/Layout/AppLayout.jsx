@@ -9,6 +9,7 @@ import { MdOutlineTaskAlt } from "react-icons/md";
 import { RiNotification3Line } from "react-icons/ri";
 import { RxDashboard } from "react-icons/rx";
 import { TbLogout } from "react-icons/tb";
+import { TbReport } from "react-icons/tb";
 import { HiOutlineUsers } from "react-icons/hi2";
 import LanguageSwitcher from "../LanguageSwitcher";
 import NotificationBell from "../NotificationBell";
@@ -116,6 +117,17 @@ const AppLayout = ({
               <RiNotification3Line className="size-6 flex-shrink-0" />
               <span className="font-medium">
                 {t("navigation.notifications")}
+              </span>
+            </button>
+
+            {/* dailyReports */}
+            <button
+              onClick={() => handleNavigation("/daily-reports")}
+              className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 text-lg hover:bg-cyan-50 hover:text-cyan-600 rounded-lg transition-colors"
+            >
+              <TbReport className="size-6 flex-shrink-0" />
+              <span className="font-medium">
+                {t("navigation.dailyReports")}
               </span>
             </button>
           </div>

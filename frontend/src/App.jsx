@@ -17,6 +17,7 @@ import Notifications from "./pages/Notifications";
 import UserDetail from "./pages/Users/UserDetail";
 import { SocketProvider } from "./context/SocketContext";
 import Calendar from "./pages/Calendar/Calendar";
+import DailyReportsList from "./pages/DailyReports/DailyReportsList";
 import "./styles/fonts.css";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -86,7 +87,14 @@ function AppContent() {
                 </ProtectedRoute>
               }
             />
-
+            <Route
+              path="/daily-reports"
+              element={
+                <ProtectedRoute>
+                  <DailyReportsList />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/calendar"
               element={
