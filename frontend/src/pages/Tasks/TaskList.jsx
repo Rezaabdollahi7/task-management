@@ -11,13 +11,19 @@ import { showSuccess, showError } from "../../utils/toast";
 import { formatDate } from "../../utils/dateHelper";
 import { useTranslation } from "react-i18next";
 import { FiEdit } from "react-icons/fi";
-import { FaEye } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { MdAssignmentAdd } from "react-icons/md";
 import { LuSearch } from "react-icons/lu";
 import { useDebounce } from "../../../hooks/useDebounce";
 import SkeletonTaskLists from "../../components/skeletons/SkeletonTaskLists";
 import UserProfileLink from "../../components/UserProfileLink";
+import {
+  FaEye,
+  FaUser,
+  FaCalendarDay,
+  FaCalendarCheck,
+  FaTools,
+} from "react-icons/fa";
 
 const TaskList = () => {
   const { user, isManager } = useAuth();
@@ -569,98 +575,135 @@ const TaskList = () => {
               {tasks.map((task) => (
                 <div
                   key={task.id}
-                  className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm"
+                  className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
                 >
-                  {/* Header */}
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
-                        {task.id} - {task.title}
-                      </h3>
-                    </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <select
-                        value={task.status}
-                        onChange={(e) =>
-                          handleStatusChange(task.id, e.target.value)
-                        }
-                        className={`text-xs font-semibold rounded-full px-2 py-1 ${getStatusColor(
-                          task.status
-                        )} border-0 focus:ring-1 focus:ring-blue-500`}
-                        disabled={!isManager() && task.employee_id !== user?.id}
-                      >
-                        <option value="open">{t("tasks.statuses.open")}</option>
-                        <option value="in_progress">
-                          {t("tasks.statuses.in_progress")}
-                        </option>
-                        <option value="completed">
-                          {t("tasks.statuses.completed")}
-                        </option>
-                        <option value="cancelled">
-                          {t("tasks.statuses.cancelled")}
-                        </option>
-                      </select>
-                      <span
-                        className={`px-4 py-2 inline-flex text-xs  font-semibold rounded-full ${getPriorityColor(
-                          task.priority
-                        )}`}
-                      >
-                        {t(`tasks.priorities.${task.priority}`)}
-                      </span>
+                  {/* Header with Title and ID */}
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                          #{task.id}
+                        </span>
+                        <h3 className="font-semibold text-gray-900 text-sm">
+                          {task.title}
+                        </h3>
+                      </div>
+                      {task.description && (
+                        <p className="text-xs text-gray-600 line-clamp-2 mt-2">
+                          {task.description}
+                        </p>
+                      )}
                     </div>
                   </div>
 
-                  {/* Details */}
-                  <div className="grid grid-cols-2 gap-3 text-xs sm:text-sm mb-3">
-                    <div>
-                      <span className="text-gray-600">
-                        {t("tasks.employee")}:
-                      </span>
-                      <p className="font-medium">{task.employee_name}</p>
+                  {/* Status and Priority Badges */}
+                  <div className="flex gap-2 mb-4">
+                    <select
+                      value={task.status}
+                      onChange={(e) =>
+                        handleStatusChange(task.id, e.target.value)
+                      }
+                      className={`text-xs font-semibold rounded-full px-3 py-1 ${getStatusColor(
+                        task.status
+                      )} border-0 focus:ring-1 focus:ring-blue-500 flex-1`}
+                      disabled={!isManager() && task.employee_id !== user?.id}
+                    >
+                      <option value="open">{t("tasks.statuses.open")}</option>
+                      <option value="in_progress">
+                        {t("tasks.statuses.in_progress")}
+                      </option>
+                      <option value="completed">
+                        {t("tasks.statuses.completed")}
+                      </option>
+                      <option value="cancelled">
+                        {t("tasks.statuses.cancelled")}
+                      </option>
+                    </select>
+                    <span
+                      className={`px-3 py-1 inline-flex text-xs font-semibold rounded-full ${getPriorityColor(
+                        task.priority
+                      )}`}
+                    >
+                      {t(`tasks.priorities.${task.priority}`)}
+                    </span>
+                  </div>
+
+                  {/* Details with Icons */}
+                  <div className="space-y-3 mb-4">
+                    {/* Employee */}
+                    <div className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <FaUser className="text-blue-600 text-sm" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500">
+                          {t("tasks.employee")}
+                        </p>
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          <UserProfileLink
+                            userId={task.employee_id}
+                            userName={task.employee_name}
+                          />
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-gray-600">
-                        {t("tasks.taskDate") || "Task Date"}:
-                      </span>
-                      <p className="font-medium">
-                        {task.task_date
-                          ? formatDate(task.task_date, i18n.language, "short")
-                          : "-"}
-                      </p>
+
+                    {/* Task Date */}
+                    <div className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                        <FaCalendarDay className="text-green-600 text-sm" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500">
+                          {t("tasks.taskDate") || "Task Date"}
+                        </p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {task.task_date
+                            ? formatDate(task.task_date, i18n.language, "short")
+                            : "-"}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-gray-600">
-                        {t("tasks.deadline")}:
-                      </span>
-                      <p className="font-medium">
-                        {task.deadline
-                          ? formatDate(task.deadline, i18n.language)
-                          : "-"}
-                      </p>
+
+                    {/* Deadline */}
+                    <div className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                        <FaCalendarCheck className="text-red-600 text-sm" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500">
+                          {t("tasks.deadline")}
+                        </p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {task.deadline
+                            ? formatDate(task.deadline, i18n.language, "short")
+                            : "-"}
+                        </p>
+                      </div>
                     </div>
+
+                    {/* Device (if exists) */}
                     {task.device_model && (
-                      <div className="col-span-2">
-                        <span className="text-gray-600">
-                          {t("tasks.device")}:
-                        </span>
-                        <p className="font-medium">{task.device_model}</p>
-                        {task.serial_number && (
+                      <div className="flex items-center gap-3">
+                        <div className="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                          <FaTools className="text-purple-600 text-sm" />
+                        </div>
+                        <div className="flex-1 min-w-0">
                           <p className="text-xs text-gray-500">
-                            SN: {task.serial_number}
+                            {t("tasks.device")}
                           </p>
-                        )}
+                          <p className="text-sm font-medium text-gray-900 truncate">
+                            {task.device_model}
+                          </p>
+                          {task.serial_number && (
+                            <p className="text-xs text-gray-500 truncate">
+                              SN: {task.serial_number}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>
-
-                  {/* Description */}
-                  {task.description && (
-                    <div className="mb-3">
-                      <p className="text-xs text-gray-600 line-clamp-2">
-                        {t("common.desciption")} : {task.description}
-                      </p>
-                    </div>
-                  )}
 
                   {/* Actions */}
                   <div className="flex justify-between items-center pt-3 border-t border-gray-100">
@@ -671,25 +714,25 @@ const TaskList = () => {
                           setViewOnlyMode(!isManager());
                           setIsModalOpen(true);
                         }}
-                        className="text-blue-600 hover:text-blue-800"
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
                         title={
                           isManager() ? t("common.edit") : t("common.view")
                         }
                       >
                         {isManager() ? (
-                          <FiEdit className="size-4 sm:size-5" />
+                          <FiEdit className="size-5" />
                         ) : (
-                          <FaEye className="size-4 sm:size-5" />
+                          <FaEye className="size-5" />
                         )}
                       </button>
 
                       {isManager() && (
                         <button
                           onClick={() => handleDelete(task.id, task.title)}
-                          className="text-red-600 hover:text-red-800"
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
                           title={t("common.delete")}
                         >
-                          <RiDeleteBin6Fill className="size-4 sm:size-5" />
+                          <RiDeleteBin6Fill className="size-5" />
                         </button>
                       )}
                     </div>
@@ -702,16 +745,16 @@ const TaskList = () => {
                             setReportTask(task);
                             setIsWorkReportModalOpen(true);
                           }}
-                          className="text-green-600 hover:text-green-800 flex items-center gap-1 text-xs"
+                          className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-green-600 hover:bg-green-50 rounded-lg border border-green-200 transition"
                         >
                           {task.work_report ? (
                             <>
-                              <FaEye className="size-3 sm:size-4" />
+                              <FaEye className="size-4" />
                               <span>{t("tasks.viewReport")}</span>
                             </>
                           ) : (
                             <>
-                              <MdAssignmentAdd className="size-3 sm:size-4" />
+                              <MdAssignmentAdd className="size-4" />
                               <span>{t("tasks.addReport")}</span>
                             </>
                           )}
