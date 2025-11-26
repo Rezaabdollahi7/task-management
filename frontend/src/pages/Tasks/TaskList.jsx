@@ -409,6 +409,9 @@ const TaskList = () => {
                     <th className="px-4 py-3  font-medium text-gray-500 uppercase">
                       {t("tasks.status")}
                     </th>
+                    <th className="px-4 py-3 font-medium text-gray-500 uppercase">
+                      {t("tasks.taskDate") || "Task Date"}
+                    </th>
                     <th className="px-4 py-3  font-medium text-gray-500 uppercase">
                       {t("tasks.deadline")}
                     </th>
@@ -480,6 +483,11 @@ const TaskList = () => {
                             {t("tasks.statuses.cancelled")}
                           </option>
                         </select>
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                        {task.task_date
+                          ? formatDate(task.task_date, i18n.language, "short")
+                          : "-"}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
                         {task.deadline
@@ -609,6 +617,16 @@ const TaskList = () => {
                         {t("tasks.employee")}:
                       </span>
                       <p className="font-medium">{task.employee_name}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">
+                        {t("tasks.taskDate") || "Task Date"}:
+                      </span>
+                      <p className="font-medium">
+                        {task.task_date
+                          ? formatDate(task.task_date, i18n.language, "short")
+                          : "-"}
+                      </p>
                     </div>
                     <div>
                       <span className="text-gray-600">
