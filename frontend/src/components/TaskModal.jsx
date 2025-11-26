@@ -3,9 +3,9 @@
 
 import { useState, useEffect } from "react";
 import { tasksAPI, usersAPI } from "../services/api";
-import { showSuccess, showError } from "../utils/toast"; // showError was missing in original imports
+import { showSuccess, showError } from "../utils/toast";
 import { useTranslation } from "react-i18next";
-import { useModal } from "../../hooks/useModal";
+import BilingualDatePicker from "./DatePicker/BilingualDatePicker";
 
 const TaskModal = ({
   isOpen,
@@ -29,8 +29,13 @@ const TaskModal = ({
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { t } = useTranslation();
-  const { handleBackdropClick } = useModal(isOpen, onClose);
+  const { t, i18n } = useTranslation();
+
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
 
   // Fetch assignable users (all active users)
   useEffect(() => {
@@ -91,6 +96,14 @@ const TaskModal = ({
     setError("");
   };
 
+  const handleDateChange = (fieldName, isoDate) => {
+    setFormData({
+      ...formData,
+      [fieldName]: isoDate,
+    });
+    setError("");
+  };
+
   // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -124,12 +137,10 @@ const TaskModal = ({
       if (editTask) {
         // Update existing task
         await tasksAPI.update(editTask.id, taskData);
-
         showSuccess(t("tasks.messages.updateSuccess"));
       } else {
         // Create new task
         await tasksAPI.create(taskData);
-
         showSuccess(t("tasks.messages.createSuccess"));
       }
 
@@ -140,7 +151,7 @@ const TaskModal = ({
       setError(err.message || t("common.error"));
       showError(
         err.response?.data?.message || t("tasks.messages.createFailed")
-      ); // 👈 ترجمه شد
+      );
       setLoading(false);
     }
   };
@@ -230,7 +241,8 @@ const TaskModal = ({
             {/* Title */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                *{t("common.title")}
+                <span className="text-red-500">*</span>
+                {t("common.title")}
               </label>
               <input
                 type="text"
@@ -263,7 +275,8 @@ const TaskModal = ({
             {/* Priority */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                *{t("tasks.priority")}
+                <span className="text-red-500">*</span>
+                {t("tasks.priority")}
               </label>
               <select
                 name="priority"
@@ -283,7 +296,8 @@ const TaskModal = ({
             {/* Employee */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                *{t("tasks.assignedTo")}
+                <span className="text-red-500">*</span>
+                {t("tasks.assignedTo")}
               </label>
               <select
                 name="employeeId"
@@ -304,32 +318,31 @@ const TaskModal = ({
               </select>
             </div>
 
-            {/* Task Date */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 {t("tasks.taskDate") || "Task Date"}
               </label>
-              <input
-                type="date"
-                name="taskDate"
+              <BilingualDatePicker
                 value={formData.taskDate}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                onChange={(isoDate) => handleDateChange("taskDate", isoDate)}
+                placeholder={
+                  t("tasks.placeholders.selectDate") || "Select date"
+                }
                 disabled={loading || viewOnly}
               />
             </div>
 
-            {/* Deadline */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 {t("tasks.deadline")}
               </label>
-              <input
-                type="date"
-                name="deadline"
+              <BilingualDatePicker
                 value={formData.deadline}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                onChange={(isoDate) => handleDateChange("deadline", isoDate)}
+                placeholder={
+                  t("tasks.placeholders.selectDate") || "Select date"
+                }
+                minDate={formData.taskDate || null}
                 disabled={loading || viewOnly}
               />
             </div>
@@ -433,7 +446,6 @@ const TaskModal = ({
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-
                     {t("common.loading")}
                   </>
                 ) : editTask ? (
