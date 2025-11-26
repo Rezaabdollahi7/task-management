@@ -6,7 +6,7 @@ import { dailyReportsAPI } from "../services/api";
 import { showSuccess, showError } from "../utils/toast";
 import { useTranslation } from "react-i18next";
 import { useModal } from "../../hooks/useModal";
-
+import BilingualDatePicker from "./DatePicker/BilingualDatePicker";
 import { formatDate, subtractDays } from "../utils/dateHelper";
 
 const DailyReportModal = ({
@@ -218,22 +218,19 @@ const DailyReportModal = ({
                 {t("dailyReports.reportDate") || "Report Date"}
               </label>
               {editReport ? (
-                // Show date as read-only when editing
                 <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-700">
                   {formatDate(formData.reportDate, i18n.language, "long")}
                 </div>
               ) : (
-                // Show date picker when creating
-                <input
-                  type="date"
-                  name="reportDate"
+                <BilingualDatePicker
                   value={formData.reportDate}
-                  onChange={handleChange}
-                  min={twoDaysAgo}
-                  max={today}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  onChange={(isoDate) =>
+                    setFormData({ ...formData, reportDate: isoDate })
+                  }
+                  placeholder={t("dailyReports.reportDate")}
+                  minDate={subtractDays(new Date(), 2)}
+                  maxDate={new Date()}
                   disabled={loading}
-                  required
                 />
               )}
             </div>

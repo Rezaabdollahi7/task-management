@@ -14,6 +14,7 @@ import {
   FaSearch,
   FaCalendarAlt,
 } from "react-icons/fa";
+import BilingualDatePicker from "../../components/DatePicker/BilingualDatePicker";
 
 const DailyReportsList = () => {
   const { user } = useAuth();
@@ -64,6 +65,8 @@ const DailyReportsList = () => {
         limit: 20,
         ...filters,
       };
+
+      console.log("🔍 Fetching reports with params:", params);
 
       let response;
       if (isManager) {
@@ -175,11 +178,11 @@ const DailyReportsList = () => {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               {t("tasks.filters.fromDate")}
             </label>
-            <input
-              type="date"
+            <BilingualDatePicker
               value={filters.startDate}
-              onChange={(e) => handleFilterChange("startDate", e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onChange={(isoDate) => handleFilterChange("startDate", isoDate)}
+              placeholder={t("tasks.filters.fromDate")}
+              maxDate={new Date()}
             />
           </div>
 
@@ -188,11 +191,11 @@ const DailyReportsList = () => {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               {t("tasks.filters.toDate")}
             </label>
-            <input
-              type="date"
+            <BilingualDatePicker
               value={filters.endDate}
-              onChange={(e) => handleFilterChange("endDate", e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onChange={(isoDate) => handleFilterChange("endDate", isoDate)}
+              placeholder={t("tasks.filters.toDate")}
+              maxDate={new Date()}
             />
           </div>
 
