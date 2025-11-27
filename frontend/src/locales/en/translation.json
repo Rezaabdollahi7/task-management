@@ -65,7 +65,7 @@
     "totalReports": "total reports",
     "searchPlaceholder": "Search in reports...",
     "deleteConfirm": "Are you sure you want to delete this report?",
-    "dateInfo": "You can create reports for today or up to 2 days ago.",
+    "dateInfo": "You can create reports for today or up to 30 days ago.",
     "guidelines": "Report Guidelines:",
     "guideline1": "Be specific and detailed",
     "guideline2": "Include tasks completed and time spent",

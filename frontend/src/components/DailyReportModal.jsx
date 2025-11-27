@@ -76,7 +76,7 @@ const DailyReportModal = ({
     const diffTime = today - selectedDate;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    return diffDays >= 0 && diffDays <= 2;
+    return diffDays >= 0 && diffDays <= 30;
   };
 
   // Handle form submit
@@ -109,7 +109,7 @@ const DailyReportModal = ({
       if (!editReport && !isValidDate(formData.reportDate)) {
         setError(
           t("dailyReports.messages.invalidDate") ||
-            "You can only create reports for today or up to 2 days ago"
+            "You can only create reports for today or up to 30 days ago"
         );
         setLoading(false);
         return;
@@ -205,7 +205,7 @@ const DailyReportModal = ({
             <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-blue-800">
                 {t("dailyReports.dateInfo") ||
-                  "You can create reports for today or up to 2 days ago."}
+                  "You can create reports for today or up to 30 days ago."}
               </p>
             </div>
           )}
@@ -228,7 +228,7 @@ const DailyReportModal = ({
                     setFormData({ ...formData, reportDate: isoDate })
                   }
                   placeholder={t("dailyReports.reportDate")}
-                  minDate={subtractDays(new Date(), 2)}
+                  minDate={subtractDays(new Date(), 30)}
                   maxDate={new Date()}
                   disabled={loading}
                 />
