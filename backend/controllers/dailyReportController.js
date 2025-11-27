@@ -134,10 +134,10 @@ const createReport = async (req, res) => {
       });
     }
 
-    if (diffDays > 2) {
+    if (diffDays > 30) {
       return res.status(400).json({
         success: false,
-        message: "Cannot create report for more than 2 days ago",
+        message: "Cannot create report for more than 30 days ago",
       });
     }
 
