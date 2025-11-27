@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import { dailyReportsAPI } from "../services/api";
 import { showSuccess, showError } from "../utils/toast";
 import { useTranslation } from "react-i18next";
-import { useModal } from "../../hooks/useModal";
 import BilingualDatePicker from "./DatePicker/BilingualDatePicker";
 import { formatDate, subtractDays } from "../utils/dateHelper";
 
@@ -22,7 +21,13 @@ const DailyReportModal = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { t, i18n } = useTranslation();
-  const { handleBackdropClick } = useModal(isOpen, onClose);
+
+  // Handle backdrop click
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
 
   // Set today as default date
   useEffect(() => {
@@ -65,7 +70,7 @@ const DailyReportModal = ({
     setError("");
   };
 
-  // Validate date (today or up to 2 days ago)
+  // Validate date (today or up to 30 days ago)
   const isValidDate = (dateString) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -153,10 +158,6 @@ const DailyReportModal = ({
 
   // Don't render if not open
   if (!isOpen) return null;
-
-  // Calculate min and max dates
-  const today = new Date().toISOString().split("T")[0];
-  const twoDaysAgo = subtractDays(today, 2);
 
   return (
     <div
