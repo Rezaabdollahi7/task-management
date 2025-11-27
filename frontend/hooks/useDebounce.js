@@ -1,7 +1,7 @@
 // hooks/useDebounce.js
 import { useState, useEffect } from "react";
 
-export const useDebounce = (value, delay) => {
+const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
@@ -16,3 +16,5 @@ export const useDebounce = (value, delay) => {
 
   return debouncedValue;
 };
+
+export default useDebounce;

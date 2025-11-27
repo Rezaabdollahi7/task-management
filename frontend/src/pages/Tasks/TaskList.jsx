@@ -14,7 +14,7 @@ import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { MdAssignmentAdd } from "react-icons/md";
 import { LuSearch } from "react-icons/lu";
-import { useDebounce } from "../../../hooks/useDebounce";
+import useDebounce from "../../../hooks/useDebounce";
 import SkeletonTaskLists from "../../components/skeletons/SkeletonTaskLists";
 import UserProfileLink from "../../components/UserProfileLink";
 import {
