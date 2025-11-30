@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { usersAPI } from "../services/api";
 import { showSuccess, showError } from "../utils/toast";
 import { useTranslation } from "react-i18next";
-import { useModal } from "../../hooks/useModal";
+import { useModal } from "../hooks/useModal";
 
 const UserModal = ({ isOpen, onClose, onSuccess, editUser = null }) => {
   const { t } = useTranslation();

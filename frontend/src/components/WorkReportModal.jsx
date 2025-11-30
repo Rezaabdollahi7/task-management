@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { tasksAPI } from "../services/api";
-import { useModal } from "../../hooks/useModal";
+import { useModal } from "../hooks/useModal";
 import { useTranslation } from "react-i18next";
 
 const WorkReportModal = ({ isOpen, onClose, onSuccess, task }) => {

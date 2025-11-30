@@ -13,7 +13,7 @@ import TaskModal from "../TaskModal";
 import { tasksAPI } from "../../services/api";
 import { showSuccess, showError } from "../../utils/toast";
 import { MdOutlineFileDownloadDone } from "react-icons/md";
-import { useModal } from "../../../hooks/useModal";
+import { useModal } from "../../hooks/useModal";
 import { useAuth } from "../../context/AuthContext";
 
 const DayTasksModal = ({
