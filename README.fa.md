@@ -553,24 +553,38 @@ tail -f /var/log/nginx/access.log
 
 ## 🖼️ تصاویر
 
-### داشبورد
-![داشبورد](./docs/screenshots/dashboard.png)
-*نمای کلی آمار و تحلیل‌ها در زمان واقعی*
 
-### لیست وظایف
-![لیست وظایف](./docs/screenshots/tasks.png)
-*رابط کامل مدیریت وظایف*
+### Dashboard
+![Dashboard](./docs/screenshots/dashboard.webp)
+*نمای کلی آمار، شاخص‌های کلیدی عملکرد (KPI) و تحلیل‌ها در زمان واقعی*
 
-### نمای تقویمی
-![تقویم](./docs/screenshots/calendar.png)
-*تقویم تعاملی با پشتیبانی شمسی/میلادی*
+### Task List
+![Task List](./docs/screenshots/tasks.webp)
+*رابط کامل مدیریت وظایف با فیلترها و پیگیری وضعیت*
 
-### نمای موبایل
-![موبایل](./docs/screenshots/mobile.png)
-*رابط کاملاً واکنش‌گرای موبایل*
+### Calendar View
+![Calendar](./docs/screenshots/calendar.webp)
+*تقویم تعاملی با پشتیبانی از تقویم شمسی (جلالی) و میلادی*
 
----
+### Calendar Tasks
+![Calendar](./docs/screenshots/calendar_task.webp)
+*مشاهده و مدیریت جزئیات وظایف مستقیماً از نمای تقویم*
 
+### Users
+![Calendar](./docs/screenshots/users.webp)
+*مدیریت اعضای تیم و تخصیص نقش‌ها (مخصوص مدیر)*
+
+### Create User
+![Calendar](./docs/screenshots/create_user.webp)
+*افزودن اعضای جدید به تیم با کنترل دسترسی مبتنی بر نقش*
+
+### Login
+![Mobile](./docs/screenshots/login.png)
+*احراز هویت امن مبتنی بر JWT با پشتیبانی دوزبانه*
+
+### Notifications
+![Mobile](./docs/screenshots/notifications.png)
+*اعلان‌های بلادرنگ WebSocket برای سررسیدها و به‌روزرسانی وظایف*
 ## 🐳 دستورات Docker
 ```bash
 # راه‌اندازی سرویس‌ها
