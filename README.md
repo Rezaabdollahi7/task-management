@@ -554,20 +554,36 @@ tail -f /var/log/nginx/access.log
 ## 🖼️ Screenshots
 
 ### Dashboard
-![Dashboard](./docs/screenshots/dashboard.png)
+![Dashboard](./docs/screenshots/dashboard.webp)
 *Real-time statistics and analytics overview*
 
 ### Task List
-![Task List](./docs/screenshots/tasks.png)
+![Task List](./docs/screenshots/tasks.webp)
 *Complete task management interface*
 
 ### Calendar View
-![Calendar](./docs/screenshots/calendar.png)
+![Calendar](./docs/screenshots/calendar.webp)
 *Interactive calendar with Persian/Gregorian support*
 
-### Mobile View
-![Mobile](./docs/screenshots/mobile.png)
-*Fully responsive mobile interface*
+### Calendar Tasks
+![Calendar](./docs/screenshots/calendar_task.webp)
+*Task details and management directly from calendar view*
+
+### Users
+![Calendar](./docs/screenshots/users.webp)
+*Team member management and role assignment (Manager only)*
+
+### Create User
+![Calendar](./docs/screenshots/create_user.webp)
+*Add new team members with role-based access control*
+
+### Login
+![Mobile](./docs/screenshots/login.png)
+*Secure JWT-based authentication with bilingual support*
+
+### Notifications
+![Mobile](./docs/screenshots/notifications.png)
+*Real-time WebSocket notifications for deadlines and task updates*
 
 ---
 
