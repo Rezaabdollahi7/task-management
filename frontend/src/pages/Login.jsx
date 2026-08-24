@@ -179,7 +179,7 @@ const Login = () => {
 
       {/* right side */}
       <div className="right max-w-xl hidden md:block">
-        <img src="../../public/images/login9.jpg" alt="" />
+        <img src="/images/login9.jpg" alt="" />
       </div>
     </div>
   );
